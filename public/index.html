@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trading Journal — MACD Divergence MTF EMA Bot</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <section class="brand-block">
+        <div class="brand-row">
+          <h1>Trading Journal</h1>
+          <span id="modeBadge" class="pill pill-paper">PAPER</span>
+          <span id="dataBadge" class="pill pill-data">DELTA</span>
+        </div>
+        <p class="subline">Last update: <span id="lastUpdate">--</span> | Coins: <span id="coinCount">0</span> | Source: <span id="sourceText">Delta Exchange India</span></p>
+      </section>
+
+      <section class="top-controls">
+        <nav class="filterbar" aria-label="Scanner filters">
+          <button class="chip active" data-filter="ALL">ALL</button>
+          <button class="chip" data-filter="LONG">LONG</button>
+          <button class="chip" data-filter="SHORT">SHORT</button>
+          <button class="chip" data-filter="WAIT">WAIT</button>
+          <button class="chip" data-filter="STRONG">STRONG</button>
+          <button class="chip" data-sort="score">SCORE</button>
+          <button class="chip" data-sort="rr">RR</button>
+          <button class="chip" id="refreshBtn">↻ Refresh</button>
+        </nav>
+        <div class="global-switches">
+          <label class="mode-slider" title="Paper / Live mode">
+            <span>PAPER</span>
+            <input id="modeSwitch" type="checkbox" />
+            <i></i>
+            <span>LIVE</span>
+          </label>
+          <label class="bot-slider" title="Bot master switch">
+            <input id="botSwitch" type="checkbox" />
+            <i></i>
+            <span id="botSwitchText">BOT OFF</span>
+          </label>
+        </div>
+      </section>
+    </header>
+
+    <nav class="tabbar" aria-label="Main tabs">
+      <button class="tab active" data-page="dashboard">DASHBOARD</button>
+      <button class="tab" data-page="chart">CHART</button>
+      <button class="tab" data-page="strategies">STRATEGIES</button>
+      <button class="tab" data-page="trades">TRADES</button>
+      <button class="tab" data-page="logs">LOGS</button>
+      <button class="tab" data-page="settings">SETTINGS</button>
+    </nav>
+
+    <main>
+      <section id="page-dashboard" class="page active"></section>
+      <section id="page-chart" class="page"></section>
+      <section id="page-strategies" class="page"></section>
+      <section id="page-trades" class="page"></section>
+      <section id="page-logs" class="page"></section>
+      <section id="page-settings" class="page"></section>
+    </main>
+  </div>
+
+  <dialog id="modal" class="modal">
+    <form method="dialog" class="modal-card">
+      <div class="modal-head"><h3 id="modalTitle">Details</h3><button id="modalClose" value="cancel">×</button></div>
+      <div id="modalContent" class="modal-body"></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>

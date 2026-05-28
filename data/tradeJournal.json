@@ -1,0 +1,50 @@
+[
+  {
+    "time": "2026-05-28T10:49:05.082Z",
+    "type": "PENDING_LIMIT",
+    "tradeId": "T-SOLUSD-MPPDEQ7T",
+    "coin": "SOLUSD",
+    "side": "SHORT",
+    "mode": "paper",
+    "entry": 81.27,
+    "entryReason": "ENTRY APPROVED: SHORT | Blocked by: none | Passed gates: MACD + MTF EMA Signal, EMA50 15m vs 1h Trend Filter, Histogram Color Change, Confirmed MACD Crossover, Technical SL Available, Risk Guard, Sizing | Failed hard gates: none | Soft context not blocking: MACD Zero-Line Side Context (soft), Divergence Context (soft) | HTF=SIDEWAYS | TrendVotes=MACD-DIV-MTF 6/6 | Aligned=2 | KDE=100 | MACD=OFF | SignalSource=MACD_DIVERGENCE_MTF_EMA_LOCAL | TV=NO | SupportResistance=S/R inside range; support=80.9 resistance=81.27 range=0.46% | Structure=Structure not clean enough for high-probability entry | NextAction=READY: SHORT setup passed; place pullback limit order at 81.27; SL 81.36; TP2 80.31. | MACD_MTF_SIGNAL=PASS (PRACTICAL_MTF_MACD) | MACD_DIVERGENCE_Reason=PRACTICAL_MTF_MACD SHORT confirmed on closed 5m Delta OHLC; EMA50(15m)=81.57 EMA50(1h)=83.17 gap=1.92%; PRACTICAL shortTrend=true histColorChange=true bearishCrossRecent=true(5 bars ago) zeroAbove=false soft divergence=false optional; SL=81.36 TP=80.31 | EMA50_15m=81.57 | EMA50_1h=83.17 | MACD_Line=0 | MACD_Signal=0.02 | StrategicSL=81.36 | StrategicTP=80.31 | Entry=81.27 | SL=81.36 | SL reason=MACD divergence swing SL with ATR buffer: PRACTICAL_MTF_MACD SHORT confirmed on closed 5m Delta OHLC; EMA50(15m)=81.57 EMA50(1h)=83.17 gap=1.92%; PRACTICAL shortTrend=true histColorChange=true bearishCrossRecent=true(5 bars ago) zeroAbove=false soft divergence=false optional; SL=81.36 TP=80.31 | TP1=80.66 | TP2=80.31 | TP3=80.31 | RR=2 | Margin=9.03 | SizingMultiplier=2x | SizingReason=High-probability sizing 2x: score=100, source=MACD_DIVERGENCE_MTF_EMA_LOCAL, trend=SIDEWAYS | Leverage=9 | Sizing=PASS | OrderType=limit | EntryType=PULLBACK_LIMIT | Pullback=sell-limit above current price; source=resistance pullback; gap=0.26 (0.21 ATR); support=80.9 resistance=81.27 | Strategy filter=PASS supplied=0 | sell-limit above current price; source=resistance pullback; gap=0.26 (0.21 ATR); support=80.9 resistance=81.27",
+    "sl": 81.36,
+    "tp1": 80.66,
+    "tp2": 80.31,
+    "tp3": 80.31,
+    "orderType": "limit",
+    "entryType": "PULLBACK_LIMIT"
+  },
+  {
+    "time": "2026-05-28T10:49:05.075Z",
+    "type": "PENDING_LIMIT",
+    "tradeId": "T-ETHUSD-MPPDEQ7M",
+    "coin": "ETHUSD",
+    "side": "SHORT",
+    "mode": "paper",
+    "entry": 1994.5,
+    "entryReason": "ENTRY APPROVED: SHORT | Blocked by: none | Passed gates: MACD + MTF EMA Signal, EMA50 15m vs 1h Trend Filter, Histogram Color Change, Confirmed MACD Crossover, Technical SL Available, Risk Guard, Sizing | Failed hard gates: none | Soft context not blocking: Divergence Context (soft) | HTF=BULLISH | TrendVotes=MACD-DIV-MTF 6/6 | Aligned=2 | KDE=100 | MACD=OFF | SignalSource=MACD_DIVERGENCE_MTF_EMA_LOCAL | TV=NO | SupportResistance=S/R near resistance; support=1985.9 resistance=1994.5 range=0.43% | Structure=EMA20>EMA50 with higher recent structure | NextAction=READY: SHORT setup passed; place pullback limit order at 1994.5; SL 1998.65; TP2 1981.1. | MACD_MTF_SIGNAL=PASS (PRACTICAL_MTF_MACD) | MACD_DIVERGENCE_Reason=PRACTICAL_MTF_MACD SHORT confirmed on closed 5m Delta OHLC; EMA50(15m)=2002.41 EMA50(1h)=2048.6 gap=2.25%; PRACTICAL shortTrend=true histColorChange=true bearishCrossRecent=true(4 bars ago) zeroAbove=true soft divergence=false optional; SL=1998.65 TP=1981.1 | EMA50_15m=2002.41 | EMA50_1h=2048.6 | MACD_Line=1.04 | MACD_Signal=1.16 | StrategicSL=1998.65 | StrategicTP=1981.1 | Entry=1994.5 | SL=1998.65 | SL reason=MACD divergence swing SL with ATR buffer: PRACTICAL_MTF_MACD SHORT confirmed on closed 5m Delta OHLC; EMA50(15m)=2002.41 EMA50(1h)=2048.6 gap=2.25%; PRACTICAL shortTrend=true histColorChange=true bearishCrossRecent=true(4 bars ago) zeroAbove=true soft divergence=false optional; SL=1998.65 TP=1981.1 | TP1=1986.95 | TP2=1981.1 | TP3=1981.1 | RR=2 | Margin=19.95 | SizingMultiplier=2x | SizingReason=High-probability sizing 2x: score=100, source=MACD_DIVERGENCE_MTF_EMA_LOCAL, trend=BULLISH | Leverage=3 | Sizing=PASS | OrderType=limit | EntryType=PULLBACK_LIMIT | Pullback=sell-limit above current price; source=resistance pullback; gap=1.7 (0.03 ATR); support=1985.9 resistance=1994.5 | Strategy filter=PASS supplied=0 | sell-limit above current price; source=resistance pullback; gap=1.7 (0.03 ATR); support=1985.9 resistance=1994.5",
+    "sl": 1998.65,
+    "tp1": 1986.95,
+    "tp2": 1981.1,
+    "tp3": 1981.1,
+    "orderType": "limit",
+    "entryType": "PULLBACK_LIMIT"
+  },
+  {
+    "time": "2026-05-28T10:49:05.068Z",
+    "type": "PENDING_LIMIT",
+    "tradeId": "T-BTCUSD-MPPDEQ7F",
+    "coin": "BTCUSD",
+    "side": "SHORT",
+    "mode": "paper",
+    "entry": 73556,
+    "entryReason": "ENTRY APPROVED: SHORT | Blocked by: none | Passed gates: MACD + MTF EMA Signal, EMA50 15m vs 1h Trend Filter, Histogram Color Change, Confirmed MACD Crossover, Technical SL Available, Risk Guard, Sizing | Failed hard gates: none | Soft context not blocking: none | HTF=BULLISH | TrendVotes=MACD-DIV-MTF 6/6 | Aligned=2 | KDE=100 | MACD=OFF | SignalSource=MACD_DIVERGENCE_MTF_EMA_LOCAL | TV=NO | SupportResistance=S/R near resistance; support=73245.5 resistance=73556 range=0.42% | Structure=EMA20>EMA50 with higher recent structure | NextAction=READY: SHORT setup passed; place pullback limit order at 73556; SL 73639.2; TP2 73205.1. | MACD_MTF_SIGNAL=PASS (PRACTICAL_MTF_MACD) | MACD_DIVERGENCE_Reason=PRACTICAL_MTF_MACD SHORT confirmed on closed 5m Delta OHLC; EMA50(15m)=73718.7 EMA50(1h)=75067.6 gap=1.8%; PRACTICAL shortTrend=true histColorChange=true bearishCrossRecent=true(4 bars ago) zeroAbove=true soft divergence=true optional; SL=73639.2 TP=73205.1 | EMA50_15m=73718.7 | EMA50_1h=75067.6 | MACD_Line=35.93 | MACD_Signal=43.09 | StrategicSL=73639.2 | StrategicTP=73205.1 | Entry=73556 | SL=73639.2 | SL reason=MACD divergence swing SL with ATR buffer: PRACTICAL_MTF_MACD SHORT confirmed on closed 5m Delta OHLC; EMA50(15m)=73718.7 EMA50(1h)=75067.6 gap=1.8%; PRACTICAL shortTrend=true histColorChange=true bearishCrossRecent=true(4 bars ago) zeroAbove=true soft divergence=true optional; SL=73639.2 TP=73205.1 | TP1=73349.8 | TP2=73205.1 | TP3=73205.1 | RR=2 | Margin=18.39 | SizingMultiplier=2x | SizingReason=High-probability sizing 2x: score=100, source=MACD_DIVERGENCE_MTF_EMA_LOCAL, trend=BULLISH | Leverage=4 | Sizing=PASS | OrderType=limit | EntryType=PULLBACK_LIMIT | Pullback=sell-limit above current price; source=resistance pullback; gap=61.5 (0.01 ATR); support=73245.5 resistance=73556 | Strategy filter=PASS supplied=0 | sell-limit above current price; source=resistance pullback; gap=61.5 (0.01 ATR); support=73245.5 resistance=73556",
+    "sl": 73639.2,
+    "tp1": 73349.8,
+    "tp2": 73205.1,
+    "tp3": 73205.1,
+    "orderType": "limit",
+    "entryType": "PULLBACK_LIMIT"
+  }
+]
