@@ -111,19 +111,19 @@ function dashboardPage() {
       ${kpi('Total Trades', m.totalTrades || 0)}${kpi('Wins', m.wins || 0, 'green')}${kpi('Losses', m.losses || 0, 'red')}${kpi('Win Rate', `${Number(m.winRate || 0).toFixed(0)}%`, 'green')}
       ${kpi('Funds Used', money(fundsUsed), 'yellow')}${kpi('Available Allocation', money(app.state.risk?.remainingBotAllocation || 0), 'green')}${kpi('Open P/L', money(m.openPnl), clsPnL(m.openPnl))}${kpi(app.state.wallet?.walletSynced ? 'Delta Wallet' : 'Wallet', app.state.wallet?.walletSynced ? money(app.state.wallet?.equity) : 'SYNC NEEDED', app.state.wallet?.walletSynced ? '' : 'yellow')}
     </section>
-    <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades and pending pullback limit orders appear here first.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>SL</th><th>TP1</th><th>TP2</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
+    <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades and pending pullback limit orders appear here first.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>SL</th><th>TP1</th><th>TP2</th><th>Est full-plan $</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
     <section class="panel"><div class="panel-title"><h2>Scanner Signals</h2><div class="legend"><b class="green">LONG</b><b class="red">SHORT</b><b class="yellow">WAIT</b></div></div>
-      <div class="table-wrap"><table><thead><tr><th>Coin</th><th>Decision</th><th>Signal</th><th>Entry</th><th>SL</th><th>TP1</th><th>TP2</th><th>RR</th><th>MACD</th><th>Reason</th></tr></thead><tbody>${scannerRows(app.state.rows || [])}</tbody></table></div></section>`;
+      <div class="table-wrap"><table><thead><tr><th>Coin</th><th>Decision</th><th>Signal</th><th>Entry</th><th>SL</th><th>TP1</th><th>TP2</th><th>Est full-plan $</th><th>RR</th><th>MACD</th><th>Reason</th></tr></thead><tbody>${scannerRows(app.state.rows || [])}</tbody></table></div></section>`;
 }
 function scannerRows(rows) {
   let list = rows.slice();
   if (app.filter === 'LONG' || app.filter === 'SHORT' || app.filter === 'WAIT') list = list.filter(r => r.dec === app.filter);
   if (app.filter === 'STRONG') list = list.filter(r => r.q === 'STRONG');
-  return list.map(r => `<tr class="signal-row ${String(r.dec).toLowerCase()}"><td>${coinLogo(r.coin)}<b>${esc(r.coin)}</b></td><td class="${clsSide(r.dec)}">${esc(r.dec)}</td><td>${signalSourceLabel(r)}</td><td>${num(r.en)}</td><td>${num(r.sl)}</td><td>${num(r.t1)}</td><td>${num(r.t2)}</td><td>${esc(r.rr || '-')}</td><td>${esc(r.macdStatus || '-')}</td><td class="wide-cell">${esc(rowWhyText(r)).slice(0, 260)}</td></tr>`).join('') || '<tr><td colspan="10" class="empty">No scanner rows.</td></tr>';
+  return list.map(r => `<tr class="signal-row ${String(r.dec).toLowerCase()}"><td>${coinLogo(r.coin)}<b>${esc(r.coin)}</b></td><td class="${clsSide(r.dec)}">${esc(r.dec)}</td><td>${signalSourceLabel(r)}</td><td>${num(r.en)}</td><td>${num(r.sl)}</td><td>${num(r.t1)}</td><td>${num(r.t2)}</td><td class="green">${money(r.estimatedFullTradeProfitUsd)}</td><td>${esc(r.rr || '-')}</td><td>${esc(r.macdStatus || '-')}</td><td class="wide-cell">${esc(rowWhyText(r)).slice(0, 260)}</td></tr>`).join('') || '<tr><td colspan="11" class="empty">No scanner rows.</td></tr>';
 }
 function statusClass(status) { const s = String(status || '').toUpperCase(); return s === 'PENDING_LIMIT' ? 'yellow' : s === 'OPEN' ? 'green' : ''; }
 function openTradesRows(open) {
-  return open.map(t => `<tr><td>${coinLogo(t.coin)}<b>${esc(t.coin)}</b></td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td class="${statusClass(t.status)}"><b>${esc(t.status || 'OPEN')}</b>${t.entryType ? `<small class="row-note">${esc(t.entryType)}</small>` : ''}</td><td>${esc(t.mode || 'paper')}</td><td>${num(t.entry)}</td><td>${num(t.price)}</td><td>${money(t.marginUsedUsd)}</td><td>${num(t.sl)}</td><td>${num(t.tp1)}</td><td>${num(t.tp2)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td>${num(t.rr)}</td><td><button class="action-close" data-close="${esc(t.id)}">Close</button></td></tr>`).join('') || '<tr><td colspan="13" class="empty">No open or pending trades.</td></tr>';
+  return open.map(t => `<tr><td>${coinLogo(t.coin)}<b>${esc(t.coin)}</b></td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td class="${statusClass(t.status)}"><b>${esc(t.status || 'OPEN')}</b>${t.entryType ? `<small class="row-note">${esc(t.entryType)}</small>` : ''}</td><td>${esc(t.mode || 'paper')}</td><td>${num(t.entry)}</td><td>${num(t.price)}</td><td>${money(t.marginUsedUsd)}</td><td>${num(t.sl)}</td><td>${num(t.tp1)}</td><td>${num(t.tp2)}</td><td class="green">${money(t.estimatedFullTradeProfitUsd)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td>${num(t.rr)}</td><td><button class="action-close" data-close="${esc(t.id)}">Close</button></td></tr>`).join('') || '<tr><td colspan="14" class="empty">No open or pending trades.</td></tr>';
 }
 
 function chartDirectionForTab(row) {
@@ -137,7 +137,7 @@ function chartDirectionForTab(row) {
 
 function tradePlanFor(row, side) {
   const p = app.chart.data?.plan || {};
-  if (p.active && (!side || p.side === side)) return { active: true, side: p.side || side, price: p.entry, entry: p.entry, sl: p.sl, tp1: p.tp1, tp2: p.tp2, rr: p.rr || '1:2' };
+  if (p.active && (!side || p.side === side)) return { ...p, active: true, side: p.side || side, price: p.entry, entry: p.entry, sl: p.sl, tp1: p.tp1, tp2: p.tp2, rr: p.rr || '1:2' };
   return { active: false, side, price: app.chart.data?.currentPrice || app.chart.data?.candles?.at(-1)?.close || row?.price || 0, entry: null, sl: null, tp1: null, tp2: null, rr: '1:2' };
 }
 
@@ -187,7 +187,7 @@ function forecastTabContent(row, side, plan) {
   }
   if (app.chart.tab === 'Projection') {
     return `<div class="projection-card ${side === 'LONG' ? 'long' : 'short'}"><h3>${side} Projection</h3>
-      ${active ? `<div class="plan-grid"><span>Entry</span><b>${num(plan.entry)}</b><span>Entry style</span><b>${esc(plan.entryType || 'LIMIT')}</b><span>Stop-Loss</span><b class="red">${num(plan.sl)}</b><span>TP1</span><b class="green">${num(plan.tp1)}</b><span>TP2</span><b class="green">${num(plan.tp2)}</b><span>Risk/Reward</span><b>${esc(plan.rr)}</b></div>${!executionReady ? `<p class="warning-box"><b>Projection is visual only until execution guard passes:</b> ${esc(blockedBy || 'Check scanner row WHY column.')}</p>` : ''}` : `<p class="yellow"><b>No active projection.</b></p><p>Projection is blocked until the selected MACD + MTF EMA entry model passes on a closed 5m candle.</p>`}
+      ${active ? `<div class="plan-grid"><span>Entry</span><b>${num(plan.entry)}</b><span>Entry style</span><b>${esc(plan.entryType || 'LIMIT')}</b><span>Stop-Loss</span><b class="red">${num(plan.sl)}</b><span>TP1</span><b class="green">${num(plan.tp1)}</b><span>TP2</span><b class="green">${num(plan.tp2)}</b><span>Risk/Reward</span><b>${esc(plan.rr)}</b><span>Est. full-plan profit</span><b class="green">${money(plan.estimatedFullTradeProfitUsd)}</b><span>Minimum full-plan</span><b>${money(plan.minFullTradeProfitUsd ?? plan.minTargetProfitUsd)}</b></div>${!executionReady ? `<p class="warning-box"><b>Projection is visual only until execution guard passes:</b> ${esc(blockedBy || 'Check scanner row WHY column.')}</p>` : ''}` : `<p class="yellow"><b>No active projection.</b></p><p>Projection is blocked until the selected MACD + MTF EMA entry model passes on a closed 5m candle.</p>`}
       <p class="muted">The chart uses real Delta OHLC candles, not synthetic demo candles.</p>
     </div>${conditionList}`;
   }
@@ -198,7 +198,7 @@ function forecastTabContent(row, side, plan) {
     <p><b>Stop-Loss:</b> <span class="red">${active ? num(plan.sl) : 'WAIT'}</span></p>
     <p><b>Take-Profit 1:</b> <span class="green">${active ? num(plan.tp1) : 'WAIT'}</span> <span class="muted">1R partial</span></p>
     <p><b>Take-Profit 2:</b> <span class="green">${active ? num(plan.tp2) : 'WAIT'}</span> <span class="muted">2R final</span></p>
-    <p><b>Risk/Reward:</b> ${esc(plan.rr)}</p>
+    <p><b>Risk/Reward:</b> ${esc(plan.rr)}</p><p><b>Estimated full-plan profit:</b> <span class="green">${active ? money(plan.estimatedFullTradeProfitUsd) : 'WAIT'}</span></p><p><b>Minimum full-trade profit:</b> ${active ? money(plan.minFullTradeProfitUsd ?? plan.minTargetProfitUsd) : 'WAIT'}</p>
     ${!active ? `<p class="warning-box">No trade yet: the selected entry model must pass with MTF EMA bias, MACD histogram change, closed-candle crossover, technical SL, and risk checks.</p>` : ''}
   </div>${conditionList}`;
 }
@@ -340,7 +340,7 @@ function strategiesPage() {
 
 function tradesPage() {
   const closed = app.state.closedTrades || [];
-  return `<section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>SL</th><th>TP1</th><th>TP2</th><th>P/L</th><th>Why</th><th>Action</th></tr></thead><tbody>${(app.state.openTrades||[]).map(t=>`<tr><td>${coinLogo(t.coin)}${esc(t.coin)}</td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td class="${statusClass(t.status)}"><b>${esc(t.status||'OPEN')}</b></td><td>${esc(t.mode||'paper')}</td><td>${num(t.entry)}</td><td>${num(t.price)}</td><td>${money(t.marginUsedUsd)}</td><td>${num(t.sl)}</td><td>${num(t.tp1)}</td><td>${num(t.tp2)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td class="wide-cell">${esc(t.entryReason||'-').slice(0,300)}</td><td><button class="action-close" data-close="${esc(t.id)}">Close</button></td></tr>`).join('') || '<tr><td colspan="13" class="empty">No open or pending trades.</td></tr>'}</tbody></table></div></section>
+  return `<section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>SL</th><th>TP1</th><th>TP2</th><th>Est full-plan $</th><th>P/L</th><th>Why</th><th>Action</th></tr></thead><tbody>${(app.state.openTrades||[]).map(t=>`<tr><td>${coinLogo(t.coin)}${esc(t.coin)}</td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td class="${statusClass(t.status)}"><b>${esc(t.status||'OPEN')}</b></td><td>${esc(t.mode||'paper')}</td><td>${num(t.entry)}</td><td>${num(t.price)}</td><td>${money(t.marginUsedUsd)}</td><td>${num(t.sl)}</td><td>${num(t.tp1)}</td><td>${num(t.tp2)}</td><td class="green">${money(t.estimatedFullTradeProfitUsd)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td class="wide-cell">${esc(t.entryReason||'-').slice(0,300)}</td><td><button class="action-close" data-close="${esc(t.id)}">Close</button></td></tr>`).join('') || '<tr><td colspan="14" class="empty">No open or pending trades.</td></tr>'}</tbody></table></div></section>
   <section class="panel"><div class="panel-title"><h2>Saved Closed Trades</h2><span class="muted">Saved in data/trades.json and journaled in data/tradeJournal.json</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Entry</th><th>Exit</th><th>P/L</th><th>Result</th><th>Reason</th><th>Closed</th></tr></thead><tbody>${closed.map(t=>`<tr><td>${coinLogo(t.coin)}${esc(t.coin)}</td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td>${num(t.entry)}</td><td>${num(t.exit)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td>${esc(t.result)}</td><td>${esc(t.closeReason||'-')}</td><td>${t.closedAt?new Date(t.closedAt).toLocaleString():'-'}</td></tr>`).join('') || '<tr><td colspan="8" class="empty">No closed trades saved yet.</td></tr>'}</tbody></table></div></section>`;
 }
 
@@ -405,7 +405,7 @@ async function loadDeltaSymbols() {
 
 function settingsPage() {
   const s = app.state.settings, a = app.state.apiStatus || {};
-  return `${assetManagerHtml()}<section class="settings-layout"><section class="panel"><div class="panel-title"><h2>Strategy Settings</h2><span class="pill pill-data">5m MACD + MTF EMA</span></div><p class="warning-box"><b>V57:</b> Practical mode matches your manual trigger: 15m/1h MTF EMA bias + closed 5m MACD crossover + histogram color change. Default execution uses an immediate limit order at the current price after the closed-candle trigger. Optional pullback-limit mode is available, but it can miss fast winning moves.</p><form id="strategySettingsForm" class="settings-grid">
+  return `${assetManagerHtml()}<section class="settings-layout"><section class="panel"><div class="panel-title"><h2>Strategy Settings</h2><span class="pill pill-data">5m MACD + MTF EMA</span></div><p class="warning-box"><b>V59:</b> Practical mode matches your manual trigger: 15m/1h MTF EMA bias + closed 5m MACD crossover + histogram color change. Default execution uses an immediate limit order at the current price after the closed-candle trigger and auto-sizes from the full TP1+TP2 exit plan, not TP2 alone. Optional pullback-limit mode is available, but it can miss fast winning moves.</p><form id="strategySettingsForm" class="settings-grid">
     <div class="field"><label>Entry model</label><select name="entryModel"><option value="PRACTICAL_MTF_MACD" ${s.entryModel !== 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'selected' : ''}>Practical: MTF EMA + MACD cross + histogram change</option><option value="STRICT_TRANSCRIPT_DIVERGENCE" ${s.entryModel === 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'selected' : ''}>Strict transcript: divergence + zero-line hard</option></select></div>
     <div class="field"><label>Zero-line mode</label><select name="zeroLineMode"><option value="soft" ${s.zeroLineMode !== 'hard' ? 'selected' : ''}>Soft context</option><option value="hard" ${s.zeroLineMode === 'hard' ? 'selected' : ''}>Hard blocker</option></select></div>
     <div class="field"><label>Require divergence for entry</label><select name="requireDivergenceForEntry"><option value="false" ${!s.requireDivergenceForEntry ? 'selected' : ''}>No — show as context</option><option value="true" ${s.requireDivergenceForEntry ? 'selected' : ''}>Yes — hard blocker</option></select></div>
@@ -415,12 +415,17 @@ function settingsPage() {
     <div class="field"><label>Risk %</label><input name="riskPercent" type="number" step="0.1" value="${esc(s.riskPercent)}"></div>
     <div class="field"><label>Default leverage</label><input name="defaultLeverage" type="number" min="1" max="25" value="${esc(s.defaultLeverage)}"></div>
     <div class="field"><label>Max leverage</label><input name="maxLeverage" type="number" min="1" max="25" value="${esc(s.maxLeverage)}"></div>
+    <div class="field"><label>Auto-size to target profit</label><select name="autoSizeToTargetProfit"><option value="true" ${s.autoSizeToTargetProfit !== false ? 'selected' : ''}>Yes — adjust margin/leverage</option><option value="false" ${s.autoSizeToTargetProfit === false ? 'selected' : ''}>No</option></select></div>
+    <div class="field"><label>Target full-trade profit $</label><input name="targetFullTradeProfitUsd" type="number" min="0" step="0.25" value="${esc(s.targetFullTradeProfitUsd ?? s.targetProfitUsd ?? 2)}"></div>
+    <div class="field"><label>Minimum full-trade profit $</label><input name="minFullTradeProfitUsd" type="number" min="0" step="0.25" value="${esc(s.minFullTradeProfitUsd ?? s.minTargetProfitUsd ?? 1)}"></div>
+    <div class="field"><label>Block tiny-profit trades</label><select name="blockTinyProfitTrades"><option value="true" ${s.blockTinyProfitTrades !== false ? 'selected' : ''}>Yes — skip if below minimum</option><option value="false" ${s.blockTinyProfitTrades === false ? 'selected' : ''}>No</option></select></div>
+    <div class="field"><label>Use max leverage for target sizing</label><select name="autoUseMaxLeverageForProfitTarget"><option value="true" ${s.autoUseMaxLeverageForProfitTarget !== false ? 'selected' : ''}>Yes</option><option value="false" ${s.autoUseMaxLeverageForProfitTarget === false ? 'selected' : ''}>No</option></select></div>
     <div class="field"><label>Pivot left</label><input name="divergencePivotLeft" type="number" min="1" max="10" value="${esc(s.divergencePivotLeft || 3)}"></div>
     <div class="field"><label>Pivot right</label><input name="divergencePivotRight" type="number" min="1" max="10" value="${esc(s.divergencePivotRight || 3)}"></div>
     <div class="field"><label>Divergence lookback</label><input name="divergenceLookback" type="number" min="20" max="180" value="${esc(s.divergenceLookback || 60)}"></div>
     <div class="field"><label>SL ATR buffer</label><input name="slBufferAtrMult" type="number" step="0.01" value="${esc(s.slBufferAtrMult || 0.25)}"></div>
     <div class="field"><label>TP1 close %</label><input name="tp1ClosePct" type="number" min="0" max="100" value="${esc(s.tp1ClosePct || 50)}"></div>
-    <div class="field"><label>TP2 close %</label><input name="tp2ClosePct" type="number" min="0" max="100" value="${esc(s.tp2ClosePct || 100)}"></div>
+    <div class="field"><label>TP2 close remaining %</label><input name="tp2ClosePct" type="number" min="0" max="100" value="${esc(s.tp2ClosePct || 100)}"></div>
     <div class="field"><label>Max margin / coin</label><input name="maxMarginPerCoinUsd" type="number" value="${esc(s.maxMarginPerCoinUsd)}"></div>
     <div class="field"><label>Bot allocation</label><input name="maxBotAllocationUsd" type="number" value="${esc(s.maxBotAllocationUsd)}"></div>
     <div class="field"><label>Entry order type</label><select name="entryOrderType"><option value="limit" ${s.entryOrderType !== 'market' ? 'selected' : ''}>Limit / pullback preferred</option><option value="market" ${s.entryOrderType === 'market' ? 'selected' : ''}>Market only if allowed</option></select></div>
@@ -449,13 +454,16 @@ function render() {
 
 function payloadFromForm(formEl) {
   const fd = new FormData(formEl), out = {};
-  ['maxConcurrentPositions','riskPercent','defaultLeverage','maxLeverage','divergencePivotLeft','divergencePivotRight','divergenceLookback','slBufferAtrMult','tp1ClosePct','tp2ClosePct','maxMarginPerCoinUsd','maxBotAllocationUsd','entrySignalWindowCandles','histColorLookback','pullbackAtrMult','pullbackMaxAtrMult'].forEach(k => { if (fd.has(k)) out[k] = Number(fd.get(k)); });
+  ['maxConcurrentPositions','riskPercent','defaultLeverage','maxLeverage','divergencePivotLeft','divergencePivotRight','divergenceLookback','slBufferAtrMult','tp1ClosePct','tp2ClosePct','maxMarginPerCoinUsd','maxBotAllocationUsd','entrySignalWindowCandles','histColorLookback','pullbackAtrMult','pullbackMaxAtrMult','targetFullTradeProfitUsd','minFullTradeProfitUsd'].forEach(k => { if (fd.has(k)) out[k] = Number(fd.get(k)); });
   if (fd.has('entryModel')) out.entryModel = String(fd.get('entryModel') || 'PRACTICAL_MTF_MACD');
   if (fd.has('zeroLineMode')) out.zeroLineMode = String(fd.get('zeroLineMode') || 'soft');
   if (fd.has('requireDivergenceForEntry')) out.requireDivergenceForEntry = String(fd.get('requireDivergenceForEntry')) === 'true';
   if (fd.has('entryOrderType')) out.entryOrderType = String(fd.get('entryOrderType') || 'limit');
   if (fd.has('requirePullbackForExecution')) out.requirePullbackForExecution = String(fd.get('requirePullbackForExecution')) === 'true';
   if (fd.has('allowMarketWhenNoPullback')) out.allowMarketWhenNoPullback = String(fd.get('allowMarketWhenNoPullback')) === 'true';
+  if (fd.has('autoSizeToTargetProfit')) out.autoSizeToTargetProfit = String(fd.get('autoSizeToTargetProfit')) === 'true';
+  if (fd.has('blockTinyProfitTrades')) out.blockTinyProfitTrades = String(fd.get('blockTinyProfitTrades')) === 'true';
+  if (fd.has('autoUseMaxLeverageForProfitTarget')) out.autoUseMaxLeverageForProfitTarget = String(fd.get('autoUseMaxLeverageForProfitTarget')) === 'true';
   return out;
 }
 async function saveSettings(form) { app.state = await api('/api/settings', { method:'POST', body: JSON.stringify(payloadFromForm(form)) }); render(); toast('Settings saved.'); }

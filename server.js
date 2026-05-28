@@ -11,7 +11,7 @@ const ROOT = __dirname;
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 8080);
-const USER_AGENT = 'TradingNorth-MACDDivergenceMTFEMA/56.0';
+const USER_AGENT = 'TradingNorth-MACDMTFEMA/59.0';
 
 const DASHBOARD_PASSWORD = String(process.env.DASHBOARD_PASSWORD || '').trim();
 const DASHBOARD_SESSION_SECRET = String(process.env.DASHBOARD_SESSION_SECRET || process.env.DASHBOARD_PASSWORD || crypto.randomBytes(32).toString('hex'));
@@ -93,19 +93,19 @@ const DEFAULT_SETTINGS = {
   minTrendQuality: 30,
   moveSlAfterTp1MinR: 1,
   moveSlAfterTp1MinAge: 30,
-  defaultLeverage: 3,
+  defaultLeverage: 25,
   maxLeverage: 25,
   maxConcurrentPositions: 3,
   maxOnePositionPerAsset: true,
-  maxBotAllocationUsd: 50,
+  maxBotAllocationUsd: 500,
   liveWalletAllocationPct: 25,
   liveMaxBotAllocationUsd: 0,
-  maxMarginPerCoinUsd: 10,
-  majorCoinMaxMarginUsd: 20,
+  maxMarginPerCoinUsd: 25,
+  majorCoinMaxMarginUsd: 40,
   majorMarginCoins: ['BTCUSD', 'ETHUSD'],
-  initialMarginUsd: 5,
-  majorInitialMarginUsd: 10,
-  maxStopLossUsd: 3,
+  initialMarginUsd: 10,
+  majorInitialMarginUsd: 20,
+  maxStopLossUsd: 2,
   minEntryMarginUsd: 1,
   tradeManagementEnabled: true,
   autoMoveSlEnabled: true,
@@ -141,6 +141,13 @@ const DEFAULT_SETTINGS = {
   entryOrderType: 'limit',
   minRR: 2,
   rewardTargetR: 2,
+  autoSizeToTargetProfit: true,
+  minFullTradeProfitUsd: 1,
+  minTargetProfitUsd: 1, // backward compatibility only
+  targetFullTradeProfitUsd: 2,
+  targetProfitUsd: 2, // backward compatibility only
+  blockTinyProfitTrades: true,
+  autoUseMaxLeverageForProfitTarget: true,
   highProbabilityMode: true,
   technicalSlEnabled: true,
   slSwingLookback: 24,
@@ -623,28 +630,50 @@ function calculateMarginPlan(rowOrProfile, settings, trades = loadTrades(), prod
   const entry = Number(rowOrProfile.candidate?.entry || rowOrProfile.entry || rowOrProfile.price || 0);
   const sl = Number(rowOrProfile.candidate?.sl || rowOrProfile.sl || 0);
   const maxLev = Math.min(Math.max(Number(settings.maxLeverage || 25), 1), 25);
-  const baseLev = Math.min(Math.max(Number(settings.defaultLeverage || 3), 1), maxLev);
+  const baseLev = Math.min(Math.max(Number(settings.defaultLeverage || 25), 1), maxLev);
   const cap = marginCapForSymbol(symbol, settings);
   const baseInitial = opts.addOn && Number(opts.addOnDesiredMargin || 0) > 0 ? Number(opts.addOnDesiredMargin) : (opts.addOn ? addOnStepForSymbol(symbol, settings) : initialMarginForSymbol(symbol, settings));
   const rawSizingMultiplier = opts.addOn ? 1 : Number(rowOrProfile.candidate?.sizingMultiplier || rowOrProfile.sizingMultiplier || 1);
   const maxSizingMultiplier = Math.min(Math.max(Number(settings.maxQualitySizeMultiplier || 2), 1), 5);
   const sizingMultiplier = Math.min(Math.max(Number.isFinite(rawSizingMultiplier) ? rawSizingMultiplier : 1, 1), maxSizingMultiplier);
-  const perTradeInitial = Math.min(cap, money(baseInitial * sizingMultiplier));
   const currentCoinMargin = existingTrade ? Number(existingTrade.marginUsedUsd || 0) : plannedMarginUsedForCoin(trades, symbol);
   const remainingCoinCap = Math.max(0, cap - currentCoinMargin);
   const totalUsed = totalBotMarginUsed(trades) - (existingTrade ? Number(existingTrade.marginUsedUsd || 0) : 0);
   const botAllocationUsd = effectiveBotAllocationUsd(settings);
   const remainingBotAllocation = Math.max(0, botAllocationUsd - totalUsed - (existingTrade ? Number(existingTrade.marginUsedUsd || 0) : 0));
-  const desiredMargin = Math.min(perTradeInitial, remainingCoinCap, remainingBotAllocation);
   const riskPct = priceRiskPct(entry, sl);
   const maxRiskUsd = effectiveRiskCapUsd(settings, botAllocationUsd);
+  const target = profitTargetSettings(settings);
+
+  let usedLeverage = baseLev;
+  if (!opts.addOn && target.autoSizeToTargetProfit && target.targetFullTradeProfitUsd > 0 && target.autoUseMaxLeverageForProfitTarget) {
+    usedLeverage = maxLev;
+  }
+
+  const perTradeInitial = Math.min(cap, money(baseInitial * sizingMultiplier));
+  let targetNotionalUsd = 0;
+  let targetMarginUsd = 0;
+  if (!opts.addOn && riskPct > 0 && target.autoSizeToTargetProfit && target.targetFullTradeProfitUsd > 0) {
+    targetNotionalUsd = target.targetFullTradeProfitUsd / Math.max(riskPct * target.plannedProfitR, 0.00000001);
+    targetMarginUsd = targetNotionalUsd / Math.max(usedLeverage, 1);
+  }
+
+  let desiredMargin = Math.min(perTradeInitial, remainingCoinCap, remainingBotAllocation);
+  if (targetMarginUsd > 0) {
+    desiredMargin = Math.min(Math.max(perTradeInitial, targetMarginUsd), remainingCoinCap, remainingBotAllocation);
+  }
+
   let marginUsd = 0;
   let notionalUsd = 0;
-  let usedLeverage = baseLev;
   let contractNotionalUsd = estimateContractNotionalUsd(symbol, entry, product);
   let liveOrderSize = null;
   let exchangeMarginUsd = 0;
   let blockedReason = '';
+  let estimatedTp1ProfitUsd = 0;
+  let estimatedTp2ProfitUsd = 0;
+  let estimatedFullTradeProfitUsd = 0;
+  let plannedProfitR = plannedExitRMultiple(settings);
+  let profitTargetStatus = 'NOT_EVALUATED';
 
   if (!riskPct) blockedReason = 'Invalid technical stop distance';
   if (!blockedReason && desiredMargin <= 0) blockedReason = 'No remaining bot/coin margin allocation';
@@ -685,7 +714,24 @@ function calculateMarginPlan(rowOrProfile, settings, trades = loadTrades(), prod
     }
   }
 
-  const estimatedStopLossUsd = money((opts.live && liveOrderSize ? notionalUsd : marginUsd * usedLeverage) * riskPct);
+  const effectiveNotionalUsd = opts.live && liveOrderSize ? notionalUsd : money(marginUsd * usedLeverage);
+  const estimatedStopLossUsd = money(effectiveNotionalUsd * riskPct);
+  const exitProfit = estimatedExitPlanProfit(effectiveNotionalUsd, riskPct, settings);
+  estimatedTp1ProfitUsd = exitProfit.tp1ProfitUsd;
+  estimatedTp2ProfitUsd = exitProfit.tp2ProfitUsd;
+  estimatedFullTradeProfitUsd = exitProfit.fullTradeProfitUsd;
+  plannedProfitR = exitProfit.plannedProfitR;
+
+  if (!blockedReason && target.blockTinyProfitTrades && target.minFullTradeProfitUsd > 0 && estimatedFullTradeProfitUsd + 0.0001 < target.minFullTradeProfitUsd) {
+    profitTargetStatus = 'BLOCKED_TINY_PROFIT';
+    const neededRisk = money(target.minFullTradeProfitUsd / Math.max(target.plannedProfitR, 0.000001));
+    blockedReason = `Projected full-trade profit $${estimatedFullTradeProfitUsd} is below minimum $${target.minFullTradeProfitUsd}. Full plan = TP1 partial + TP2 remaining (${target.plannedProfitR}R blended). Need about $${neededRisk} SL risk; raise allocation/margin/leverage or reduce SL distance.`;
+  } else if (!blockedReason && target.minFullTradeProfitUsd > 0) {
+    profitTargetStatus = estimatedFullTradeProfitUsd >= target.targetFullTradeProfitUsd ? 'TARGET_MET' : 'MINIMUM_MET';
+  } else if (!blockedReason) {
+    profitTargetStatus = 'NO_MINIMUM_CONFIGURED';
+  }
+
   const minMargin = Number(settings.minEntryMarginUsd || 1);
   const allowed = !blockedReason && marginUsd >= minMargin && desiredMargin > 0 && estimatedStopLossUsd <= maxRiskUsd + 0.0001;
   if (!allowed && !blockedReason) {
@@ -698,10 +744,21 @@ function calculateMarginPlan(rowOrProfile, settings, trades = loadTrades(), prod
     symbol,
     marginCapUsd: cap,
     desiredMarginUsd: money(desiredMargin),
+    targetMarginUsd: money(targetMarginUsd),
+    targetNotionalUsd: money(targetNotionalUsd),
     marginUsd: opts.live && liveOrderSize ? exchangeMarginUsd : marginUsd,
     notionalUsd: opts.live && liveOrderSize ? notionalUsd : money(marginUsd * usedLeverage),
     leverage: usedLeverage,
     estimatedStopLossUsd,
+    estimatedTp1ProfitUsd,
+    estimatedTp2ProfitUsd,
+    estimatedFullTradeProfitUsd,
+    plannedProfitR,
+    minFullTradeProfitUsd: target.minFullTradeProfitUsd,
+    targetFullTradeProfitUsd: target.targetFullTradeProfitUsd,
+    minTargetProfitUsd: target.minFullTradeProfitUsd,
+    targetProfitUsd: target.targetFullTradeProfitUsd,
+    profitTargetStatus,
     remainingCoinCap: money(remainingCoinCap),
     remainingBotAllocation: money(remainingBotAllocation),
     botAllocationUsd: money(botAllocationUsd),
@@ -712,7 +769,7 @@ function calculateMarginPlan(rowOrProfile, settings, trades = loadTrades(), prod
     riskPercent: Number(settings.riskPercent || 0.5),
     sizingMultiplier,
     baseInitialMarginUsd: money(baseInitial),
-    sizingMode: 'TECHNICAL_SL_FIRST_POSITION_SIZE_SECOND'
+    sizingMode: 'TECHNICAL_SL_FIRST_POSITION_SIZE_SECOND_PROFIT_TARGET_AWARE'
   };
 }
 
@@ -2053,6 +2110,63 @@ function effectiveRiskCapUsd(settings, botAllocationUsd = 0) {
   return 0;
 }
 
+function plannedExitRMultiple(settings = loadSettings()) {
+  const tp1R = Math.max(0, Number(settings.tp1TriggerR || 1));
+  const tp2R = Math.max(tp1R, Number(settings.rewardTargetR || settings.minRR || 2));
+  const tp1ClosePct = Math.min(Math.max(Number(settings.tp1ClosePct ?? 50), 0), 100);
+  const tp2ClosePct = Math.min(Math.max(Number(settings.tp2ClosePct ?? 100), 0), 100);
+  const tp1Fraction = tp1ClosePct / 100;
+  const remainingAfterTp1 = Math.max(0, 1 - tp1Fraction);
+  const tp2Fraction = remainingAfterTp1 * (tp2ClosePct / 100);
+  return money((tp1Fraction * tp1R) + (tp2Fraction * tp2R));
+}
+
+function estimatedExitPlanProfit(notionalUsd, riskPct, settings = loadSettings()) {
+  const n = Number(notionalUsd || 0);
+  const r = Number(riskPct || 0);
+  if (!n || !r) return { tp1ProfitUsd: 0, tp2ProfitUsd: 0, fullTradeProfitUsd: 0, plannedProfitR: plannedExitRMultiple(settings) };
+  const tp1R = Math.max(0, Number(settings.tp1TriggerR || 1));
+  const tp2R = Math.max(tp1R, Number(settings.rewardTargetR || settings.minRR || 2));
+  const tp1ClosePct = Math.min(Math.max(Number(settings.tp1ClosePct ?? 50), 0), 100);
+  const tp2ClosePct = Math.min(Math.max(Number(settings.tp2ClosePct ?? 100), 0), 100);
+  const tp1Fraction = tp1ClosePct / 100;
+  const remainingAfterTp1 = Math.max(0, 1 - tp1Fraction);
+  const tp2Fraction = remainingAfterTp1 * (tp2ClosePct / 100);
+  const tp1ProfitUsd = money(n * r * tp1R * tp1Fraction);
+  const tp2ProfitUsd = money(n * r * tp2R * tp2Fraction);
+  const plannedProfitR = money((tp1Fraction * tp1R) + (tp2Fraction * tp2R));
+  return {
+    tp1ProfitUsd,
+    tp2ProfitUsd,
+    fullTradeProfitUsd: money(tp1ProfitUsd + tp2ProfitUsd),
+    plannedProfitR,
+    tp1ClosePct,
+    tp2ClosePct,
+    tp1R,
+    tp2R
+  };
+}
+
+function profitTargetSettings(settings = loadSettings()) {
+  const minFullTradeProfitUsd = Math.max(0, Number(settings.minFullTradeProfitUsd ?? settings.minTargetProfitUsd ?? 1));
+  const rawTarget = Math.max(0, Number(settings.targetFullTradeProfitUsd ?? settings.targetProfitUsd ?? 2));
+  const targetFullTradeProfitUsd = Math.max(minFullTradeProfitUsd, rawTarget);
+  const rewardR = Math.max(2, Number(settings.rewardTargetR || settings.minRR || 2));
+  const plannedProfitR = Math.max(0.000001, plannedExitRMultiple(settings));
+  return {
+    autoSizeToTargetProfit: settings.autoSizeToTargetProfit !== false,
+    blockTinyProfitTrades: settings.blockTinyProfitTrades !== false,
+    minFullTradeProfitUsd,
+    targetFullTradeProfitUsd,
+    // Backward-compatible aliases for older saved JSON and UI reads. Do not label these as TP2.
+    minTargetProfitUsd: minFullTradeProfitUsd,
+    targetProfitUsd: targetFullTradeProfitUsd,
+    rewardR,
+    plannedProfitR,
+    autoUseMaxLeverageForProfitTarget: settings.autoUseMaxLeverageForProfitTarget !== false
+  };
+}
+
 function requestJson(url, { method = 'GET', headers = {}, body = null, timeoutMs = 10000 } = {}) {
   return new Promise((resolve, reject) => {
     const target = new URL(url);
@@ -2701,7 +2815,7 @@ function buildDecisionReason(profile, result, candidate, settings) {
       `SL=${candidate.sl}`,
       `SL reason=${candidate.slReason || '-'}`,
       `TP1=${candidate.tp1}`,
-      `TP2=${candidate.tp2}`,
+      `TP1=${candidate.tp1} TP2=${candidate.tp2} FullPlan=${candidate.estimatedFullTradeProfitUsd ? '$'+candidate.estimatedFullTradeProfitUsd : '-'}`,
       `TP3=${candidate.tp3}`,
       `RR=${candidate.rr}`,
       `Margin=${candidate.marginUsedUsd || 0}`,
@@ -2788,7 +2902,7 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   if (profile.decision !== 'LONG' && profile.decision !== 'SHORT') return null;
   const direction = profile.decision;
   const currentPrice = Number(profile.price || 0);
-  // V57: pullback is an execution preference, not a second mandatory signal after the MACD trigger.
+  // V59: pullback is an execution preference, not a second mandatory signal after the MACD trigger.
   // Default behavior: enter with a limit order at the current closed-candle/ticker price.
   // If Require Pullback is enabled, place a pending pullback limit instead.
   const pullbackPlan = settings.entryOrderType !== 'market' && settings.requirePullbackForExecution === true
@@ -2839,7 +2953,7 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
     tp1R,
     sizingMultiplier: sizing.multiplier,
     sizingReason: sizing.reason,
-    exitPlan: 'MACD Divergence + MTF EMA Plan: optional TP1 partial at 1R, move SL to breakeven/profit, final TP at 2R. No other strategy modules are used.',
+    exitPlan: 'MACD Divergence + MTF EMA Plan: TP1 partial at 1R, move SL to breakeven/profit, TP2 closes remaining position at 2R. No other strategy modules are used.',
     entryType: pullbackPlan ? 'PULLBACK_LIMIT' : (settings.entryOrderType === 'market' ? 'MARKET_OR_IMMEDIATE' : 'IMMEDIATE_LIMIT'),
     orderType: settings.entryOrderType === 'market' ? 'market' : 'limit',
     currentPrice: roundCoin(profile.symbol, currentPrice),
@@ -2863,6 +2977,15 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   base.leverage = plan.leverage;
   base.estimatedStopLossUsd = plan.estimatedStopLossUsd;
   base.dynamicRiskCapUsd = plan.dynamicRiskCapUsd;
+  base.estimatedTp1ProfitUsd = plan.estimatedTp1ProfitUsd;
+  base.estimatedTp2ProfitUsd = plan.estimatedTp2ProfitUsd;
+  base.estimatedFullTradeProfitUsd = plan.estimatedFullTradeProfitUsd;
+  base.plannedProfitR = plan.plannedProfitR;
+  base.minFullTradeProfitUsd = plan.minFullTradeProfitUsd;
+  base.targetFullTradeProfitUsd = plan.targetFullTradeProfitUsd;
+  base.minTargetProfitUsd = plan.minTargetProfitUsd;
+  base.targetProfitUsd = plan.targetProfitUsd;
+  base.profitTargetStatus = plan.profitTargetStatus;
   base.maxMarginCapUsd = plan.marginCapUsd;
   base.liveOrderSize = plan.liveOrderSize || Math.max(1, Math.floor(Number(settings.liveOrderSize || 1)));
   base.qty = plan.notionalUsd > 0 && entry > 0 ? Math.round((plan.notionalUsd / entry) * 1000000) / 1000000 : 0;
@@ -2931,6 +3054,15 @@ function evaluateSymbol(symbol, settings, wallet, trades) {
     dynamicRiskCapUsd: candidate?.dynamicRiskCapUsd || 0,
     notionalUsd: candidate?.notionalUsd || 0,
     leverage: candidate?.leverage || settings.defaultLeverage,
+    estimatedTp1ProfitUsd: candidate?.estimatedTp1ProfitUsd || 0,
+    estimatedTp2ProfitUsd: candidate?.estimatedTp2ProfitUsd || 0,
+    estimatedFullTradeProfitUsd: candidate?.estimatedFullTradeProfitUsd || 0,
+    plannedProfitR: candidate?.plannedProfitR || 0,
+    minFullTradeProfitUsd: candidate?.minFullTradeProfitUsd || 0,
+    targetFullTradeProfitUsd: candidate?.targetFullTradeProfitUsd || 0,
+    minTargetProfitUsd: candidate?.minTargetProfitUsd || 0,
+    targetProfitUsd: candidate?.targetProfitUsd || 0,
+    profitTargetStatus: candidate?.profitTargetStatus || '',
     candidate
   };
 }
@@ -3607,6 +3739,15 @@ function buildTradeRecord(row, settings, mode) {
     notionalUsd: money(row.candidate.notionalUsd || plan.notionalUsd || 0),
     leverage: Number(row.candidate.leverage || plan.leverage || settings.defaultLeverage),
     estimatedLossAtSlUsd: money(row.candidate.estimatedStopLossUsd || plan.estimatedStopLossUsd || 0),
+    estimatedTp1ProfitUsd: money(row.candidate.estimatedTp1ProfitUsd || plan.estimatedTp1ProfitUsd || 0),
+    estimatedTp2ProfitUsd: money(row.candidate.estimatedTp2ProfitUsd || plan.estimatedTp2ProfitUsd || 0),
+    estimatedFullTradeProfitUsd: money(row.candidate.estimatedFullTradeProfitUsd || plan.estimatedFullTradeProfitUsd || 0),
+    plannedProfitR: money(row.candidate.plannedProfitR || plan.plannedProfitR || plannedExitRMultiple(settings)),
+    minFullTradeProfitUsd: money(row.candidate.minFullTradeProfitUsd || plan.minFullTradeProfitUsd || 0),
+    targetFullTradeProfitUsd: money(row.candidate.targetFullTradeProfitUsd || plan.targetFullTradeProfitUsd || 0),
+    minTargetProfitUsd: money(row.candidate.minTargetProfitUsd || plan.minTargetProfitUsd || 0),
+    targetProfitUsd: money(row.candidate.targetProfitUsd || plan.targetProfitUsd || 0),
+    profitTargetStatus: row.candidate.profitTargetStatus || plan.profitTargetStatus || '',
     initialSl: row.candidate.sl,
     initialRiskDistance: Math.abs(Number(row.candidate.entry || 0) - Number(row.candidate.sl || 0)),
     remainingPct: 100,
@@ -3960,6 +4101,15 @@ async function openLiveTrade(row, settings, trades, wallet) {
   row.candidate.notionalUsd = plan.notionalUsd;
   row.candidate.leverage = plan.leverage;
   row.candidate.estimatedStopLossUsd = plan.estimatedStopLossUsd;
+  row.candidate.estimatedTp1ProfitUsd = plan.estimatedTp1ProfitUsd;
+  row.candidate.estimatedTp2ProfitUsd = plan.estimatedTp2ProfitUsd;
+  row.candidate.estimatedFullTradeProfitUsd = plan.estimatedFullTradeProfitUsd;
+  row.candidate.plannedProfitR = plan.plannedProfitR;
+  row.candidate.minFullTradeProfitUsd = plan.minFullTradeProfitUsd;
+  row.candidate.targetFullTradeProfitUsd = plan.targetFullTradeProfitUsd;
+  row.candidate.minTargetProfitUsd = plan.minTargetProfitUsd;
+  row.candidate.targetProfitUsd = plan.targetProfitUsd;
+  row.candidate.profitTargetStatus = plan.profitTargetStatus;
   row.candidate.liveOrderSize = plan.liveOrderSize;
 
   const trade = buildTradeRecord(row, settings, 'live');
@@ -4202,6 +4352,12 @@ function getStatePayload(settings = loadSettings(), wallet = loadWallet(), trade
       maxMarginPerCoinUsd: settings.maxMarginPerCoinUsd,
       majorCoinMaxMarginUsd: settings.majorCoinMaxMarginUsd,
       maxStopLossUsd: settings.maxStopLossUsd,
+      minFullTradeProfitUsd: settings.minFullTradeProfitUsd ?? settings.minTargetProfitUsd,
+      targetFullTradeProfitUsd: settings.targetFullTradeProfitUsd ?? settings.targetProfitUsd,
+      minTargetProfitUsd: settings.minFullTradeProfitUsd ?? settings.minTargetProfitUsd,
+      targetProfitUsd: settings.targetFullTradeProfitUsd ?? settings.targetProfitUsd,
+      autoSizeToTargetProfit: settings.autoSizeToTargetProfit,
+      blockTinyProfitTrades: settings.blockTinyProfitTrades,
       totalBotMarginUsed: money(totalBotMarginUsed(displayTrades)),
       remainingBotAllocation: money(Math.max(0, effectiveBotAllocationUsd(settings) - totalBotMarginUsed(displayTrades)))
     },
@@ -4420,7 +4576,7 @@ function validateSettingsPatch(patch) {
     'breakEvenTriggerR', 'breakEvenBufferR', 'tp1TriggerR', 'qualitySizeScore1', 'qualitySizeMultiplier1', 'qualitySizeScore2', 'qualitySizeMultiplier2', 'maxQualitySizeMultiplier',
     'dailyDrawdownLimitPct', 'weeklyDrawdownLimitPct', 'monthlyDrawdownLimitPct',
     'maxFundingRatePct8h', 'extremeFundingRatePct8h', 'newsBlackoutBeforeMin', 'newsBlackoutAfterMin', 'minRR', 'autoScanSeconds',
-    'marketDataRefreshSeconds', 'liveOrderSize', 'macdFastLength', 'macdSlowLength', 'macdSignalLength', 'mtfEmaPeriod', 'minEmaGapPct', 'divergencePivotLeft', 'divergencePivotRight', 'divergenceLookback', 'minDivergenceMacdPct', 'entrySignalWindowCandles', 'histColorLookback', 'tradingViewSignalFreshnessSeconds', 'sarMacdEmaPeriod', 'sarMacdSarStep', 'sarMacdSarMax', 'sarMacdAdxThreshold', 'sarMacdPullbackLookback', 'sarMacdMaxDistanceAtr', 'sarMacdSwingLookback', 'sarMacdEmaStopBufferAtr', 'twoPoleFilterLength', 'twoPoleBuyMaxLevel', 'twoPoleSellMinLevel', 'twoPoleDeltaVolumeThresholdPct', 'breakoutLookback', 'breakoutConsolidationLookback', 'breakoutMaxRangeAtrMult', 'breakoutMomentumBodyAtrMult', 'breakoutSlBufferAtrMult', 'breakoutTp1R', 'chandelierLength', 'chandelierAtrMult', 'totalWalletAmount', 'maxTradesPerDay', 'maxDailyLossUsd', 'maxConsecutiveLosses', 'paperMinScore', 'adrUsedLimitPct', 'timeFailureCandles', 'pendingExpiryMinutes', 'minSlAtrMult', 'minTrendQuality', 'moveSlAfterTp1MinR', 'moveSlAfterTp1MinAge', 'rewardTargetR', 'slSwingLookback', 'slBufferAtrMult', 'maxTechnicalSlAtrMult', 'pullbackAtrMult', 'pullbackMaxAtrMult', 'tp1ClosePct', 'tp2ClosePct', 'tp3ClosePct'
+    'marketDataRefreshSeconds', 'liveOrderSize', 'macdFastLength', 'macdSlowLength', 'macdSignalLength', 'mtfEmaPeriod', 'minEmaGapPct', 'divergencePivotLeft', 'divergencePivotRight', 'divergenceLookback', 'minDivergenceMacdPct', 'entrySignalWindowCandles', 'histColorLookback', 'tradingViewSignalFreshnessSeconds', 'sarMacdEmaPeriod', 'sarMacdSarStep', 'sarMacdSarMax', 'sarMacdAdxThreshold', 'sarMacdPullbackLookback', 'sarMacdMaxDistanceAtr', 'sarMacdSwingLookback', 'sarMacdEmaStopBufferAtr', 'twoPoleFilterLength', 'twoPoleBuyMaxLevel', 'twoPoleSellMinLevel', 'twoPoleDeltaVolumeThresholdPct', 'breakoutLookback', 'breakoutConsolidationLookback', 'breakoutMaxRangeAtrMult', 'breakoutMomentumBodyAtrMult', 'breakoutSlBufferAtrMult', 'breakoutTp1R', 'chandelierLength', 'chandelierAtrMult', 'totalWalletAmount', 'maxTradesPerDay', 'maxDailyLossUsd', 'maxConsecutiveLosses', 'paperMinScore', 'adrUsedLimitPct', 'timeFailureCandles', 'pendingExpiryMinutes', 'minSlAtrMult', 'minTrendQuality', 'moveSlAfterTp1MinR', 'moveSlAfterTp1MinAge', 'rewardTargetR', 'targetFullTradeProfitUsd', 'minFullTradeProfitUsd', 'targetProfitUsd', 'minTargetProfitUsd', 'slSwingLookback', 'slBufferAtrMult', 'maxTechnicalSlAtrMult', 'pullbackAtrMult', 'pullbackMaxAtrMult', 'tp1ClosePct', 'tp2ClosePct', 'tp3ClosePct'
   ];
   for (const field of numericFields) {
     if (Object.prototype.hasOwnProperty.call(patch, field)) {
@@ -4466,6 +4622,9 @@ function validateSettingsPatch(patch) {
   if (typeof patch.requireClosedCandle === 'boolean') out.requireClosedCandle = patch.requireClosedCandle;
   if (typeof patch.requirePullbackForExecution === 'boolean') out.requirePullbackForExecution = patch.requirePullbackForExecution;
   if (typeof patch.allowMarketWhenNoPullback === 'boolean') out.allowMarketWhenNoPullback = patch.allowMarketWhenNoPullback;
+  if (typeof patch.autoSizeToTargetProfit === 'boolean') out.autoSizeToTargetProfit = patch.autoSizeToTargetProfit;
+  if (typeof patch.blockTinyProfitTrades === 'boolean') out.blockTinyProfitTrades = patch.blockTinyProfitTrades;
+  if (typeof patch.autoUseMaxLeverageForProfitTarget === 'boolean') out.autoUseMaxLeverageForProfitTarget = patch.autoUseMaxLeverageForProfitTarget;
   if (typeof patch.paperUseDeltaWalletReference === 'boolean') out.paperUseDeltaWalletReference = patch.paperUseDeltaWalletReference;
   if (typeof patch.paperLiveCompatibleSizing === 'boolean') out.paperLiveCompatibleSizing = patch.paperLiveCompatibleSizing;
   if (typeof patch.paperExecutionMode === 'string') out.paperExecutionMode = patch.paperExecutionMode === 'review' ? 'review' : 'auto';
@@ -4476,6 +4635,13 @@ function validateSettingsPatch(patch) {
   out.maxLeverage = Math.min(Math.max(out.maxLeverage ?? DEFAULT_SETTINGS.maxLeverage, 1), 25);
   out.maxConcurrentPositions = Math.min(Math.max(Math.floor(out.maxConcurrentPositions ?? DEFAULT_SETTINGS.maxConcurrentPositions), 1), 5);
   out.maxBotAllocationUsd = Math.min(Math.max(out.maxBotAllocationUsd ?? DEFAULT_SETTINGS.maxBotAllocationUsd, 1), 100000);
+  const rawTargetFull = out.targetFullTradeProfitUsd ?? out.targetProfitUsd ?? DEFAULT_SETTINGS.targetFullTradeProfitUsd ?? DEFAULT_SETTINGS.targetProfitUsd;
+  const rawMinFull = out.minFullTradeProfitUsd ?? out.minTargetProfitUsd ?? DEFAULT_SETTINGS.minFullTradeProfitUsd ?? DEFAULT_SETTINGS.minTargetProfitUsd;
+  out.targetFullTradeProfitUsd = Math.min(Math.max(rawTargetFull, 0), 1000);
+  out.minFullTradeProfitUsd = Math.min(Math.max(rawMinFull, 0), Math.max(out.targetFullTradeProfitUsd || DEFAULT_SETTINGS.targetFullTradeProfitUsd, 0));
+  // Backward-compatible aliases only. UI and sizing use full-trade fields.
+  out.targetProfitUsd = out.targetFullTradeProfitUsd;
+  out.minTargetProfitUsd = out.minFullTradeProfitUsd;
   out.liveWalletAllocationPct = Math.min(Math.max(out.liveWalletAllocationPct ?? DEFAULT_SETTINGS.liveWalletAllocationPct, 1), 100);
   out.liveMaxBotAllocationUsd = Math.min(Math.max(out.liveMaxBotAllocationUsd ?? DEFAULT_SETTINGS.liveMaxBotAllocationUsd, 0), 1000000);
   out.maxMarginPerCoinUsd = Math.min(Math.max(out.maxMarginPerCoinUsd ?? DEFAULT_SETTINGS.maxMarginPerCoinUsd, 1), 10000);
@@ -4806,7 +4972,30 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
   const risk = sl ? Math.abs(plannedEntry - sl) : 0;
   const tp1 = signal?.pass ? (side === 'LONG' ? plannedEntry + risk : plannedEntry - risk) : null;
   const tp2 = signal?.pass ? (side === 'LONG' ? plannedEntry + risk * 2 : plannedEntry - risk * 2) : null;
-  const plan = signal?.pass ? { side, entry: roundCoin(sym, plannedEntry), currentPrice: roundCoin(sym, currentPrice), sl, tp1: roundCoin(sym, tp1), tp2: roundCoin(sym, tp2), rr: '1:2', active: true, entryType: chartPullback ? 'PULLBACK_LIMIT' : 'IMMEDIATE', pullbackPlan: chartPullback } : { side, entry: null, sl: null, tp1: null, tp2: null, rr: '1:2', active: false };
+  let plan = signal?.pass ? { side, entry: roundCoin(sym, plannedEntry), currentPrice: roundCoin(sym, currentPrice), sl, tp1: roundCoin(sym, tp1), tp2: roundCoin(sym, tp2), rr: '1:2', active: true, entryType: chartPullback ? 'PULLBACK_LIMIT' : 'IMMEDIATE', pullbackPlan: chartPullback } : { side, entry: null, sl: null, tp1: null, tp2: null, rr: '1:2', active: false };
+  if (plan.active && plan.entry && plan.sl) {
+    const product = state.delta.productsBySymbol?.[sym] || null;
+    const useExchangeCompatibleSizing = Boolean(product && (settings.paperLiveCompatibleSizing !== false || (!settings.paperTrade && liveReady(settings, loadKeys()))));
+    const sizingPlan = calculateMarginPlan({ coin: sym, price: plan.entry, candidate: { entry: plan.entry, sl: plan.sl } }, settings, loadTrades(), product, null, { live: useExchangeCompatibleSizing });
+    plan = {
+      ...plan,
+      marginUsedUsd: sizingPlan.marginUsd,
+      notionalUsd: sizingPlan.notionalUsd,
+      leverage: sizingPlan.leverage,
+      estimatedStopLossUsd: sizingPlan.estimatedStopLossUsd,
+      estimatedTp1ProfitUsd: sizingPlan.estimatedTp1ProfitUsd,
+      estimatedTp2ProfitUsd: sizingPlan.estimatedTp2ProfitUsd,
+      estimatedFullTradeProfitUsd: sizingPlan.estimatedFullTradeProfitUsd,
+      plannedProfitR: sizingPlan.plannedProfitR,
+      minFullTradeProfitUsd: sizingPlan.minFullTradeProfitUsd,
+      targetFullTradeProfitUsd: sizingPlan.targetFullTradeProfitUsd,
+      minTargetProfitUsd: sizingPlan.minTargetProfitUsd,
+      targetProfitUsd: sizingPlan.targetProfitUsd,
+      profitTargetStatus: sizingPlan.profitTargetStatus,
+      sizingAllowed: sizingPlan.allowed,
+      sizingBlockedReason: sizingPlan.blockedReason
+    };
+  }
   return {
     symbol: sym,
     resolution: res,
@@ -5175,7 +5364,7 @@ function createServer() {
 
   return http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v57-macd-mtf-ema-immediate-limit-audited', mode: loadSettings().paperTrade ? 'paper' : 'live' });
+    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v59-macd-mtf-ema-full-plan-profit-audited', mode: loadSettings().paperTrade ? 'paper' : 'live' });
     if (url.pathname === '/api/login' && req.method === 'POST') return loginRoute(req, res);
     if (url.pathname === '/api/logout') return logoutRoute(req, res);
     if (!requireDashboardAuth(req, res, url.pathname)) return;
@@ -5196,7 +5385,7 @@ function startAutoScan() {
 if (require.main === module) {
   const server = createServer();
   server.listen(PORT, () => {
-    console.log(`Trading Journal MACD Divergence MTF EMA Bot V57 running at http://localhost:${PORT}`);
+    console.log(`Trading Journal MACD Divergence MTF EMA Bot V59 running at http://localhost:${PORT}`);
     console.log(`Execution venue: Delta Exchange India only`);
     console.log(`Data directory: ${DATA_DIR}`);
   });
@@ -5218,5 +5407,9 @@ module.exports = {
   liveReady,
   refreshDeltaPublicData,
   DEFAULT_SETTINGS,
-  DEFAULT_WALLET
+  DEFAULT_WALLET,
+  calculateMarginPlan,
+  profitTargetSettings,
+  plannedExitRMultiple,
+  estimatedExitPlanProfit
 };
