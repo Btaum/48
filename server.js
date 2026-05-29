@@ -11,7 +11,7 @@ const ROOT = __dirname;
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 8080);
-const USER_AGENT = 'TradingNorth-MACDDivergenceMTFEMA/56.0';
+const USER_AGENT = 'TradingNorth-Confluence-Structure-Execution/64.0';
 
 const DASHBOARD_PASSWORD = String(process.env.DASHBOARD_PASSWORD || '').trim();
 const DASHBOARD_SESSION_SECRET = String(process.env.DASHBOARD_SESSION_SECRET || process.env.DASHBOARD_PASSWORD || crypto.randomBytes(32).toString('hex'));
@@ -49,8 +49,8 @@ const DEFAULT_SETTINGS = {
   paperTrade: true,
   exchange: 'delta_exchange_india',
   executionApi: 'delta_exchange_india',
-  signalSource: 'macd_divergence_mtf_ema',
-  strategyMode: 'MACD_DIVERGENCE_MTF_EMA',
+  signalSource: 'institutional_ema_macd_mtf',
+  strategyMode: 'INSTITUTIONAL_EMA_MACD_MTF',
   deltaBaseUrl: 'https://api.india.delta.exchange',
   assets: Object.keys(BASE_PRICE),
   primaryTimeframe: '5m',
@@ -59,6 +59,20 @@ const DEFAULT_SETTINGS = {
   emaFastTimeframe: '15m',
   emaSlowTimeframe: '1h',
   higherTimeframes: ['15m', '1h'],
+  entryEmaFastPeriod: 9,
+  entryEmaSlowPeriod: 21,
+  trendEmaPeriod: 50,
+  dominantEmaPeriod: 200,
+  rsiPeriod: 14,
+  cciPeriod: 20,
+  vwapConfluenceEnabled: true,
+  volumeSpikeConfluenceEnabled: true,
+  volumeSpikeMultiplier: 1.25,
+  minConfluenceScore: 7,
+  aPlusConfluenceScore: 10,
+  tier3MinConfluenceScore: 10,
+  minMomentumConfirmations: 3,
+  structureProximityAtr: 1.35,
   emaPeriod: 50,
   mtfEmaPeriod: 50,
   minEmaGapPct: 0.01,
@@ -67,10 +81,42 @@ const DEFAULT_SETTINGS = {
   divergenceLookback: 60,
   minDivergenceMacdPct: 0.00001,
   entryModel: 'PRACTICAL_MTF_MACD',
+  institutionalEmaEnabled: true,
+  institutionalRequireEmaStack: true,
+  institutionalRequirePullback: true,
+  institutionalRequirePriceAction: true,
+  institutionalRequireHtfMacd: true,
+  institutionalEmaFastPeriod: 13,
+  institutionalEmaMidPeriod: 50,
+  institutionalEmaSlowPeriod: 200,
+  institutionalPullbackLookback: 10,
+  institutionalPullbackAtrMult: 0.85,
+  institutionalMaxExtensionAtr: 2.2,
+  institutionalPatternLookback: 24,
+  marketMemoryEnabled: true,
+  marketMemoryRequirePullback: true,
+  marketMemoryRequireTopMatchOutcome: true,
+  marketMemoryScanDepth: 300,
+  marketMemoryTopMatches: 5,
+  marketMemoryPatternLength: 10,
+  marketMemoryFutureLookahead: 8,
+  marketMemorySensitivity: 1.5,
+  marketMemoryMinSimilarityPct: 80,
+  marketMemoryCloudAtrMult: 0.75,
+  marketMemoryNearCloudAtrMult: 0.25,
+  marketMemoryMaxExtensionAtr: 1.6,
+  marketMemoryMinForwardMoveAtr: 0.25,
+  dynamicTpEnabled: true,
+  dynamicTpStrongR: 3.5,
+  dynamicTpMaxR: 6,
+  dynamicTp1ShiftR: 1.5,
+  dynamicTp1StrongClosePct: 25,
+  trailingStopEmaPeriod: 13,
+  trailingStopAtrBuffer: 0.20,
   requireDivergenceForEntry: false,
-  zeroLineMode: 'soft',
-  entrySignalWindowCandles: 6,
-  histColorLookback: 12,
+  zeroLineMode: 'hard',
+  entrySignalWindowCandles: 2,
+  histColorLookback: 6,
   emaSlopeThresholdPct: 0.05,
   atrPeriod: 10,
   atrStopMultiplier: 2,
@@ -80,7 +126,7 @@ const DEFAULT_SETTINGS = {
   relativeVolumeLookback: 50,
   htfMinimumAligned: 1,
   zoneProximityPct: 0.50,
-  riskPercent: 0.5,
+  riskPercent: 1.0,
   totalWalletAmount: 0,
   maxTradesPerDay: 5,
   maxDailyLossUsd: 10,
@@ -93,19 +139,19 @@ const DEFAULT_SETTINGS = {
   minTrendQuality: 30,
   moveSlAfterTp1MinR: 1,
   moveSlAfterTp1MinAge: 30,
-  defaultLeverage: 3,
+  defaultLeverage: 25,
   maxLeverage: 25,
   maxConcurrentPositions: 3,
   maxOnePositionPerAsset: true,
-  maxBotAllocationUsd: 50,
+  maxBotAllocationUsd: 500,
   liveWalletAllocationPct: 25,
   liveMaxBotAllocationUsd: 0,
-  maxMarginPerCoinUsd: 10,
-  majorCoinMaxMarginUsd: 20,
+  maxMarginPerCoinUsd: 25,
+  majorCoinMaxMarginUsd: 40,
   majorMarginCoins: ['BTCUSD', 'ETHUSD'],
-  initialMarginUsd: 5,
-  majorInitialMarginUsd: 10,
-  maxStopLossUsd: 3,
+  initialMarginUsd: 10,
+  majorInitialMarginUsd: 20,
+  maxStopLossUsd: 7,
   minEntryMarginUsd: 1,
   tradeManagementEnabled: true,
   autoMoveSlEnabled: true,
@@ -141,15 +187,22 @@ const DEFAULT_SETTINGS = {
   entryOrderType: 'limit',
   minRR: 2,
   rewardTargetR: 2,
+  autoSizeToTargetProfit: true,
+  minFullTradeProfitUsd: 2,
+  minTargetProfitUsd: 2, // backward compatibility only
+  targetFullTradeProfitUsd: 5,
+  targetProfitUsd: 5, // backward compatibility only
+  blockTinyProfitTrades: true,
+  autoUseMaxLeverageForProfitTarget: true,
   highProbabilityMode: true,
   technicalSlEnabled: true,
   slSwingLookback: 24,
   slBufferAtrMult: 0.25,
   maxTechnicalSlAtrMult: 6,
   requireClosedCandle: true,
-  requirePullbackForExecution: false,
-  pullbackAtrMult: 0.20,
-  pullbackMaxAtrMult: 1.50,
+  requirePullbackForExecution: true,
+  pullbackAtrMult: 0.35,
+  pullbackMaxAtrMult: 1.20,
   allowMarketWhenNoPullback: false,
   tp1ClosePct: 50,
   tp2ClosePct: 100,
@@ -323,13 +376,26 @@ function enforceTimeframePolicy(settings = {}) {
     macdTrendTimeframe: '1h',
     higherTimeframes: ['15m', '1h'],
     htfMinimumAligned: 1,
-    signalSource: 'macd_divergence_mtf_ema',
-    strategyMode: 'MACD_DIVERGENCE_MTF_EMA',
+    paperTrade: true,
+    signalSource: 'institutional_ema_macd_mtf',
+    strategyMode: 'INSTITUTIONAL_EMA_MACD_MTF',
     emaPeriod,
     mtfEmaPeriod: emaPeriod,
     macdFastLength: 12,
     macdSlowLength: 26,
     macdSignalLength: 9,
+    entryEmaFastPeriod: Math.min(Math.max(Math.floor(Number(settings.entryEmaFastPeriod || 9)), 3), 21),
+    entryEmaSlowPeriod: Math.min(Math.max(Math.floor(Number(settings.entryEmaSlowPeriod || 21)), 5), 55),
+    trendEmaPeriod: 50,
+    dominantEmaPeriod: 200,
+    rsiPeriod: Math.min(Math.max(Math.floor(Number(settings.rsiPeriod || 14)), 5), 50),
+    cciPeriod: Math.min(Math.max(Math.floor(Number(settings.cciPeriod || 20)), 5), 60),
+    vwapConfluenceEnabled: settings.vwapConfluenceEnabled !== false,
+    volumeSpikeConfluenceEnabled: settings.volumeSpikeConfluenceEnabled !== false,
+    minConfluenceScore: Math.min(Math.max(Number(settings.minConfluenceScore || 7), 5), 12),
+    aPlusConfluenceScore: Math.min(Math.max(Number(settings.aPlusConfluenceScore || 10), 8), 12),
+    tier3MinConfluenceScore: Math.min(Math.max(Number(settings.tier3MinConfluenceScore || 10), 8), 12),
+    minMomentumConfirmations: Math.min(Math.max(Math.floor(Number(settings.minMomentumConfirmations || 3)), 2), 5),
     minRR: 2,
     rewardTargetR: 2,
     requireClosedCandle: true,
@@ -342,6 +408,19 @@ function enforceTimeframePolicy(settings = {}) {
     breakoutAllowLocalEntry: false,
     vwapModuleEnabled: false,
     vwapAllowLocalEntry: false,
+    marketMemoryEnabled: settings.marketMemoryEnabled !== false,
+    marketMemoryRequirePullback: settings.marketMemoryRequirePullback !== false,
+    marketMemoryRequireTopMatchOutcome: settings.marketMemoryRequireTopMatchOutcome !== false,
+    marketMemoryScanDepth: Math.min(Math.max(Math.floor(Number(settings.marketMemoryScanDepth || 300)), 120), 900),
+    marketMemoryTopMatches: Math.min(Math.max(Math.floor(Number(settings.marketMemoryTopMatches || 5)), 1), 10),
+    marketMemoryPatternLength: Math.min(Math.max(Math.floor(Number(settings.marketMemoryPatternLength || 10)), 5), 30),
+    marketMemoryFutureLookahead: Math.min(Math.max(Math.floor(Number(settings.marketMemoryFutureLookahead || 8)), 3), 30),
+    marketMemorySensitivity: Math.min(Math.max(Number(settings.marketMemorySensitivity || 1.5), 0.3), 5),
+    marketMemoryMinSimilarityPct: Math.min(Math.max(Number(settings.marketMemoryMinSimilarityPct || 80), 55), 98),
+    marketMemoryCloudAtrMult: Math.min(Math.max(Number(settings.marketMemoryCloudAtrMult || 0.75), 0.2), 3),
+    marketMemoryNearCloudAtrMult: Math.min(Math.max(Number(settings.marketMemoryNearCloudAtrMult || 0.25), 0), 2),
+    marketMemoryMaxExtensionAtr: Math.min(Math.max(Number(settings.marketMemoryMaxExtensionAtr || 1.6), 0.5), 5),
+    marketMemoryMinForwardMoveAtr: Math.min(Math.max(Number(settings.marketMemoryMinForwardMoveAtr || 0.25), 0), 3),
     exchange: 'delta_exchange_india',
     executionApi: 'delta_exchange_india'
   };
@@ -623,28 +702,50 @@ function calculateMarginPlan(rowOrProfile, settings, trades = loadTrades(), prod
   const entry = Number(rowOrProfile.candidate?.entry || rowOrProfile.entry || rowOrProfile.price || 0);
   const sl = Number(rowOrProfile.candidate?.sl || rowOrProfile.sl || 0);
   const maxLev = Math.min(Math.max(Number(settings.maxLeverage || 25), 1), 25);
-  const baseLev = Math.min(Math.max(Number(settings.defaultLeverage || 3), 1), maxLev);
+  const baseLev = Math.min(Math.max(Number(settings.defaultLeverage || 25), 1), maxLev);
   const cap = marginCapForSymbol(symbol, settings);
   const baseInitial = opts.addOn && Number(opts.addOnDesiredMargin || 0) > 0 ? Number(opts.addOnDesiredMargin) : (opts.addOn ? addOnStepForSymbol(symbol, settings) : initialMarginForSymbol(symbol, settings));
   const rawSizingMultiplier = opts.addOn ? 1 : Number(rowOrProfile.candidate?.sizingMultiplier || rowOrProfile.sizingMultiplier || 1);
   const maxSizingMultiplier = Math.min(Math.max(Number(settings.maxQualitySizeMultiplier || 2), 1), 5);
   const sizingMultiplier = Math.min(Math.max(Number.isFinite(rawSizingMultiplier) ? rawSizingMultiplier : 1, 1), maxSizingMultiplier);
-  const perTradeInitial = Math.min(cap, money(baseInitial * sizingMultiplier));
   const currentCoinMargin = existingTrade ? Number(existingTrade.marginUsedUsd || 0) : plannedMarginUsedForCoin(trades, symbol);
   const remainingCoinCap = Math.max(0, cap - currentCoinMargin);
   const totalUsed = totalBotMarginUsed(trades) - (existingTrade ? Number(existingTrade.marginUsedUsd || 0) : 0);
   const botAllocationUsd = effectiveBotAllocationUsd(settings);
   const remainingBotAllocation = Math.max(0, botAllocationUsd - totalUsed - (existingTrade ? Number(existingTrade.marginUsedUsd || 0) : 0));
-  const desiredMargin = Math.min(perTradeInitial, remainingCoinCap, remainingBotAllocation);
   const riskPct = priceRiskPct(entry, sl);
   const maxRiskUsd = effectiveRiskCapUsd(settings, botAllocationUsd);
+  const target = profitTargetSettings(settings);
+
+  let usedLeverage = baseLev;
+  if (!opts.addOn && target.autoSizeToTargetProfit && target.targetFullTradeProfitUsd > 0 && target.autoUseMaxLeverageForProfitTarget) {
+    usedLeverage = maxLev;
+  }
+
+  const perTradeInitial = Math.min(cap, money(baseInitial * sizingMultiplier));
+  let targetNotionalUsd = 0;
+  let targetMarginUsd = 0;
+  if (!opts.addOn && riskPct > 0 && target.autoSizeToTargetProfit && target.targetFullTradeProfitUsd > 0) {
+    targetNotionalUsd = target.targetFullTradeProfitUsd / Math.max(riskPct * target.plannedProfitR, 0.00000001);
+    targetMarginUsd = targetNotionalUsd / Math.max(usedLeverage, 1);
+  }
+
+  let desiredMargin = Math.min(perTradeInitial, remainingCoinCap, remainingBotAllocation);
+  if (targetMarginUsd > 0) {
+    desiredMargin = Math.min(Math.max(perTradeInitial, targetMarginUsd), remainingCoinCap, remainingBotAllocation);
+  }
+
   let marginUsd = 0;
   let notionalUsd = 0;
-  let usedLeverage = baseLev;
   let contractNotionalUsd = estimateContractNotionalUsd(symbol, entry, product);
   let liveOrderSize = null;
   let exchangeMarginUsd = 0;
   let blockedReason = '';
+  let estimatedTp1ProfitUsd = 0;
+  let estimatedTp2ProfitUsd = 0;
+  let estimatedFullTradeProfitUsd = 0;
+  let plannedProfitR = plannedExitRMultiple(settings);
+  let profitTargetStatus = 'NOT_EVALUATED';
 
   if (!riskPct) blockedReason = 'Invalid technical stop distance';
   if (!blockedReason && desiredMargin <= 0) blockedReason = 'No remaining bot/coin margin allocation';
@@ -685,7 +786,24 @@ function calculateMarginPlan(rowOrProfile, settings, trades = loadTrades(), prod
     }
   }
 
-  const estimatedStopLossUsd = money((opts.live && liveOrderSize ? notionalUsd : marginUsd * usedLeverage) * riskPct);
+  const effectiveNotionalUsd = opts.live && liveOrderSize ? notionalUsd : money(marginUsd * usedLeverage);
+  const estimatedStopLossUsd = money(effectiveNotionalUsd * riskPct);
+  const exitProfit = estimatedExitPlanProfit(effectiveNotionalUsd, riskPct, settings);
+  estimatedTp1ProfitUsd = exitProfit.tp1ProfitUsd;
+  estimatedTp2ProfitUsd = exitProfit.tp2ProfitUsd;
+  estimatedFullTradeProfitUsd = exitProfit.fullTradeProfitUsd;
+  plannedProfitR = exitProfit.plannedProfitR;
+
+  if (!blockedReason && target.blockTinyProfitTrades && target.minFullTradeProfitUsd > 0 && estimatedFullTradeProfitUsd + 0.0001 < target.minFullTradeProfitUsd) {
+    profitTargetStatus = 'BLOCKED_TINY_PROFIT';
+    const neededRisk = money(target.minFullTradeProfitUsd / Math.max(target.plannedProfitR, 0.000001));
+    blockedReason = `Projected full-trade profit $${estimatedFullTradeProfitUsd} is below minimum $${target.minFullTradeProfitUsd}. Full plan = TP1 partial + TP2 remaining (${target.plannedProfitR}R blended). Need about $${neededRisk} SL risk; raise allocation/margin/leverage or reduce SL distance.`;
+  } else if (!blockedReason && target.minFullTradeProfitUsd > 0) {
+    profitTargetStatus = estimatedFullTradeProfitUsd >= target.targetFullTradeProfitUsd ? 'TARGET_MET' : 'MINIMUM_MET';
+  } else if (!blockedReason) {
+    profitTargetStatus = 'NO_MINIMUM_CONFIGURED';
+  }
+
   const minMargin = Number(settings.minEntryMarginUsd || 1);
   const allowed = !blockedReason && marginUsd >= minMargin && desiredMargin > 0 && estimatedStopLossUsd <= maxRiskUsd + 0.0001;
   if (!allowed && !blockedReason) {
@@ -698,10 +816,21 @@ function calculateMarginPlan(rowOrProfile, settings, trades = loadTrades(), prod
     symbol,
     marginCapUsd: cap,
     desiredMarginUsd: money(desiredMargin),
+    targetMarginUsd: money(targetMarginUsd),
+    targetNotionalUsd: money(targetNotionalUsd),
     marginUsd: opts.live && liveOrderSize ? exchangeMarginUsd : marginUsd,
     notionalUsd: opts.live && liveOrderSize ? notionalUsd : money(marginUsd * usedLeverage),
     leverage: usedLeverage,
     estimatedStopLossUsd,
+    estimatedTp1ProfitUsd,
+    estimatedTp2ProfitUsd,
+    estimatedFullTradeProfitUsd,
+    plannedProfitR,
+    minFullTradeProfitUsd: target.minFullTradeProfitUsd,
+    targetFullTradeProfitUsd: target.targetFullTradeProfitUsd,
+    minTargetProfitUsd: target.minFullTradeProfitUsd,
+    targetProfitUsd: target.targetFullTradeProfitUsd,
+    profitTargetStatus,
     remainingCoinCap: money(remainingCoinCap),
     remainingBotAllocation: money(remainingBotAllocation),
     botAllocationUsd: money(botAllocationUsd),
@@ -712,7 +841,7 @@ function calculateMarginPlan(rowOrProfile, settings, trades = loadTrades(), prod
     riskPercent: Number(settings.riskPercent || 0.5),
     sizingMultiplier,
     baseInitialMarginUsd: money(baseInitial),
-    sizingMode: 'TECHNICAL_SL_FIRST_POSITION_SIZE_SECOND'
+    sizingMode: 'TECHNICAL_SL_FIRST_POSITION_SIZE_SECOND_PROFIT_TARGET_AWARE'
   };
 }
 
@@ -855,6 +984,185 @@ function macdPassForDirection(macd, direction) {
   return macd.line < macd.signal && macd.histogram < 0 && macd.histogram <= macd.previousHistogram;
 }
 
+function calculateRsiSeries(values, length = 14) {
+  const nums = values.map(Number).filter(n => Number.isFinite(n) && n > 0);
+  if (nums.length < length + 2) return [];
+  const gains = [0];
+  const losses = [0];
+  for (let i = 1; i < nums.length; i += 1) {
+    const diff = nums[i] - nums[i - 1];
+    gains.push(Math.max(diff, 0));
+    losses.push(Math.max(-diff, 0));
+  }
+  const avgG = rmaSeries(gains, length);
+  const avgL = rmaSeries(losses, length);
+  return nums.map((_, i) => {
+    if (i < length) return null;
+    if (!avgL[i]) return 100;
+    const rs = avgG[i] / avgL[i];
+    return 100 - (100 / (1 + rs));
+  });
+}
+
+function calculateCciSeries(candles = [], length = 20) {
+  const rows = (candles || []).filter(c => c && Number.isFinite(c.high) && Number.isFinite(c.low) && Number.isFinite(c.close));
+  const tp = rows.map(c => (Number(c.high) + Number(c.low) + Number(c.close)) / 3);
+  const out = [];
+  for (let i = 0; i < tp.length; i += 1) {
+    if (i < length - 1) { out.push(null); continue; }
+    const slice = tp.slice(i - length + 1, i + 1);
+    const ma = average(slice);
+    const dev = average(slice.map(x => Math.abs(x - ma))) || 0;
+    out.push(dev ? (tp[i] - ma) / (0.015 * dev) : 0);
+  }
+  return out;
+}
+
+function cumulativeVwapSeries(candles = [], lookback = 96) {
+  const rows = (candles || []).filter(c => c && Number.isFinite(c.high) && Number.isFinite(c.low) && Number.isFinite(c.close));
+  const out = [];
+  for (let i = 0; i < rows.length; i += 1) {
+    const start = Math.max(0, i - Math.max(5, lookback) + 1);
+    let pv = 0;
+    let vol = 0;
+    for (let j = start; j <= i; j += 1) {
+      const c = rows[j];
+      const v = Math.max(0, Number(c.volume || 0));
+      const typical = (Number(c.high) + Number(c.low) + Number(c.close)) / 3;
+      // If exchange volume is missing, equal-weight typical price still gives a useful intraday anchor.
+      const w = v > 0 ? v : 1;
+      pv += typical * w;
+      vol += w;
+    }
+    out.push(vol ? pv / vol : null);
+  }
+  return out;
+}
+
+function volumeSpikeState(candles = [], length = 30, mult = 1.25) {
+  const vols = (candles || []).map(c => Number(c.volume || 0)).filter(n => Number.isFinite(n) && n >= 0);
+  if (vols.length < Math.max(6, length / 2)) return { ready: false, pass: true, current: 0, average: 0, ratio: 1, reason: 'Volume unavailable or warming up; not blocking.' };
+  const current = vols[vols.length - 1] || 0;
+  const baseline = average(vols.slice(-Math.max(5, length), -1).filter(n => n > 0)) || 0;
+  if (!baseline) return { ready: false, pass: true, current, average: 0, ratio: 1, reason: 'No reliable volume baseline; not blocking.' };
+  const ratio = current / baseline;
+  return { ready: true, pass: ratio >= mult, current: pct(current), average: pct(baseline), ratio: pct(ratio), reason: `Volume ratio ${pct(ratio)}x vs ${length}-bar average.` };
+}
+
+function coinTier(symbol) {
+  const s = String(symbol || '').toUpperCase();
+  if (['BTCUSD', 'BTCUSDT', 'ETHUSD', 'ETHUSDT', 'SOLUSD', 'SOLUSDT', 'BNBUSD', 'BNBUSDT'].includes(s)) return 1;
+  if (['XRPUSD', 'XRPUSDT', 'ADAUSD', 'ADAUSDT', 'AVAXUSD', 'AVAXUSDT', 'INJUSD', 'INJUSDT', 'APTUSD', 'APTUSDT', 'DOGEUSD', 'DOGEUSDT'].includes(s)) return 2;
+  return 3;
+}
+
+function coinTierLabel(symbol) {
+  const t = coinTier(symbol);
+  if (t === 1) return 'TIER 1 — MAJOR LIQUID';
+  if (t === 2) return 'TIER 2 — LIQUID ALT';
+  return 'TIER 3 — ONLY A+ CONFLUENCE';
+}
+
+function structureLocationForSide(symbol, direction, candles = [], p = 0, atr = 0, emaMid = null, vwap = null, settings = loadSettings()) {
+  const rows = (candles || []).filter(c => c && Number.isFinite(c.high) && Number.isFinite(c.low) && Number.isFinite(c.close));
+  const a = Math.max(Number(atr || 0), Number(p || 0) * 0.001, 0.00000001);
+  const prox = a * Math.min(Math.max(Number(settings.structureProximityAtr || 1.35), 0.25), 4);
+  const recent = rows.slice(-Math.min(Math.max(Number(settings.slSwingLookback || 24), 12), 80));
+  if (!recent.length || !p) return { pass: false, source: 'NO_STRUCTURE_DATA', reason: 'Structure warmup' };
+  const support = Math.min(...recent.map(c => Number(c.low)).filter(Number.isFinite));
+  const resistance = Math.max(...recent.map(c => Number(c.high)).filter(Number.isFinite));
+  const prev = rows.length > 1 ? rows[rows.length - 2] : null;
+  const last = rows[rows.length - 1];
+  const longSweep = direction === 'LONG' && prev && last.low <= support + prox && last.close > support;
+  const shortSweep = direction === 'SHORT' && prev && last.high >= resistance - prox && last.close < resistance;
+  const nearSupport = direction === 'LONG' && Math.abs(p - support) <= prox * 1.4;
+  const nearResistance = direction === 'SHORT' && Math.abs(p - resistance) <= prox * 1.4;
+  const nearEma = Number.isFinite(emaMid) && Math.abs(p - emaMid) <= prox * 1.1;
+  const nearVwap = Number.isFinite(vwap) && Math.abs(p - vwap) <= prox * 1.1;
+  const rangeEdge = direction === 'LONG' ? p <= support + (resistance - support) * 0.32 : p >= resistance - (resistance - support) * 0.32;
+  const pass = Boolean(longSweep || shortSweep || nearSupport || nearResistance || nearEma || nearVwap || rangeEdge);
+  const parts = [];
+  if (longSweep || shortSweep) parts.push('liquidity sweep');
+  if (nearSupport) parts.push('support');
+  if (nearResistance) parts.push('resistance');
+  if (nearEma) parts.push('EMA50 zone');
+  if (nearVwap) parts.push('VWAP zone');
+  if (rangeEdge) parts.push('range edge');
+  return {
+    pass,
+    source: parts.join(' + ') || 'MIDDLE_OF_RANGE',
+    support: roundCoin(symbol, support),
+    resistance: roundCoin(symbol, resistance),
+    distanceAtr: pct(direction === 'LONG' ? Math.abs(p - support) / a : Math.abs(resistance - p) / a),
+    reason: pass ? `Valid location: ${parts.join(', ')}.` : 'Rejected: price is not near support/resistance, range edge, EMA50, VWAP, or sweep zone.'
+  };
+}
+
+function confluenceForSide(symbol, direction, candles = [], context = {}, settings = loadSettings()) {
+  const rows = (candles || []).filter(c => c && Number.isFinite(c.close));
+  const closes = rows.map(c => Number(c.close)).filter(n => Number.isFinite(n) && n > 0);
+  const p = Number(context.price || closes[closes.length - 1] || 0);
+  const atr = Math.max(Number(context.atr || 0), p * 0.001, 0.00000001);
+  const emaFast = latestEma(closes, Number(settings.entryEmaFastPeriod || 9));
+  const emaSlow = latestEma(closes, Number(settings.entryEmaSlowPeriod || 21));
+  const emaMid = Number(context.emaMid || latestEma(closes, Number(settings.trendEmaPeriod || 50)) || 0);
+  const emaDominant = latestEma(closes, Number(settings.dominantEmaPeriod || 200));
+  const rsiSeries = calculateRsiSeries(closes, Number(settings.rsiPeriod || 14));
+  const rsi = lastFinite(rsiSeries);
+  const cciSeries = calculateCciSeries(rows, Number(settings.cciPeriod || 20));
+  const cci = lastFinite(cciSeries);
+  const vwapSeries = cumulativeVwapSeries(rows, Math.min(Math.max(Number(settings.vwapLookback || 96), 20), 300));
+  const vwap = lastFinite(vwapSeries);
+  const volume = volumeSpikeState(rows, Number(settings.relativeVolumeLookback || 30), Number(settings.volumeSpikeMultiplier || 1.25));
+  const long = direction === 'LONG';
+  const emaTiming = long ? p > emaFast && emaFast >= emaSlow : p < emaFast && emaFast <= emaSlow;
+  const emaTrend = long ? p > emaMid : p < emaMid;
+  const emaDominantOk = Number.isFinite(emaDominant) ? (long ? p > emaDominant || emaMid > emaDominant : p < emaDominant || emaMid < emaDominant) : true;
+  const rsiOk = Number.isFinite(rsi) ? (long ? rsi >= 48 && rsi >= (rsiSeries[rsiSeries.length - 2] ?? rsi) - 1 : rsi <= 52 && rsi <= (rsiSeries[rsiSeries.length - 2] ?? rsi) + 1) : false;
+  const cciOk = Number.isFinite(cci) ? (long ? cci > -80 && cci >= (cciSeries[cciSeries.length - 2] ?? cci) : cci < 80 && cci <= (cciSeries[cciSeries.length - 2] ?? cci)) : false;
+  const vwapOk = Number.isFinite(vwap) ? (long ? p >= vwap || Math.abs(p - vwap) <= atr * 0.35 : p <= vwap || Math.abs(p - vwap) <= atr * 0.35) : true;
+  const structure = structureLocationForSide(symbol, direction, rows, p, atr, emaMid, vwap, settings);
+  const macd5Ok = Boolean(context.macd5Ok);
+  const macdHtfOk = Boolean(context.macd15Ok || context.macd1hOk || context.htfMacd);
+  const priceActionOk = Boolean(context.priceActionOk);
+  const htfTrendOk = Boolean(context.htfStack || context.longTrend || context.shortTrend);
+  let score = 0;
+  const details = [];
+  function add(name, ok, pts, detail='') { if (ok) score += pts; details.push({ name, pass: Boolean(ok), points: ok ? pts : 0, detail }); }
+  add('validLocation', structure.pass, 2, structure.reason);
+  add('emaTrend', emaTrend && emaDominantOk && htfTrendOk, 2, `EMA9=${roundCoin(symbol, emaFast)} EMA21=${roundCoin(symbol, emaSlow)} EMA50=${roundCoin(symbol, emaMid)} EMA200=${roundCoin(symbol, emaDominant)}`);
+  add('emaTiming', emaTiming, 1, long ? 'price/EMA9 above EMA21' : 'price/EMA9 below EMA21');
+  add('macd5', macd5Ok, 2, '5m MACD momentum confirms');
+  add('macdHtf', macdHtfOk, 1, '15m/1h MACD confirms');
+  add('rsiControl', rsiOk, 1, `RSI=${pct(rsi)}`);
+  add('cciControl', cciOk, 1, `CCI=${pct(cci)}`);
+  add('vwapBias', settings.vwapConfluenceEnabled === false || vwapOk, 1, `VWAP=${roundCoin(symbol, vwap)}`);
+  add('volume', settings.volumeSpikeConfluenceEnabled === false || volume.pass, 1, volume.reason);
+  add('candleTrigger', priceActionOk, 1, 'engulfing/pin/double top-bottom trigger');
+  const confirmations = details.filter(d => d.pass && !['validLocation'].includes(d.name)).length;
+  return {
+    pass: score >= Number(settings.minConfluenceScore || 7) && confirmations >= Number(settings.minMomentumConfirmations || 3) && structure.pass,
+    score,
+    maxScore: 13,
+    confirmations,
+    requiredScore: Number(settings.minConfluenceScore || 7),
+    requiredConfirmations: Number(settings.minMomentumConfirmations || 3),
+    structure,
+    indicators: {
+      ema9: roundCoin(symbol, emaFast),
+      ema21: roundCoin(symbol, emaSlow),
+      ema50: roundCoin(symbol, emaMid),
+      ema200: roundCoin(symbol, emaDominant),
+      rsi: pct(rsi),
+      cci: pct(cci),
+      vwap: roundCoin(symbol, vwap),
+      volumeRatio: volume.ratio
+    },
+    details,
+    reason: `Confluence ${score}/13, confirmations=${confirmations}; ${structure.reason}`
+  };
+}
+
 
 
 function rmaSeries(values, length) {
@@ -883,6 +1191,24 @@ function syntheticOhlcFromCloses(closes, atr = 0) {
       close: c
     };
   });
+}
+
+
+function syntheticChartCandlesFromHistory(symbol, resolution = '5m') {
+  const sym = String(symbol || '').toUpperCase();
+  const res = normalizeResolution(resolution || '5m');
+  let closes = Array.isArray(state.priceHistory[sym]) ? state.priceHistory[sym].map(Number).filter(n => Number.isFinite(n) && n > 0) : [];
+  if (closes.length < 80) {
+    closes = [];
+    for (let i = -260; i <= 0; i += 1) closes.push(simulatedPriceFor(sym, i));
+  }
+  closes = closes.slice(-240);
+  const last = closes[closes.length - 1] || BASE_PRICE[sym] || 10;
+  const ohlc = syntheticOhlcFromCloses(closes, last * 0.006);
+  const step = resolutionToSeconds(res);
+  const end = Math.floor(Date.now() / 1000 / step) * step;
+  const start = end - (ohlc.length - 1) * step;
+  return ohlc.map((c, i) => ({ ...c, time: start + i * step, volume: 0, resolution: res, synthetic: true }));
 }
 
 function calculateAdxFromOhlc(ohlc, length = 14) {
@@ -1042,6 +1368,437 @@ function zeroSideHeld(lineSeries, signalSeries, startIndex, endIndex, direction)
   return true;
 }
 
+
+function lastFinite(series = []) {
+  for (let i = series.length - 1; i >= 0; i -= 1) {
+    const n = Number(series[i]);
+    if (Number.isFinite(n)) return n;
+  }
+  return null;
+}
+
+function candleBody(c) { return Math.abs(Number(c?.close || 0) - Number(c?.open || 0)); }
+function candleRange(c) { return Math.max(0.00000001, Number(c?.high || 0) - Number(c?.low || 0)); }
+function candleUpperWick(c) { return Number(c?.high || 0) - Math.max(Number(c?.open || 0), Number(c?.close || 0)); }
+function candleLowerWick(c) { return Math.min(Number(c?.open || 0), Number(c?.close || 0)) - Number(c?.low || 0); }
+function candleBullish(c) { return Number(c?.close || 0) > Number(c?.open || 0); }
+function candleBearish(c) { return Number(c?.close || 0) < Number(c?.open || 0); }
+
+function priceActionConfirmation(candles = [], direction = 'LONG', atr = 0, lookback = 24) {
+  const list = (candles || []).filter(c => c && Number.isFinite(c.open) && Number.isFinite(c.high) && Number.isFinite(c.low) && Number.isFinite(c.close));
+  if (list.length < 4) return { pass: false, pattern: 'WARMUP', patternLow: null, patternHigh: null, reason: 'Need more candles for price-action trigger' };
+  const cur = list[list.length - 1];
+  const prev = list[list.length - 2];
+  const a = Math.max(Number(atr || 0), Number(cur.close || 0) * 0.001);
+  const b = Math.max(candleBody(cur), a * 0.03);
+  const r = candleRange(cur);
+  const upper = candleUpperWick(cur);
+  const lower = candleLowerWick(cur);
+  const bullishEngulfing = candleBearish(prev) && candleBullish(cur) && cur.close > prev.open && cur.open <= prev.close;
+  const bearishEngulfing = candleBullish(prev) && candleBearish(cur) && cur.close < prev.open && cur.open >= prev.close;
+  const bullishPin = candleBullish(cur) && lower >= b * 1.8 && upper <= r * 0.35 && cur.close >= cur.low + r * 0.60;
+  const bearishPin = candleBearish(cur) && upper >= b * 1.8 && lower <= r * 0.35 && cur.close <= cur.low + r * 0.40;
+  const recent = list.slice(-Math.min(Math.max(Math.floor(lookback || 24), 8), 60));
+  const lows = recent.map((c, idx) => ({ idx, low: Number(c.low), high: Number(c.high) })).filter(x => Number.isFinite(x.low));
+  const highs = recent.map((c, idx) => ({ idx, high: Number(c.high), low: Number(c.low) })).filter(x => Number.isFinite(x.high));
+  const lowSorted = lows.slice().sort((x, y) => x.low - y.low);
+  const highSorted = highs.slice().sort((x, y) => y.high - x.high);
+  let doubleBottom = false;
+  let doubleTop = false;
+  if (lowSorted.length >= 2) {
+    const first = lowSorted[0];
+    const second = lowSorted.find(x => Math.abs(x.idx - first.idx) >= 3 && Math.abs(x.low - first.low) <= a * 0.45);
+    if (second) {
+      const neckline = Math.max(first.high, second.high);
+      doubleBottom = cur.close > neckline || (candleBullish(cur) && cur.close > prev.high);
+    }
+  }
+  if (highSorted.length >= 2) {
+    const first = highSorted[0];
+    const second = highSorted.find(x => Math.abs(x.idx - first.idx) >= 3 && Math.abs(x.high - first.high) <= a * 0.45);
+    if (second) {
+      const neckline = Math.min(first.low, second.low);
+      doubleTop = cur.close < neckline || (candleBearish(cur) && cur.close < prev.low);
+    }
+  }
+  if (direction === 'LONG') {
+    const pattern = bullishEngulfing ? 'BULLISH_ENGULFING' : bullishPin ? 'BULLISH_PIN_BAR' : doubleBottom ? 'DOUBLE_BOTTOM_RECLAIM' : '';
+    return { pass: Boolean(pattern), pattern: pattern || 'NO_BULLISH_TRIGGER', patternLow: Math.min(cur.low, prev.low), patternHigh: Math.max(cur.high, prev.high), reason: pattern || 'Need bullish engulfing, pin bar, or double-bottom reclaim near EMA50' };
+  }
+  const pattern = bearishEngulfing ? 'BEARISH_ENGULFING' : bearishPin ? 'BEARISH_PIN_BAR' : doubleTop ? 'DOUBLE_TOP_REJECTION' : '';
+  return { pass: Boolean(pattern), pattern: pattern || 'NO_BEARISH_TRIGGER', patternLow: Math.min(cur.low, prev.low), patternHigh: Math.max(cur.high, prev.high), reason: pattern || 'Need bearish engulfing, pin bar, or double-top rejection near EMA50' };
+}
+
+
+function clamp01(n) {
+  const x = Number(n);
+  if (!Number.isFinite(x)) return 0;
+  return Math.max(0, Math.min(1, x));
+}
+
+function safeZ(value, scale) {
+  const v = Number(value || 0);
+  const s = Math.max(Math.abs(Number(scale || 0)), 0.00000001);
+  return v / s;
+}
+
+function marketMemoryFeatureVector(candles, index, helpers = {}) {
+  const rows = candles || [];
+  const c = rows[index];
+  if (!c) return null;
+  const close = Number(c.close || 0);
+  const open = Number(c.open || close || 0);
+  if (!close || !open) return null;
+  const prev1 = rows[index - 1];
+  const prev3 = rows[index - 3];
+  const prev6 = rows[index - 6];
+  const atr = Math.max(Number(helpers.atrSeries?.[index] || 0), close * 0.001, 0.00000001);
+  const rsi = Number(helpers.rsiSeries?.[index]);
+  const range = candleRange(c);
+  const vol = Number(c.volume || 0);
+  const avgVol = average(rows.slice(Math.max(0, index - 30), index).map(x => Number(x.volume || 0)).filter(x => x > 0)) || vol || 1;
+  const ema = Number(helpers.emaSeries?.[index] || close);
+  return [
+    safeZ(prev1 ? close - Number(prev1.close || close) : 0, atr),
+    safeZ(prev3 ? close - Number(prev3.close || close) : 0, atr * 2.2),
+    safeZ(prev6 ? close - Number(prev6.close || close) : 0, atr * 3.5),
+    Number.isFinite(rsi) ? (rsi - 50) / 50 : 0,
+    safeZ(close - ema, atr * 2.0),
+    safeZ(candleBody(c), atr * 1.5),
+    safeZ(candleUpperWick(c) - candleLowerWick(c), Math.max(range, atr)),
+    Math.log(Math.max(0.05, (vol || avgVol) / Math.max(avgVol, 0.00000001)))
+  ];
+}
+
+function vectorDistance(a = [], b = []) {
+  const len = Math.min(a.length, b.length);
+  if (!len) return 999;
+  let sum = 0;
+  for (let i = 0; i < len; i += 1) {
+    const d = Number(a[i] || 0) - Number(b[i] || 0);
+    sum += d * d;
+  }
+  return Math.sqrt(sum / len);
+}
+
+function buildMarketMemoryHelpers(candles, settings = loadSettings()) {
+  const rows = (candles || []).filter(c => c && Number.isFinite(c.open) && Number.isFinite(c.high) && Number.isFinite(c.low) && Number.isFinite(c.close));
+  const closes = rows.map(c => Number(c.close));
+  const emaLen = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaMidPeriod || 50)), 20), 100);
+  const ema = emaSeries(closes, emaLen);
+  const rsi = calculateRsiSeries(closes, Number(settings.rsiPeriod || 14));
+  const atr = [];
+  const tr = rows.map((c, i) => {
+    const prevClose = i > 0 ? Number(rows[i - 1].close) : Number(c.close);
+    return Math.max(Number(c.high) - Number(c.low), Math.abs(Number(c.high) - prevClose), Math.abs(Number(c.low) - prevClose));
+  });
+  const atrLen = Math.min(Math.max(Math.floor(Number(settings.atrPeriod || 14)), 5), 50);
+  const atrRma = rmaSeries(tr, atrLen);
+  for (let i = 0; i < rows.length; i += 1) atr.push(Math.max(Number(atrRma[i] || 0), Number(rows[i].close || 0) * 0.001));
+  return { rows, closes, emaSeries: ema, rsiSeries: rsi, atrSeries: atr };
+}
+
+function calculateMarketMemoryAverage(symbol, candles = [], settings = loadSettings()) {
+  if (settings.marketMemoryEnabled === false) {
+    return { enabled: false, ready: true, pass: true, long: { pass: true }, short: { pass: true }, reason: 'Market Memory disabled' };
+  }
+  const helpers = buildMarketMemoryHelpers(candles, settings);
+  const rows = helpers.rows;
+  const n = rows.length;
+  const patternLength = Math.min(Math.max(Math.floor(Number(settings.marketMemoryPatternLength || 10)), 5), 30);
+  const lookahead = Math.min(Math.max(Math.floor(Number(settings.marketMemoryFutureLookahead || 8)), 3), 30);
+  const topN = Math.min(Math.max(Math.floor(Number(settings.marketMemoryTopMatches || 5)), 1), 10);
+  const scanDepth = Math.min(Math.max(Math.floor(Number(settings.marketMemoryScanDepth || 300)), 120), Math.max(120, n));
+  const minSimilarity = Math.min(Math.max(Number(settings.marketMemoryMinSimilarityPct || 80), 55), 98);
+  const sensitivity = Math.min(Math.max(Number(settings.marketMemorySensitivity || 1.5), 0.3), 5);
+  const cloudAtrMult = Math.min(Math.max(Number(settings.marketMemoryCloudAtrMult || 0.75), 0.2), 3);
+  const nearCloudAtrMult = Math.min(Math.max(Number(settings.marketMemoryNearCloudAtrMult || 0.25), 0), 2);
+  const maxExtensionAtr = Math.min(Math.max(Number(settings.marketMemoryMaxExtensionAtr || 1.6), 0.5), 5);
+  const minForwardMoveAtr = Math.min(Math.max(Number(settings.marketMemoryMinForwardMoveAtr || 0.25), 0), 3);
+  const minBars = patternLength + lookahead + 80;
+  if (n < minBars) {
+    return { enabled: true, ready: false, pass: false, long: { pass: false }, short: { pass: false }, reason: `Need ${minBars} closed 5m candles for Market Memory warmup` };
+  }
+  const i = n - 1;
+  const price = Number(rows[i].close || 0);
+  const atr = Math.max(Number(helpers.atrSeries[i] || 0), price * 0.001, 0.00000001);
+  const memoryLine = Number(helpers.emaSeries[i] || price);
+  const cloudHalf = atr * cloudAtrMult;
+  const cloudLow = memoryLine - cloudHalf;
+  const cloudHigh = memoryLine + cloudHalf;
+  const currentVectors = [];
+  for (let k = i - patternLength + 1; k <= i; k += 1) {
+    const v = marketMemoryFeatureVector(rows, k, helpers);
+    if (!v) return { enabled: true, ready: false, pass: false, long: { pass: false }, short: { pass: false }, reason: 'Market Memory feature warmup' };
+    currentVectors.push(v);
+  }
+  const start = Math.max(patternLength + 6, i - lookahead - scanDepth);
+  const end = i - lookahead - 1;
+  const matches = [];
+  for (let j = start; j <= end; j += 1) {
+    const histVectors = [];
+    let ok = true;
+    for (let k = j - patternLength + 1; k <= j; k += 1) {
+      const v = marketMemoryFeatureVector(rows, k, helpers);
+      if (!v) { ok = false; break; }
+      histVectors.push(v);
+    }
+    if (!ok) continue;
+    let dist = 0;
+    for (let k = 0; k < patternLength; k += 1) dist += vectorDistance(currentVectors[k], histVectors[k]);
+    dist /= patternLength;
+    const similarity = Math.max(0, Math.min(100, 100 * Math.exp(-sensitivity * dist / 2.4)));
+    const futureIndex = Math.min(rows.length - 1, j + lookahead);
+    const closeJ = Number(rows[j].close || 0);
+    const futureClose = Number(rows[futureIndex].close || closeJ);
+    const atrJ = Math.max(Number(helpers.atrSeries[j] || 0), closeJ * 0.001, 0.00000001);
+    const forwardMove = futureClose - closeJ;
+    const forwardAtr = forwardMove / atrJ;
+    const lineJ = Number(helpers.emaSeries[j] || closeJ);
+    const cloudJ = atrJ * cloudAtrMult;
+    const histSlice = rows.slice(Math.max(0, j - patternLength + 1), j + 1);
+    const touchedLongCloud = histSlice.some(c => Number(c.low) <= lineJ + cloudJ && Number(c.close) >= lineJ - cloudJ);
+    const touchedShortCloud = histSlice.some(c => Number(c.high) >= lineJ - cloudJ && Number(c.close) <= lineJ + cloudJ);
+    const type = forwardAtr >= minForwardMoveAtr && closeJ >= lineJ - cloudJ && touchedLongCloud
+      ? 'BULLISH_PULLBACK_CONTINUED'
+      : forwardAtr <= -minForwardMoveAtr && closeJ <= lineJ + cloudJ && touchedShortCloud
+        ? 'BEARISH_PULLBACK_CONTINUED'
+        : forwardAtr > 0 ? 'BULLISH_CONTEXT' : forwardAtr < 0 ? 'BEARISH_CONTEXT' : 'FLAT_CONTEXT';
+    matches.push({
+      index: j,
+      time: rows[j].time || null,
+      similarity: pct(similarity),
+      close: roundCoin(symbol, closeJ),
+      futureClose: roundCoin(symbol, futureClose),
+      forwardAtr: pct(forwardAtr),
+      forwardPct: pct((futureClose - closeJ) / closeJ * 100),
+      type,
+      line: roundCoin(symbol, lineJ)
+    });
+  }
+  matches.sort((a, b) => Number(b.similarity) - Number(a.similarity));
+  const topMatches = matches.slice(0, topN);
+  if (!topMatches.length) {
+    return { enabled: true, ready: false, pass: false, long: { pass: false }, short: { pass: false }, reason: 'No historical Market Memory matches found' };
+  }
+  const weightSum = topMatches.reduce((s, m) => s + Math.max(0.0001, Number(m.similarity || 0)), 0);
+  const weightedForwardAtr = topMatches.reduce((s, m) => s + Number(m.forwardAtr || 0) * Math.max(0.0001, Number(m.similarity || 0)), 0) / weightSum;
+  const best = topMatches[0];
+  const recent = rows.slice(-Math.min(Math.max(Number(settings.institutionalPullbackLookback || 10), 3), 30));
+  const longTouchedCloud = recent.some(c => Number(c.low) <= cloudHigh + atr * nearCloudAtrMult && Number(c.close) >= cloudLow - atr * nearCloudAtrMult);
+  const shortTouchedCloud = recent.some(c => Number(c.high) >= cloudLow - atr * nearCloudAtrMult && Number(c.close) <= cloudHigh + atr * nearCloudAtrMult);
+  const longRejection = price >= memoryLine || candleBullish(rows[i]);
+  const shortRejection = price <= memoryLine || candleBearish(rows[i]);
+  const extensionAtr = Math.abs(price - memoryLine) / atr;
+  const notChasing = extensionAtr <= maxExtensionAtr;
+  const regime = weightedForwardAtr >= minForwardMoveAtr ? 'BULLISH' : weightedForwardAtr <= -minForwardMoveAtr ? 'BEARISH' : 'NEUTRAL';
+  const requirePullback = settings.marketMemoryRequirePullback !== false;
+  const requireOutcome = settings.marketMemoryRequireTopMatchOutcome !== false;
+  const similarityPass = Number(best.similarity || 0) >= minSimilarity;
+  const topBull = String(best.type || '').startsWith('BULLISH');
+  const topBear = String(best.type || '').startsWith('BEARISH');
+  const longOutcome = !requireOutcome || topBull;
+  const shortOutcome = !requireOutcome || topBear;
+  const longPullback = !requirePullback || (longTouchedCloud && longRejection);
+  const shortPullback = !requirePullback || (shortTouchedCloud && shortRejection);
+  const longPass = regime === 'BULLISH' && similarityPass && longOutcome && longPullback && notChasing;
+  const shortPass = regime === 'BEARISH' && similarityPass && shortOutcome && shortPullback && notChasing;
+  const baseDetail = `MarketMemory regime=${regime}; best=${best.similarity}% ${best.type} ${best.forwardAtr}ATR; weighted=${pct(weightedForwardAtr)}ATR; line=${roundCoin(symbol, memoryLine)} cloud=${roundCoin(symbol, cloudLow)}-${roundCoin(symbol, cloudHigh)}; extension=${pct(extensionAtr)}ATR`;
+  return {
+    enabled: true,
+    ready: true,
+    pass: Boolean(longPass || shortPass),
+    regime,
+    line: roundCoin(symbol, memoryLine),
+    cloudLow: roundCoin(symbol, cloudLow),
+    cloudHigh: roundCoin(symbol, cloudHigh),
+    extensionAtr: pct(extensionAtr),
+    weightedForwardAtr: pct(weightedForwardAtr),
+    bestMatch: best,
+    topMatches,
+    long: {
+      pass: Boolean(longPass),
+      regimeOk: regime === 'BULLISH',
+      similarityPass,
+      outcomePass: longOutcome,
+      pullbackPass: Boolean(longPullback),
+      touchedCloud: Boolean(longTouchedCloud),
+      rejection: Boolean(longRejection),
+      notChasing,
+      entryZoneLow: roundCoin(symbol, cloudLow),
+      entryZoneHigh: roundCoin(symbol, cloudHigh),
+      detail: `${baseDetail}; LONG pullback=${longPullback}; topMatchBull=${topBull}; noChase=${notChasing}`
+    },
+    short: {
+      pass: Boolean(shortPass),
+      regimeOk: regime === 'BEARISH',
+      similarityPass,
+      outcomePass: shortOutcome,
+      pullbackPass: Boolean(shortPullback),
+      touchedCloud: Boolean(shortTouchedCloud),
+      rejection: Boolean(shortRejection),
+      notChasing,
+      entryZoneLow: roundCoin(symbol, cloudLow),
+      entryZoneHigh: roundCoin(symbol, cloudHigh),
+      detail: `${baseDetail}; SHORT pullback=${shortPullback}; topMatchBear=${topBear}; noChase=${notChasing}`
+    },
+    reason: baseDetail
+  };
+}
+
+function macdMomentumOk(macd, direction, opts = {}) {
+  if (!macd?.ready) return Boolean(opts.allowWarmup);
+  const line = Number(macd.line || 0);
+  const signal = Number(macd.signal || 0);
+  const hist = Number(macd.hist || 0);
+  const prev = Number(macd.prevHist || 0);
+  if (direction === 'LONG') return line > signal && (hist > 0 || hist >= prev);
+  if (direction === 'SHORT') return line < signal && (hist < 0 || hist <= prev);
+  return false;
+}
+
+function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings) {
+  const enabled = settings.institutionalEmaEnabled !== false;
+  if (!enabled) return { enabled: false, ready: true, pass: true, long: { pass: true }, short: { pass: true }, reason: 'Institutional EMA layer disabled' };
+  const candles5 = getCachedCandles(symbol, '5m');
+  const closesFallback = (history || []).map(Number).filter(n => Number.isFinite(n) && n > 0);
+  const synthetic = closesFallback.length ? syntheticOhlcFromCloses(closesFallback, atr) : [];
+  const execCandles = candles5.length >= 40 ? candles5 : synthetic;
+  const closes = execCandles.map(c => c.close).filter(n => Number.isFinite(n) && n > 0);
+  const p = Number(price || closes[closes.length - 1] || 0);
+  const a = Math.max(Number(atr || 0), p * 0.002);
+  const fastLen = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaFastPeriod || 13)), 3), 50);
+  const midLen = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaMidPeriod || 50)), fastLen + 1), 100);
+  const slowLen = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaSlowPeriod || 200)), midLen + 1), 300);
+  if (!p || closes.length < Math.max(40, midLen)) {
+    return { enabled: true, ready: false, pass: false, long: { pass: false }, short: { pass: false }, reason: `Need at least ${Math.max(40, midLen)} candles for institutional EMA warmup` };
+  }
+  const emaFastSeries = emaSeries(closes, fastLen);
+  const emaMidSeries = emaSeries(closes, midLen);
+  const emaSlowSeries = emaSeries(closes, slowLen);
+  const emaFast = lastFinite(emaFastSeries);
+  const emaMid = lastFinite(emaMidSeries);
+  const emaSlow = lastFinite(emaSlowSeries);
+  const c15 = getCachedCandles(symbol, '15m');
+  const c1h = getCachedCandles(symbol, '1h');
+  const closes15 = c15.length >= midLen ? c15.map(c => c.close) : downsampleCloses(closes, 3);
+  const closes1h = c1h.length >= midLen ? c1h.map(c => c.close) : downsampleCloses(closes, 12);
+  const ema50_15 = latestEma(closes15, midLen);
+  const ema200_15 = latestEma(closes15, slowLen);
+  const ema50_1h = latestEma(closes1h, midLen);
+  const ema200_1h = latestEma(closes1h, slowLen);
+  const macd5 = calculateMacdRaw(closes, settings);
+  const macd15 = calculateMacdRaw(closes15, settings);
+  const macd1h = calculateMacdRaw(closes1h, settings);
+  const pullbackLookback = Math.min(Math.max(Math.floor(Number(settings.institutionalPullbackLookback || 10)), 3), 30);
+  const pbAtr = Math.min(Math.max(Number(settings.institutionalPullbackAtrMult || 0.85), 0.1), 5);
+  const maxExtAtr = Math.min(Math.max(Number(settings.institutionalMaxExtensionAtr || 2.2), 0.5), 8);
+  const patternLookback = Math.min(Math.max(Math.floor(Number(settings.institutionalPatternLookback || 24)), 8), 80);
+  const recent = execCandles.slice(-pullbackLookback);
+  const extensionAtr = Math.abs(p - emaMid) / Math.max(a, 0.00000001);
+  const marketMemory = calculateMarketMemoryAverage(symbol, execCandles, settings);
+
+  function pullback(direction) {
+    const distances = recent.map(c => direction === 'LONG' ? Math.abs(Number(c.low) - emaMid) : Math.abs(Number(c.high) - emaMid)).filter(Number.isFinite);
+    const minDistAtr = distances.length ? Math.min(...distances) / Math.max(a, 0.00000001) : 999;
+    const touched = direction === 'LONG'
+      ? recent.some(c => Number(c.low) <= emaMid + a * pbAtr && Number(c.close) >= emaMid - a * pbAtr)
+      : recent.some(c => Number(c.high) >= emaMid - a * pbAtr && Number(c.close) <= emaMid + a * pbAtr);
+    const reclaimed = direction === 'LONG' ? p > emaFast && p > emaMid : p < emaFast && p < emaMid;
+    const notChasing = extensionAtr <= maxExtAtr;
+    const swing = direction === 'LONG' ? Math.min(...recent.map(c => Number(c.low)).filter(Number.isFinite)) : Math.max(...recent.map(c => Number(c.high)).filter(Number.isFinite));
+    return { pass: Boolean(touched && reclaimed && notChasing), touched, reclaimed, notChasing, minDistAtr: pct(minDistAtr), extensionAtr: pct(extensionAtr), swing };
+  }
+
+  function side(direction) {
+    const long = direction === 'LONG';
+    const execStack = long
+      ? p > emaSlow && emaFast > emaMid && emaMid > emaSlow
+      : p < emaSlow && emaFast < emaMid && emaMid < emaSlow;
+    const htfStack = long
+      ? ema50_15 > ema200_15 && ema50_1h > ema200_1h
+      : ema50_15 < ema200_15 && ema50_1h < ema200_1h;
+    const pb = pullback(direction);
+    const pa = priceActionConfirmation(execCandles, direction, a, patternLookback);
+    const macd5Ok = macdMomentumOk(macd5, direction);
+    const macd15Ok = macdMomentumOk(macd15, direction);
+    const macd1hOk = macdMomentumOk(macd1h, direction, { allowWarmup: false });
+    const htfMacd = macd15Ok && macd1hOk;
+    const confluence = confluenceForSide(symbol, direction, execCandles, {
+      price: p, atr: a, emaMid, macd5Ok, macd15Ok, macd1hOk, htfMacd, htfStack,
+      priceActionOk: pa.pass,
+      longTrend: long ? htfStack : false,
+      shortTrend: long ? false : htfStack
+    }, settings);
+    const requirePriceAction = settings.institutionalRequirePriceAction !== false;
+    const requireEmaStack = settings.institutionalRequireEmaStack !== false;
+    const requirePullback = settings.institutionalRequirePullback !== false;
+    const requireHtfMacd = settings.institutionalRequireHtfMacd !== false;
+    const memorySide = long ? (marketMemory.long || {}) : (marketMemory.short || {});
+    const memoryPass = settings.marketMemoryEnabled === false || Boolean(memorySide.pass);
+    const stackPass = requireEmaStack ? (execStack && htfStack) : (execStack || htfStack);
+    const pullbackPass = requirePullback ? pb.pass : true;
+    const htfMacdPass = requireHtfMacd ? htfMacd : true;
+    const oldStrictPass = stackPass && pullbackPass && pa.pass && htfMacdPass && macd5Ok && memoryPass;
+    const flexiblePass = (execStack || htfStack) && confluence.pass && macd5Ok && pullbackPass && htfMacdPass && memoryPass && (!requirePriceAction || pa.pass);
+    const pass = Boolean(oldStrictPass || flexiblePass);
+    const rawSl = long ? Math.min(Number(pa.patternLow || p), Number(pb.swing || p)) - a * Math.max(0, Number(settings.slBufferAtrMult ?? 0.25)) : Math.max(Number(pa.patternHigh || p), Number(pb.swing || p)) + a * Math.max(0, Number(settings.slBufferAtrMult ?? 0.25));
+    const sl = roundCoin(symbol, rawSl);
+    const risk = Math.abs(p - sl);
+    const strongMacd = macd5Ok && macd15Ok && macd1hOk && (long ? macd5.hist > macd5.prevHist : macd5.hist < macd5.prevHist);
+    const dynamicTargetR = Math.min(Math.max(strongMacd ? Number(settings.dynamicTpStrongR || 3) : Number(settings.rewardTargetR || 2), 2), Math.max(2, Number(settings.dynamicTpMaxR || 5)));
+    const tp1 = roundCoin(symbol, long ? p + risk * Math.max(1, Number(settings.tp1TriggerR || 1)) : p - risk * Math.max(1, Number(settings.tp1TriggerR || 1)));
+    const tp2 = roundCoin(symbol, long ? p + risk * dynamicTargetR : p - risk * dynamicTargetR);
+    return {
+      pass: Boolean(pass),
+      execStack,
+      htfStack,
+      pullback: pb,
+      priceAction: pa,
+      macd5Ok,
+      macd15Ok,
+      macd1hOk,
+      htfMacd,
+      confluence,
+      strongMacd,
+      marketMemory: memorySide,
+      marketMemoryPass: memoryPass,
+      swing: pb.swing,
+      sl,
+      tp1,
+      tp2,
+      dynamicTargetR,
+      detail: `EMA${fastLen}/${midLen}/${slowLen} stack=${execStack}; HTF 15m+1h EMA50/200=${htfStack}; EMA50 pullback=${pb.pass} dist=${pb.minDistAtr}ATR ext=${pb.extensionAtr}ATR; priceAction=${pa.pattern}; HTF MACD=${htfMacd}; MarketMemory=${memoryPass ? 'PASS' : 'WAIT'} (${memorySide.detail || marketMemory.reason || '-'}); confluence=${confluence.score}/${confluence.maxScore}; location=${confluence.structure.source}; strongMACD=${strongMacd}`
+    };
+  }
+
+  const long = side('LONG');
+  const short = side('SHORT');
+  const pass = long.pass || short.pass;
+  return {
+    enabled: true,
+    ready: true,
+    pass,
+    fastLen,
+    midLen,
+    slowLen,
+    ema13: roundCoin(symbol, emaFast),
+    ema50: roundCoin(symbol, emaMid),
+    ema200: roundCoin(symbol, emaSlow),
+    ema50_15: roundCoin(symbol, ema50_15),
+    ema200_15: roundCoin(symbol, ema200_15),
+    ema50_1h: roundCoin(symbol, ema50_1h),
+    ema200_1h: roundCoin(symbol, ema200_1h),
+    macd5: { ready: macd5.ready, hist: pct(macd5.hist), prevHist: pct(macd5.prevHist) },
+    macd15: { ready: macd15.ready, hist: pct(macd15.hist), prevHist: pct(macd15.prevHist) },
+    macd1h: { ready: macd1h.ready, hist: pct(macd1h.hist), prevHist: pct(macd1h.prevHist) },
+    marketMemory,
+    long,
+    short,
+    reason: pass ? `Institutional EMA layer PASS: ${long.pass ? 'LONG' : 'SHORT'} ${long.pass ? long.detail : short.detail}` : `Institutional EMA layer WAIT: long ${long.detail}; short ${short.detail}`
+  };
+}
+
 function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) {
   const candles5 = getCachedCandles(symbol, '5m');
   const candles15 = getCachedCandles(symbol, '15m');
@@ -1067,7 +1824,7 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
   const zeroLineMode = strictMode ? 'hard' : (zeroLineModeRaw === 'hard' ? 'hard' : 'soft');
   const minBars = Math.max(Number(settings.macdSlowLength || 26) + Number(settings.macdSignalLength || 9) + 20, lookback + left + right + 10);
   if (closes.length < minBars) {
-    return { ready: false, pass: false, entrySide: '', source: 'DELTA_OHLC_MACD_DIVERGENCE_MTF_EMA', entryModel, reason: `Need ${minBars} closed 5m candles for MACD/MTF warmup`, localApproximation: !liveCloses.length };
+    return { ready: false, pass: false, entrySide: '', source: 'DELTA_OHLC_INSTITUTIONAL_EMA_MACD_MTF', entryModel, reason: `Need ${minBars} closed 5m candles for MACD/MTF warmup`, localApproximation: !liveCloses.length };
   }
 
   const ema15Source = candles15.length >= emaLen ? candles15.map(c => c.close) : downsampleCloses(closes, 3);
@@ -1081,8 +1838,10 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
 
   const macd = calculateMacdRaw(closes, settings);
   if (!macd.ready || !macd.lineSeries.length || !macd.signalSeries.length) {
-    return { ready: false, pass: false, entrySide: '', source: 'DELTA_OHLC_MACD_DIVERGENCE_MTF_EMA', entryModel, reason: 'MACD 12/26/9 warming up' };
+    return { ready: false, pass: false, entrySide: '', source: 'DELTA_OHLC_INSTITUTIONAL_EMA_MACD_MTF', entryModel, reason: 'MACD 12/26/9 warming up' };
   }
+
+  const institutional = calculateInstitutionalEmaMtfLocal(symbol, history, p, a, settings);
 
   const i = closes.length - 1;
   const searchFrom = Math.max(0, i - lookback);
@@ -1121,8 +1880,8 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
     return direction === 'LONG' ? Math.min(...slice) : Math.max(...slice);
   }
 
-  function finishPlan(direction, rawSwing, trendOk, divergenceOk, divergence, baseConditions, detail) {
-    let rawSl = direction === 'LONG' ? rawSwing - buffer : rawSwing + buffer;
+  function finishPlan(direction, rawSwing, trendOk, divergenceOk, divergence, baseConditions, detail, institutionalSide = null) {
+    let rawSl = Number(institutionalSide?.sl || 0) || (direction === 'LONG' ? rawSwing - buffer : rawSwing + buffer);
     if (direction === 'LONG') {
       if (p - rawSl < minDistance) rawSl = p - minDistance;
       if (p - rawSl > maxDistance) rawSl = p - maxDistance;
@@ -1132,9 +1891,23 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
     }
     const sl = roundCoin(symbol, rawSl);
     const risk = Math.abs(p - sl);
-    const tp2 = roundCoin(symbol, direction === 'LONG' ? p + risk * 2 : p - risk * 2);
+    const targetR = Math.min(Math.max(Number(institutionalSide?.dynamicTargetR || settings.rewardTargetR || 2), 2), Math.max(2, Number(settings.dynamicTpMaxR || 5)));
+    const tp2 = roundCoin(symbol, direction === 'LONG' ? p + risk * targetR : p - risk * targetR);
     const tp1 = roundCoin(symbol, direction === 'LONG' ? p + risk * Math.max(1, Number(settings.tp1TriggerR || 1)) : p - risk * Math.max(1, Number(settings.tp1TriggerR || 1)));
-    return { sl, tp1, tp2, invalidationLevel: sl, divergence, conditions: { ...baseConditions, [direction === 'LONG' ? 'longTrend' : 'shortTrend']: trendOk, divergenceOk }, detail };
+    const instConditions = institutionalSide ? {
+      institutionalPass: Boolean(institutionalSide.pass),
+      institutionalExecStack: Boolean(institutionalSide.execStack),
+      institutionalHtfStack: Boolean(institutionalSide.htfStack),
+      institutionalPullback: Boolean(institutionalSide.pullback?.pass),
+      institutionalPriceAction: Boolean(institutionalSide.priceAction?.pass),
+      institutionalHtfMacd: Boolean(institutionalSide.htfMacd),
+      institutionalStrongMacd: Boolean(institutionalSide.strongMacd),
+      confluenceScore: Number(institutionalSide.confluence?.score || 0),
+      confluencePass: Boolean(institutionalSide.confluence?.pass),
+      structureLocationPass: Boolean(institutionalSide.confluence?.structure?.pass),
+      institutionalPattern: institutionalSide.priceAction?.pattern || '-'
+    } : {};
+    return { sl, tp1, tp2, invalidationLevel: sl, divergence, dynamicTargetR: targetR, institutional: institutionalSide, conditions: { ...baseConditions, ...instConditions, [direction === 'LONG' ? 'longTrend' : 'shortTrend']: trendOk, divergenceOk }, detail };
   }
 
   function strictLong() {
@@ -1147,9 +1920,11 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
     const cross = recentCrossover('LONG');
     const crossover = cross.ok && cross.barsAgo === 0;
     const divergenceOk = priceLowerLow && macdHigherLow;
-    const pass = longTrend && divergenceOk && zeroOk && histColorChange && crossover;
+    const institutionalSide = institutional.long || {};
+    const institutionalPass = settings.institutionalEmaEnabled === false || Boolean(institutionalSide.pass);
+    const pass = longTrend && divergenceOk && zeroOk && histColorChange && crossover && institutionalPass;
     const div = { first: aLow, second: bLow, priceFirst: roundCoin(symbol, aLow.value), priceSecond: roundCoin(symbol, bLow.value), macdFirst: pct(macd.lineSeries[aLow.index]), macdSecond: pct(macd.lineSeries[bLow.index]) };
-    const plan = finishPlan('LONG', Math.min(aLow.value, bLow.value), longTrend, divergenceOk, div, { priceLowerLow, macdHigherLow, zeroOk, histColorChange, crossover, recentCrossover: cross.ok, crossBarsAgo: cross.barsAgo }, `STRICT longTrend=${longTrend} priceLL=${priceLowerLow} macdHL=${macdHigherLow} zeroBelow=${zeroOk} histColorChange=${histColorChange} bullishCross=${crossover}`);
+    const plan = finishPlan('LONG', institutionalSide.swing || Math.min(aLow.value, bLow.value), longTrend, divergenceOk, div, { priceLowerLow, macdHigherLow, zeroOk, histColorChange, crossover, recentCrossover: cross.ok, crossBarsAgo: cross.barsAgo }, `STRICT longTrend=${longTrend} priceLL=${priceLowerLow} macdHL=${macdHigherLow} zeroBelow=${zeroOk} histColorChange=${histColorChange} bullishCross=${crossover} institutional=${institutionalPass} ${institutionalSide.detail || ''}`, institutionalSide);
     return { pass, ...plan };
   }
 
@@ -1163,9 +1938,11 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
     const cross = recentCrossover('SHORT');
     const crossover = cross.ok && cross.barsAgo === 0;
     const divergenceOk = priceHigherHigh && macdLowerHigh;
-    const pass = shortTrend && divergenceOk && zeroOk && histColorChange && crossover;
+    const institutionalSide = institutional.short || {};
+    const institutionalPass = settings.institutionalEmaEnabled === false || Boolean(institutionalSide.pass);
+    const pass = shortTrend && divergenceOk && zeroOk && histColorChange && crossover && institutionalPass;
     const div = { first: aHigh, second: bHigh, priceFirst: roundCoin(symbol, aHigh.value), priceSecond: roundCoin(symbol, bHigh.value), macdFirst: pct(macd.lineSeries[aHigh.index]), macdSecond: pct(macd.lineSeries[bHigh.index]) };
-    const plan = finishPlan('SHORT', Math.max(aHigh.value, bHigh.value), shortTrend, divergenceOk, div, { priceHigherHigh, macdLowerHigh, zeroOk, histColorChange, crossover, recentCrossover: cross.ok, crossBarsAgo: cross.barsAgo }, `STRICT shortTrend=${shortTrend} priceHH=${priceHigherHigh} macdLH=${macdLowerHigh} zeroAbove=${zeroOk} histColorChange=${histColorChange} bearishCross=${crossover}`);
+    const plan = finishPlan('SHORT', institutionalSide.swing || Math.max(aHigh.value, bHigh.value), shortTrend, divergenceOk, div, { priceHigherHigh, macdLowerHigh, zeroOk, histColorChange, crossover, recentCrossover: cross.ok, crossBarsAgo: cross.barsAgo }, `STRICT shortTrend=${shortTrend} priceHH=${priceHigherHigh} macdLH=${macdLowerHigh} zeroAbove=${zeroOk} histColorChange=${histColorChange} bearishCross=${crossover} institutional=${institutionalPass} ${institutionalSide.detail || ''}`, institutionalSide);
     return { pass, ...plan };
   }
 
@@ -1179,8 +1956,12 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
     const divergenceOk = Boolean(strictL.conditions?.priceLowerLow && strictL.conditions?.macdHigherLow);
     const zeroPass = zeroLineMode === 'hard' ? zeroOk : true;
     const divPass = requireDivergenceForEntry ? divergenceOk : true;
-    const pass = longTrend && histColorChange && cross.ok && zeroPass && divPass;
-    const plan = finishPlan('LONG', recentSwing('LONG'), longTrend, divergenceOk, strictL.divergence || null, {
+    const institutionalSide = institutional.long || {};
+    const institutionalPass = settings.institutionalEmaEnabled === false || Boolean(institutionalSide.pass);
+    const momentumOk = Boolean(institutionalSide.macd5Ok || cross.ok);
+    const timingOk = Boolean(cross.ok || histColorChange || institutionalSide.confluence?.score >= Number(settings.aPlusConfluenceScore || 10));
+    const pass = longTrend && momentumOk && timingOk && zeroPass && divPass && institutionalPass;
+    const plan = finishPlan('LONG', institutionalSide.swing || recentSwing('LONG'), longTrend, divergenceOk, strictL.divergence || null, {
       priceLowerLow: Boolean(strictL.conditions?.priceLowerLow),
       macdHigherLow: Boolean(strictL.conditions?.macdHigherLow),
       zeroOk,
@@ -1189,8 +1970,10 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
       crossover: cross.ok,
       recentCrossover: cross.ok,
       crossBarsAgo: cross.barsAgo,
-      practicalTrigger: true
-    }, `PRACTICAL longTrend=${longTrend} histColorChange=${histColorChange} bullishCrossRecent=${cross.ok}${cross.ok ? `(${cross.barsAgo} bars ago)` : ''} zeroBelow=${zeroOk}${zeroLineMode === 'hard' ? ' hard' : ' soft'} divergence=${divergenceOk}${requireDivergenceForEntry ? ' required' : ' optional'}`);
+      practicalTrigger: true,
+      momentumOk,
+      timingOk
+    }, `PRACTICAL longTrend=${longTrend} histColorChange=${histColorChange} bullishCrossRecent=${cross.ok}${cross.ok ? `(${cross.barsAgo} bars ago)` : ''} zeroBelow=${zeroOk}${zeroLineMode === 'hard' ? ' hard' : ' soft'} divergence=${divergenceOk}${requireDivergenceForEntry ? ' required' : ' optional'} institutional=${institutionalPass} ${institutionalSide.detail || ''}`, institutionalSide);
     return { pass, ...plan };
   }
 
@@ -1201,8 +1984,12 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
     const divergenceOk = Boolean(strictS.conditions?.priceHigherHigh && strictS.conditions?.macdLowerHigh);
     const zeroPass = zeroLineMode === 'hard' ? zeroOk : true;
     const divPass = requireDivergenceForEntry ? divergenceOk : true;
-    const pass = shortTrend && histColorChange && cross.ok && zeroPass && divPass;
-    const plan = finishPlan('SHORT', recentSwing('SHORT'), shortTrend, divergenceOk, strictS.divergence || null, {
+    const institutionalSide = institutional.short || {};
+    const institutionalPass = settings.institutionalEmaEnabled === false || Boolean(institutionalSide.pass);
+    const momentumOk = Boolean(institutionalSide.macd5Ok || cross.ok);
+    const timingOk = Boolean(cross.ok || histColorChange || institutionalSide.confluence?.score >= Number(settings.aPlusConfluenceScore || 10));
+    const pass = shortTrend && momentumOk && timingOk && zeroPass && divPass && institutionalPass;
+    const plan = finishPlan('SHORT', institutionalSide.swing || recentSwing('SHORT'), shortTrend, divergenceOk, strictS.divergence || null, {
       priceHigherHigh: Boolean(strictS.conditions?.priceHigherHigh),
       macdLowerHigh: Boolean(strictS.conditions?.macdLowerHigh),
       zeroOk,
@@ -1211,8 +1998,10 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
       crossover: cross.ok,
       recentCrossover: cross.ok,
       crossBarsAgo: cross.barsAgo,
-      practicalTrigger: true
-    }, `PRACTICAL shortTrend=${shortTrend} histColorChange=${histColorChange} bearishCrossRecent=${cross.ok}${cross.ok ? `(${cross.barsAgo} bars ago)` : ''} zeroAbove=${zeroOk}${zeroLineMode === 'hard' ? ' hard' : ' soft'} divergence=${divergenceOk}${requireDivergenceForEntry ? ' required' : ' optional'}`);
+      practicalTrigger: true,
+      momentumOk,
+      timingOk
+    }, `PRACTICAL shortTrend=${shortTrend} histColorChange=${histColorChange} bearishCrossRecent=${cross.ok}${cross.ok ? `(${cross.barsAgo} bars ago)` : ''} zeroAbove=${zeroOk}${zeroLineMode === 'hard' ? ' hard' : ' soft'} divergence=${divergenceOk}${requireDivergenceForEntry ? ' required' : ' optional'} institutional=${institutionalPass} ${institutionalSide.detail || ''}`, institutionalSide);
     return { pass, ...plan };
   }
 
@@ -1221,8 +2010,8 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
   const entrySide = long.pass ? 'LONG' : short.pass ? 'SHORT' : '';
   const chosen = entrySide === 'LONG' ? long : entrySide === 'SHORT' ? short : (longTrend ? long : shortTrend ? short : long);
   const reason = entrySide
-    ? `${entryModel} ${entrySide} confirmed on closed 5m Delta OHLC; EMA50(15m)=${roundCoin(symbol, ema15)} EMA50(1h)=${roundCoin(symbol, ema1h)} gap=${pct(emaGapPct)}%; ${chosen.detail}; SL=${chosen.sl} TP=${chosen.tp2}`
-    : `WAIT ${entryModel}; EMA50(15m)=${roundCoin(symbol, ema15)} EMA50(1h)=${roundCoin(symbol, ema1h)} gap=${pct(emaGapPct)}%; long: ${long.detail}; short: ${short.detail}`;
+    ? `${entryModel} ${entrySide} confirmed on closed 5m Delta OHLC; EMA50(15m)=${roundCoin(symbol, ema15)} EMA50(1h)=${roundCoin(symbol, ema1h)} gap=${pct(emaGapPct)}%; Institutional=${chosen.conditions?.institutionalPass ? 'PASS' : 'WAIT'}; ${chosen.detail}; SL=${chosen.sl} TP=${chosen.tp2}`
+    : `WAIT ${entryModel}; EMA50(15m)=${roundCoin(symbol, ema15)} EMA50(1h)=${roundCoin(symbol, ema1h)} gap=${pct(emaGapPct)}%; Institutional=${institutional.ready ? institutional.reason : 'WARMUP'}; long: ${long.detail}; short: ${short.detail}`;
 
   return {
     ready: true,
@@ -1234,7 +2023,7 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
     zeroLineMode,
     entrySignalWindowCandles: entryWindow,
     histColorLookback: histLookback,
-    source: liveCloses.length ? 'DELTA_OHLC_MACD_DIVERGENCE_MTF_EMA' : 'LOCAL_FALLBACK_MACD_DIVERGENCE_MTF_EMA',
+    source: liveCloses.length ? 'DELTA_OHLC_INSTITUTIONAL_EMA_MACD_MTF' : 'LOCAL_FALLBACK_INSTITUTIONAL_EMA_MACD_MTF',
     ema15: roundCoin(symbol, ema15),
     ema1h: roundCoin(symbol, ema1h),
     emaGapPct: pct(emaGapPct),
@@ -1242,6 +2031,10 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
     macdSignal: pct(macd.signal),
     macdHistogram: pct(macd.hist),
     macdPreviousHistogram: pct(macd.prevHist),
+    institutionalEma: institutional,
+    ema13: institutional.ema13 || null,
+    ema50: institutional.ema50 || null,
+    ema200: institutional.ema200 || null,
     long,
     short,
     strictLong: strictL,
@@ -2053,6 +2846,63 @@ function effectiveRiskCapUsd(settings, botAllocationUsd = 0) {
   return 0;
 }
 
+function plannedExitRMultiple(settings = loadSettings()) {
+  const tp1R = Math.max(0, Number(settings.tp1TriggerR || 1));
+  const tp2R = Math.max(tp1R, Number(settings.rewardTargetR || settings.minRR || 2));
+  const tp1ClosePct = Math.min(Math.max(Number(settings.tp1ClosePct ?? 50), 0), 100);
+  const tp2ClosePct = Math.min(Math.max(Number(settings.tp2ClosePct ?? 100), 0), 100);
+  const tp1Fraction = tp1ClosePct / 100;
+  const remainingAfterTp1 = Math.max(0, 1 - tp1Fraction);
+  const tp2Fraction = remainingAfterTp1 * (tp2ClosePct / 100);
+  return money((tp1Fraction * tp1R) + (tp2Fraction * tp2R));
+}
+
+function estimatedExitPlanProfit(notionalUsd, riskPct, settings = loadSettings()) {
+  const n = Number(notionalUsd || 0);
+  const r = Number(riskPct || 0);
+  if (!n || !r) return { tp1ProfitUsd: 0, tp2ProfitUsd: 0, fullTradeProfitUsd: 0, plannedProfitR: plannedExitRMultiple(settings) };
+  const tp1R = Math.max(0, Number(settings.tp1TriggerR || 1));
+  const tp2R = Math.max(tp1R, Number(settings.rewardTargetR || settings.minRR || 2));
+  const tp1ClosePct = Math.min(Math.max(Number(settings.tp1ClosePct ?? 50), 0), 100);
+  const tp2ClosePct = Math.min(Math.max(Number(settings.tp2ClosePct ?? 100), 0), 100);
+  const tp1Fraction = tp1ClosePct / 100;
+  const remainingAfterTp1 = Math.max(0, 1 - tp1Fraction);
+  const tp2Fraction = remainingAfterTp1 * (tp2ClosePct / 100);
+  const tp1ProfitUsd = money(n * r * tp1R * tp1Fraction);
+  const tp2ProfitUsd = money(n * r * tp2R * tp2Fraction);
+  const plannedProfitR = money((tp1Fraction * tp1R) + (tp2Fraction * tp2R));
+  return {
+    tp1ProfitUsd,
+    tp2ProfitUsd,
+    fullTradeProfitUsd: money(tp1ProfitUsd + tp2ProfitUsd),
+    plannedProfitR,
+    tp1ClosePct,
+    tp2ClosePct,
+    tp1R,
+    tp2R
+  };
+}
+
+function profitTargetSettings(settings = loadSettings()) {
+  const minFullTradeProfitUsd = Math.max(0, Number(settings.minFullTradeProfitUsd ?? settings.minTargetProfitUsd ?? 1));
+  const rawTarget = Math.max(0, Number(settings.targetFullTradeProfitUsd ?? settings.targetProfitUsd ?? 2));
+  const targetFullTradeProfitUsd = Math.max(minFullTradeProfitUsd, rawTarget);
+  const rewardR = Math.max(2, Number(settings.rewardTargetR || settings.minRR || 2));
+  const plannedProfitR = Math.max(0.000001, plannedExitRMultiple(settings));
+  return {
+    autoSizeToTargetProfit: settings.autoSizeToTargetProfit !== false,
+    blockTinyProfitTrades: settings.blockTinyProfitTrades !== false,
+    minFullTradeProfitUsd,
+    targetFullTradeProfitUsd,
+    // Backward-compatible aliases for older saved JSON and UI reads. Do not label these as TP2.
+    minTargetProfitUsd: minFullTradeProfitUsd,
+    targetProfitUsd: targetFullTradeProfitUsd,
+    rewardR,
+    plannedProfitR,
+    autoUseMaxLeverageForProfitTarget: settings.autoUseMaxLeverageForProfitTarget !== false
+  };
+}
+
 function requestJson(url, { method = 'GET', headers = {}, body = null, timeoutMs = 10000 } = {}) {
   return new Promise((resolve, reject) => {
     const target = new URL(url);
@@ -2437,7 +3287,7 @@ function generateSignalProfile(symbol, settings) {
 
   const expectedTrend = directionToTrend(decision);
   const hasStrategySignal = Boolean(macdDivergenceSignal?.pass && macdDivergenceSignal.entrySide === decision);
-  const strategySignalSource = hasStrategySignal ? 'MACD_DIVERGENCE_MTF_EMA_LOCAL' : 'NONE';
+  const strategySignalSource = hasStrategySignal ? 'INSTITUTIONAL_EMA_MACD_MTF_LOCAL' : 'NONE';
   const webhookTrend = normalizeTrendValue(webhookField(raw, ['htfTrend', 'htf_trend', 'higherTimeframeTrend', 'higher_timeframe_trend', 'trend1h', 'trend_1h', 'marketStructure', 'market_structure']));
   const htfBias = webhookTrend || structure.trend;
   const aligned = decision === 'WAIT' ? 0 : (hasStrategySignal ? 2 : (htfBias === expectedTrend ? 1 : 0));
@@ -2496,9 +3346,9 @@ function generateSignalProfile(symbol, settings) {
   if (hasDirection && settings.vwapModuleEnabled !== false && vwapSignal?.invalidationLevel && (strategySignalSource === 'VWAP_LOCAL' || strategySignalSource === 'TV_VWAP')) {
     technicalStop = vwapStopForDirection(symbol, decision, price, atr, vwapSignal.invalidationLevel, settings) || technicalStop;
   }
-  if (hasDirection && macdDivergenceSignal?.invalidationLevel && strategySignalSource === 'MACD_DIVERGENCE_MTF_EMA_LOCAL') {
+  if (hasDirection && macdDivergenceSignal?.invalidationLevel && strategySignalSource === 'INSTITUTIONAL_EMA_MACD_MTF_LOCAL') {
     technicalStop = technicalStopForDirection(symbol, decision, price, atr, history, settings);
-    technicalStop = { ...technicalStop, sl: macdDivergenceSignal.invalidationLevel, reason: `MACD divergence swing SL with ATR buffer: ${macdDivergenceSignal.reason}` };
+    technicalStop = { ...technicalStop, sl: macdDivergenceSignal.invalidationLevel, reason: `Institutional EMA/MACD pattern SL with ATR buffer: ${macdDivergenceSignal.reason}` };
   }
 
   state.market[symbol] = { price, prevPrice: previous, atr, relVolume: 1 + Math.abs(volumeSeed), fundingRate, source, macd, structure, supportResistance, macdDivergenceSignal, sarMacdSignal, twoPoleSignal, breakoutSignal, vwapSignal };
@@ -2539,6 +3389,35 @@ function generateSignalProfile(symbol, settings) {
   };
 }
 
+
+function closedOhlcQualityForExecution(symbol, settings = loadSettings()) {
+  const sym = String(symbol || '').toUpperCase();
+  const slowLen = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaSlowPeriod || 200)), 80), 300);
+  const macdSlow = Math.max(26, Math.floor(Number(settings.macdSlowLength || 26)));
+  const macdSignal = Math.max(9, Math.floor(Number(settings.macdSignalLength || 9)));
+  const minExec = Math.max(slowLen + macdSlow + macdSignal + 10, 245);
+  const minHtf = Math.max(slowLen + 10, 210);
+  const checks = [
+    { res: '5m', min: minExec },
+    { res: '15m', min: minHtf },
+    { res: '1h', min: minHtf }
+  ].map(x => {
+    const candles = getCachedCandles(sym, x.res);
+    const count = Array.isArray(candles) ? candles.length : 0;
+    const last = count ? candles[count - 1] : null;
+    const validLast = Boolean(last && Number.isFinite(last.open) && Number.isFinite(last.high) && Number.isFinite(last.low) && Number.isFinite(last.close));
+    return { ...x, count, validLast, pass: count >= x.min && validLast };
+  });
+  const failed = checks.filter(x => !x.pass);
+  return {
+    pass: failed.length === 0,
+    detail: failed.length
+      ? `Blocked: live Delta closed OHLC required before auto-entry. ${failed.map(x => `${x.res}=${x.count}/${x.min}`).join(', ')}. Do not trade synthetic/ticker-only fallback.`
+      : `OK: Delta closed OHLC warmup ready (${checks.map(x => `${x.res}=${x.count}`).join(', ')}).`,
+    checks
+  };
+}
+
 function passFail(profile, settings, wallet, trades) {
   const gates = [];
   const direction = profile.decision;
@@ -2554,10 +3433,22 @@ function passFail(profile, settings, wallet, trades) {
   const hard = (name, pass, detail = '') => gates.push({ name, pass: Boolean(pass), hard: true, detail });
   const soft = (name, pass, detail = '') => gates.push({ name, pass: Boolean(pass), hard: false, detail });
 
+  const dataQuality = closedOhlcQualityForExecution(profile.symbol, settings);
+  hard('Delta Closed OHLC Data Quality', dataQuality.pass, dataQuality.detail);
+
   const sig = profile.macdDivergenceSignal || {};
   const sigModel = String(sig.entryModel || settings.entryModel || 'PRACTICAL_MTF_MACD').toUpperCase();
   const practicalModel = sigModel !== 'STRICT_TRANSCRIPT_DIVERGENCE';
-  hard('MACD + MTF EMA Signal', hasDirection && Boolean(sig.pass) && sig.entrySide === direction, sig.reason || 'No valid closed-candle MACD/MTF trigger yet');
+  hard('Institutional EMA + MACD Signal', hasDirection && Boolean(sig.pass) && sig.entrySide === direction, sig.reason || 'No valid closed-candle institutional EMA/MACD trigger yet');
+  const inst = sig.institutionalEma || {};
+  const instSide = direction === 'LONG' ? inst.long : direction === 'SHORT' ? inst.short : null;
+  const conf = instSide?.confluence || {};
+  hard('Structure Location Gate', hasDirection && Boolean(conf.structure?.pass), conf.structure?.reason || 'Need one valid location: S/R, previous high/low sweep, range edge, VWAP, or EMA50 pullback.');
+  hard('Confluence Score Gate', hasDirection && Number(conf.score || 0) >= Number(settings.minConfluenceScore || 7) && Number(conf.confirmations || 0) >= Number(settings.minMomentumConfirmations || 3), conf.reason || 'Need structure + trend + at least 3 momentum confirmations.');
+  soft('EMA9/21/50/200 Trend Context', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.execStack || instSide?.htfStack)), instSide?.detail || inst.reason || 'EMA trend context');
+  soft('EMA/VWAP/SR Pullback Context', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.pullback?.pass || conf.structure?.pass)), instSide?.pullback ? `touched=${instSide.pullback.touched} reclaimed=${instSide.pullback.reclaimed} extension=${instSide.pullback.extensionAtr}ATR` : 'Need controlled location, not middle of nowhere');
+  hard('Price-Action Trigger', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.priceAction?.pass)), instSide?.priceAction?.reason || 'Need engulfing, pin bar, double top/bottom confirmation');
+  soft('HTF MACD Strength', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.htfMacd || instSide?.macd5Ok)), `5m=${instSide?.macd5Ok || false} 15m=${instSide?.macd15Ok || false} 1h=${instSide?.macd1hOk || false}`);
   hard('EMA50 15m vs 1h Trend Filter', hasDirection && Boolean(sig.conditions?.longTrend || sig.conditions?.shortTrend), `EMA15=${sig.ema15 || '-'} EMA1H=${sig.ema1h || '-'} gap=${sig.emaGapPct || '-'}%`);
   const divOk = direction === 'LONG'
     ? Boolean(sig.conditions?.priceLowerLow && sig.conditions?.macdHigherLow)
@@ -2568,14 +3459,17 @@ function passFail(profile, settings, wallet, trades) {
   else hard('MACD Zero-Line Side Held', hasDirection && Boolean(sig.conditions?.zeroOk), `MACD=${sig.macdLine ?? '-'} Signal=${sig.macdSignal ?? '-'}`);
   if (practicalModel && !sig.requireDivergenceForEntry) soft('Divergence Context', Boolean(divOk), sig.divergence ? `Optional in Practical mode. Price ${sig.divergence.priceFirst} -> ${sig.divergence.priceSecond}; MACD ${sig.divergence.macdFirst} -> ${sig.divergence.macdSecond}` : 'Optional in Practical mode; no clean confirmed divergence yet');
   else hard('Divergence Confirmed', hasDirection && divOk, sig.divergence ? `Price ${sig.divergence.priceFirst} -> ${sig.divergence.priceSecond}; MACD ${sig.divergence.macdFirst} -> ${sig.divergence.macdSecond}` : 'Need two confirmed pivots');
-  hard('Histogram Color Change', hasDirection && Boolean(sig.conditions?.histColorChange), `Histogram color change required within ${sig.histColorLookback || settings.histColorLookback || 6} closed 5m candles`);
-  hard('Confirmed MACD Crossover', hasDirection && Boolean(sig.conditions?.crossover), `Closed-candle MACD crossover required within ${sig.entrySignalWindowCandles || settings.entrySignalWindowCandles || 3} candle(s)`);
+  soft('Histogram Color Change', hasDirection && Boolean(sig.conditions?.histColorChange), `Preferred within ${sig.histColorLookback || settings.histColorLookback || 6} closed 5m candles; high confluence can still pass.`);
+  soft('Confirmed MACD Crossover', hasDirection && Boolean(sig.conditions?.crossover), `Preferred within ${sig.entrySignalWindowCandles || settings.entrySignalWindowCandles || 3} candle(s); not standalone.`);
   if (settings.entryOrderType !== 'market' && settings.requirePullbackForExecution !== false) {
     soft('Limit Pullback Entry', Boolean(profile.decision === 'LONG' || profile.decision === 'SHORT'), 'Execution uses pullback limit order near support/resistance/MTF EMA. It is not a transcript filter; it improves entry price and avoids market chasing.');
   }
 
   soft('Support / Resistance Context', true, profile.supportResistance?.reason || 'Context only; not an entry engine');
   soft('Market Structure Context', true, profile.marketStructure?.reason || 'Context only; not an entry engine');
+
+  const tier = coinTier(profile.symbol);
+  hard('Coin Tier Filter', hasDirection && (tier < 3 || Number(conf.score || 0) >= Number(settings.tier3MinConfluenceScore || 10)), tier < 3 ? coinTierLabel(profile.symbol) : `Tier 3 requires A+ confluence score ${settings.tier3MinConfluenceScore || 10}+; score=${Number(conf.score || 0)}`);
 
   const technicalSlOk = hasDirection && Boolean(profile.technicalStop?.sl && profile.technicalStop?.riskDistance > 0);
   hard('Technical SL Available', technicalSlOk, profile.technicalStop?.reason || 'Divergence swing SL with ATR buffer required');
@@ -2595,7 +3489,7 @@ function passFail(profile, settings, wallet, trades) {
     blockedBy: hardGates.find(g => !g.pass)?.name || null,
     trendVotes: passedCount,
     trendVotesRequired: hardGates.length,
-    trendVoteText: `MACD-DIV-MTF ${passedCount}/${hardGates.length}`
+    trendVoteText: `INST-EMA-MACD ${passedCount}/${hardGates.length}`
   };
 }
 
@@ -2624,7 +3518,7 @@ function nextTriggerText(profile, result, candidate, settings) {
   const direction = profile?.decision || 'WAIT';
   const sig = profile?.macdDivergenceSignal || {};
   if (candidate && result?.allPass) return `READY: ${direction} setup passed; ${candidate.entryType === 'PULLBACK_LIMIT' ? 'place pullback limit order' : 'entry ready'} at ${candidate.entry}; SL ${candidate.sl}; TP2 ${candidate.tp2}.`;
-  if (direction === 'WAIT') return sig.reason || 'WAIT: need EMA50(15m/1h) alignment + MACD divergence + histogram color change + confirmed crossover.';
+  if (direction === 'WAIT') return sig.reason || 'WAIT: need institutional EMA13/50/200 trend, EMA50 pullback, price-action trigger, HTF MACD strength, histogram color change, and confirmed crossover.';
   const failedHard = (result?.gates || []).filter(g => !g.pass && g.hard !== false).map(g => `${g.name}${g.detail ? ` (${g.detail})` : ''}`);
   return failedHard.length ? `WAIT: ${failedHard.slice(0, 3).join(' / ')}` : 'WAIT: setup is not clean enough yet.';
 }
@@ -2657,10 +3551,14 @@ function buildDecisionReason(profile, result, candidate, settings) {
   ];
   if (profile?.macdDivergenceSignal) {
     const sig = profile.macdDivergenceSignal;
-    parts.push(`MACD_MTF_SIGNAL=${sig.pass ? 'PASS' : sig.ready ? 'WAIT' : 'WARMUP'} (${sig.entryModel || 'PRACTICAL_MTF_MACD'})`);
+    parts.push(`INSTITUTIONAL_EMA_MACD_SIGNAL=${sig.pass ? 'PASS' : sig.ready ? 'WAIT' : 'WARMUP'} (${sig.entryModel || 'PRACTICAL_MTF_MACD'})`);
     parts.push(`MACD_DIVERGENCE_Reason=${sig.reason || '-'}`);
     parts.push(`EMA50_15m=${sig.ema15 ?? '-'}`);
     parts.push(`EMA50_1h=${sig.ema1h ?? '-'}`);
+    parts.push(`EMA13=${sig.ema13 ?? '-'}`);
+    parts.push(`EMA50=${sig.ema50 ?? '-'}`);
+    parts.push(`EMA200=${sig.ema200 ?? '-'}`);
+    if (sig.institutionalEma) parts.push(`InstitutionalEMA=${sig.institutionalEma.pass ? 'PASS' : sig.institutionalEma.ready ? 'WAIT' : 'WARMUP'} ${sig.institutionalEma.reason || '-'}`);
     parts.push(`MACD_Line=${sig.macdLine ?? '-'}`);
     parts.push(`MACD_Signal=${sig.macdSignal ?? '-'}`);
     if (sig.invalidationLevel) parts.push(`StrategicSL=${sig.invalidationLevel}`);
@@ -2701,7 +3599,7 @@ function buildDecisionReason(profile, result, candidate, settings) {
       `SL=${candidate.sl}`,
       `SL reason=${candidate.slReason || '-'}`,
       `TP1=${candidate.tp1}`,
-      `TP2=${candidate.tp2}`,
+      `TP1=${candidate.tp1} TP2=${candidate.tp2} FullPlan=${candidate.estimatedFullTradeProfitUsd ? '$'+candidate.estimatedFullTradeProfitUsd : '-'}`,
       `TP3=${candidate.tp3}`,
       `RR=${candidate.rr}`,
       `Margin=${candidate.marginUsedUsd || 0}`,
@@ -2748,20 +3646,26 @@ function nearestPullbackEntry(profile, direction, settings) {
   const maxGap = atr * Math.min(Math.max(Number(settings.pullbackMaxAtrMult || 1.50), 0.2), 5);
   const sig = profile.macdDivergenceSignal || {};
   const sr = profile.supportResistance || {};
-  const values = [Number(sig.ema15), Number(sig.ema1h)];
-  if (direction === 'LONG') values.push(Number(sr.support));
-  else values.push(Number(sr.resistance));
+  const mm = direction === 'LONG'
+    ? (sig.institutionalEma?.marketMemory?.long || sig.institutionalEma?.long?.marketMemory || {})
+    : (sig.institutionalEma?.marketMemory?.short || sig.institutionalEma?.short?.marketMemory || {});
+  const memoryLine = Number(sig.institutionalEma?.marketMemory?.line || 0);
+  const memoryCloudLow = Number(mm.entryZoneLow || sig.institutionalEma?.marketMemory?.cloudLow || 0);
+  const memoryCloudHigh = Number(mm.entryZoneHigh || sig.institutionalEma?.marketMemory?.cloudHigh || 0);
+  const values = [Number(sig.ema15), Number(sig.ema1h), memoryLine];
+  if (direction === 'LONG') values.push(Number(sr.support), memoryCloudHigh, memoryCloudLow);
+  else values.push(Number(sr.resistance), memoryCloudLow, memoryCloudHigh);
   const filtered = values.filter(v => Number.isFinite(v) && v > 0);
   let chosen = null;
   let source = 'ATR pullback';
   if (direction === 'LONG') {
     const below = filtered.filter(v => v < current - tick && current - v <= maxGap).sort((a, b) => b - a);
-    if (below.length) { chosen = below[0]; source = chosen === Number(sr.support) ? 'support pullback' : chosen === Number(sig.ema15) ? 'EMA50 15m pullback' : 'EMA50 1h pullback'; }
+    if (below.length) { chosen = below[0]; source = chosen === Number(sr.support) ? 'support pullback' : chosen === memoryCloudHigh || chosen === memoryCloudLow || chosen === memoryLine ? 'Market Memory cloud pullback' : chosen === Number(sig.ema15) ? 'EMA50 15m pullback' : 'EMA50 1h pullback'; }
     if (!chosen) chosen = current - minGap;
     chosen = Math.min(chosen, current - tick);
   } else if (direction === 'SHORT') {
     const above = filtered.filter(v => v > current + tick && v - current <= maxGap).sort((a, b) => a - b);
-    if (above.length) { chosen = above[0]; source = chosen === Number(sr.resistance) ? 'resistance pullback' : chosen === Number(sig.ema15) ? 'EMA50 15m pullback' : 'EMA50 1h pullback'; }
+    if (above.length) { chosen = above[0]; source = chosen === Number(sr.resistance) ? 'resistance pullback' : chosen === memoryCloudLow || chosen === memoryCloudHigh || chosen === memoryLine ? 'Market Memory cloud pullback' : chosen === Number(sig.ema15) ? 'EMA50 15m pullback' : 'EMA50 1h pullback'; }
     if (!chosen) chosen = current + minGap;
     chosen = Math.max(chosen, current + tick);
   }
@@ -2784,11 +3688,62 @@ function entryFillableNow(direction, marketPrice, entry) {
   return direction === 'LONG' ? p <= e : p >= e;
 }
 
+
+function tradeStyleFromSettings(settings = loadSettings()) {
+  const r = normalizeResolution(settings.executionTimeframe || settings.primaryTimeframe || '5m');
+  if (['1m','3m','5m'].includes(r)) return 'SCALP';
+  if (['15m','30m','1h'].includes(r)) return 'INTRA';
+  return 'SWING';
+}
+
+function dynamicTpContinuationStrong(row, trade, settings) {
+  if (settings.dynamicTpEnabled === false) return false;
+  if (!row || !trade || row.dec !== trade.side) return false;
+  const sig = row.macdDivergenceSignal || {};
+  const inst = sig.institutionalEma || {};
+  const instSide = trade.side === 'LONG' ? inst.long : inst.short;
+  const hist = Number(sig.macdHistogram ?? row.macd?.histogram ?? 0);
+  const prev = Number(sig.macdPreviousHistogram ?? row.macd?.previousHistogram ?? 0);
+  const macdStillStrong = trade.side === 'LONG' ? hist > 0 && hist >= prev : hist < 0 && hist <= prev;
+  return Boolean(row.pass && instSide?.strongMacd && macdStillStrong);
+}
+
+function currentTargetRForTrade(trade, targetName = 'tp2') {
+  const entry = tradeInitialEntry(trade);
+  const risk = tradeInitialRiskDistance(trade);
+  const target = Number(trade?.[targetName] || 0);
+  if (!entry || !risk || !target) return 0;
+  return Math.abs(target - entry) / risk;
+}
+
+function moveTargetIfBetter(trade, targetName, nextPrice, reason) {
+  const n = Number(nextPrice || 0);
+  const c = Number(trade?.[targetName] || 0);
+  if (!n || !c) return false;
+  const better = trade.side === 'LONG' ? n > c : n < c;
+  if (!better) return false;
+  trade[targetName] = roundCoin(trade.coin, n);
+  pushManagementEvent(trade, `${reason}: ${String(targetName).toUpperCase()} moved to ${trade[targetName]}`);
+  return true;
+}
+
+function emaTrailStopForTrade(trade, settings) {
+  const candles = getCachedCandles(trade.coin, '5m');
+  if (!Array.isArray(candles) || candles.length < 30) return null;
+  const len = Math.min(Math.max(Math.floor(Number(settings.trailingStopEmaPeriod || 13)), 3), 50);
+  const closes = candles.map(c => c.close).filter(n => Number.isFinite(n) && n > 0);
+  const ema = latestEma(closes, len);
+  const atr = atrFromCandles(candles, Number(settings.atrPeriod || 14)) || state.market[trade.coin]?.atr || 0;
+  if (!ema || !atr) return null;
+  const buffer = atr * Math.min(Math.max(Number(settings.trailingStopAtrBuffer || 0.20), 0), 2);
+  return trade.side === 'LONG' ? ema - buffer : ema + buffer;
+}
+
 function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   if (profile.decision !== 'LONG' && profile.decision !== 'SHORT') return null;
   const direction = profile.decision;
   const currentPrice = Number(profile.price || 0);
-  // V57: pullback is an execution preference, not a second mandatory signal after the MACD trigger.
+  // V60: secondary pullback preference stays separate from the institutional EMA50 pullback gate, not a second mandatory signal after the MACD trigger.
   // Default behavior: enter with a limit order at the current closed-candle/ticker price.
   // If Require Pullback is enabled, place a pending pullback limit instead.
   const pullbackPlan = settings.entryOrderType !== 'market' && settings.requirePullbackForExecution === true
@@ -2804,7 +3759,8 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   const isBreakoutEntry = false;
   const isVwapEntry = false;
   const isSarMacdEntry = false;
-  const isMacdDivergenceEntry = profile.strategySignalSource === 'MACD_DIVERGENCE_MTF_EMA_LOCAL';
+  const isMacdDivergenceEntry = profile.strategySignalSource === 'INSTITUTIONAL_EMA_MACD_MTF_LOCAL';
+  const tradeStyle = tradeStyleFromSettings(settings);
   const sizing = highProbabilitySizing(profile, settings);
   const tp1R = Math.min(Math.max(Number(settings.tp1TriggerR || 1.5), 1), 5);
   let tp1 = direction === 'LONG' ? entry + riskDistance * tp1R : entry - riskDistance * tp1R;
@@ -2821,7 +3777,12 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   if (isMacdDivergenceEntry && profile.macdDivergenceSignal) {
     if (Number(profile.macdDivergenceSignal.tp1)) tp1 = Number(profile.macdDivergenceSignal.tp1);
     if (Number(profile.macdDivergenceSignal.tp2)) tp2 = Number(profile.macdDivergenceSignal.tp2);
-    rewardR = 2;
+    rewardR = Number(profile.macdDivergenceSignal.dynamicTargetR || settings.rewardTargetR || 2);
+    const activeConf = direction === 'LONG' ? profile.macdDivergenceSignal.institutionalEma?.long?.confluence : profile.macdDivergenceSignal.institutionalEma?.short?.confluence;
+    if (settings.dynamicTpEnabled !== false && Number(activeConf?.score || 0) >= Number(settings.aPlusConfluenceScore || 10)) {
+      rewardR = Math.min(Math.max(rewardR, Number(settings.dynamicTpStrongR || 3.5)), Number(settings.dynamicTpMaxR || 6));
+      tp2 = direction === 'LONG' ? entry + riskDistance * rewardR : entry - riskDistance * rewardR;
+    }
     tp3 = tp2;
   }
   const base = {
@@ -2839,7 +3800,10 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
     tp1R,
     sizingMultiplier: sizing.multiplier,
     sizingReason: sizing.reason,
-    exitPlan: 'MACD Divergence + MTF EMA Plan: optional TP1 partial at 1R, move SL to breakeven/profit, final TP at 2R. No other strategy modules are used.',
+    exitPlan: 'Confluence + structure + execution plan: one valid location, MTF EMA trend, Market Memory similar-history pullback, MACD timing, RSI/CCI/VWAP/volume confirmation. SL stays beyond invalidation/cloud/swing with ATR buffer; sizing reduces if SL is wide. TP1 partial at 1R; TP2 extends only when confluence and momentum remain strong.',
+    tradeStyle,
+    confluenceScore: (direction === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence?.score : profile.macdDivergenceSignal?.institutionalEma?.short?.confluence?.score) || 0,
+    confluence: direction === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence : profile.macdDivergenceSignal?.institutionalEma?.short?.confluence,
     entryType: pullbackPlan ? 'PULLBACK_LIMIT' : (settings.entryOrderType === 'market' ? 'MARKET_OR_IMMEDIATE' : 'IMMEDIATE_LIMIT'),
     orderType: settings.entryOrderType === 'market' ? 'market' : 'limit',
     currentPrice: roundCoin(profile.symbol, currentPrice),
@@ -2863,6 +3827,15 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   base.leverage = plan.leverage;
   base.estimatedStopLossUsd = plan.estimatedStopLossUsd;
   base.dynamicRiskCapUsd = plan.dynamicRiskCapUsd;
+  base.estimatedTp1ProfitUsd = plan.estimatedTp1ProfitUsd;
+  base.estimatedTp2ProfitUsd = plan.estimatedTp2ProfitUsd;
+  base.estimatedFullTradeProfitUsd = plan.estimatedFullTradeProfitUsd;
+  base.plannedProfitR = plan.plannedProfitR;
+  base.minFullTradeProfitUsd = plan.minFullTradeProfitUsd;
+  base.targetFullTradeProfitUsd = plan.targetFullTradeProfitUsd;
+  base.minTargetProfitUsd = plan.minTargetProfitUsd;
+  base.targetProfitUsd = plan.targetProfitUsd;
+  base.profitTargetStatus = plan.profitTargetStatus;
   base.maxMarginCapUsd = plan.marginCapUsd;
   base.liveOrderSize = plan.liveOrderSize || Math.max(1, Math.floor(Number(settings.liveOrderSize || 1)));
   base.qty = plan.notionalUsd > 0 && entry > 0 ? Math.round((plan.notionalUsd / entry) * 1000000) / 1000000 : 0;
@@ -2885,7 +3858,8 @@ function evaluateSymbol(symbol, settings, wallet, trades) {
 
   return {
     coin: symbol,
-    tier: ['BTCUSD', 'ETHUSD', 'SOLUSD', 'BNBUSD'].includes(symbol) ? 'TIER 1 — MAJOR COINS' : 'TIER 2 — MID CAP / INTRADAY',
+    tier: coinTierLabel(symbol),
+    tradeStyle: candidate?.tradeStyle || tradeStyleFromSettings(settings),
     dec: profile.decision,
     t15m: result.trendVoteText || (profile.decision === 'WAIT' ? 'Votes 0/4' : (profile.decision === 'LONG' ? 'Bull' : 'Bear')),
     trendStack: result.trendVoteText || '-',
@@ -2915,6 +3889,8 @@ function evaluateSymbol(symbol, settings, wallet, trades) {
     supportResistance: profile.supportResistance,
     strategyFilters: profile.strategyFilters,
     technicalStop: profile.technicalStop,
+    confluence: (profile.decision === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence : profile.decision === 'SHORT' ? profile.macdDivergenceSignal?.institutionalEma?.short?.confluence : null),
+    confluenceScore: (profile.decision === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence?.score : profile.decision === 'SHORT' ? profile.macdDivergenceSignal?.institutionalEma?.short?.confluence?.score : 0) || 0,
     hasWebhookSignal: Boolean(profile.hasWebhookSignal),
     hasStrategySignal: Boolean(profile.hasStrategySignal),
     strategySignalSource: profile.strategySignalSource || 'NONE',
@@ -2931,6 +3907,15 @@ function evaluateSymbol(symbol, settings, wallet, trades) {
     dynamicRiskCapUsd: candidate?.dynamicRiskCapUsd || 0,
     notionalUsd: candidate?.notionalUsd || 0,
     leverage: candidate?.leverage || settings.defaultLeverage,
+    estimatedTp1ProfitUsd: candidate?.estimatedTp1ProfitUsd || 0,
+    estimatedTp2ProfitUsd: candidate?.estimatedTp2ProfitUsd || 0,
+    estimatedFullTradeProfitUsd: candidate?.estimatedFullTradeProfitUsd || 0,
+    plannedProfitR: candidate?.plannedProfitR || 0,
+    minFullTradeProfitUsd: candidate?.minFullTradeProfitUsd || 0,
+    targetFullTradeProfitUsd: candidate?.targetFullTradeProfitUsd || 0,
+    minTargetProfitUsd: candidate?.minTargetProfitUsd || 0,
+    targetProfitUsd: candidate?.targetProfitUsd || 0,
+    profitTargetStatus: candidate?.profitTargetStatus || '',
     candidate
   };
 }
@@ -2948,18 +3933,44 @@ function latestWebhookSignal(symbol) {
 function refreshOpenTradePrices(trades) {
   for (const trade of trades.openTrades || []) {
     const m = state.market[trade.coin];
-    if (m?.price) trade.price = roundCoin(trade.coin, m.price);
-    trade.marketSource = m?.source || trade.marketSource || 'UNKNOWN';
+    const latestClosed5m = getCachedCandles(trade.coin, '5m').at(-1);
+    if (latestClosed5m?.close) {
+      trade.price = roundCoin(trade.coin, latestClosed5m.close);
+      trade.lastClosedCandleTime = latestClosed5m.time || trade.lastClosedCandleTime || null;
+    } else if (m?.price) {
+      trade.price = roundCoin(trade.coin, m.price);
+    }
+    trade.marketSource = latestClosed5m ? 'DELTA_CLOSED_5M_CANDLE' : (m?.source || trade.marketSource || 'UNKNOWN');
     if (String(trade.status || '').toUpperCase() === 'PENDING_LIMIT') {
       trade.pnl = 0;
       trade.pnlPct = 0;
       trade.profitR = 0;
-      const filled = entryFillableNow(trade.side, trade.price, trade.entry);
+      const settings = loadSettings();
+      const expiryMs = Math.max(5, Number(settings.pendingExpiryMinutes || 45)) * 60 * 1000;
+      const openedAtMs = new Date(trade.openedAt || trade.createdAt || Date.now()).getTime();
+      if (openedAtMs && Date.now() - openedAtMs > expiryMs) {
+        trade.status = 'EXPIRED_LIMIT';
+        const idx = trades.openTrades.findIndex(t => t.id === trade.id);
+        if (idx >= 0) trades.openTrades.splice(idx, 1);
+        appendTradeJournalEvent('CANCEL', trade, { cancelReason: 'Pending pullback limit expired without fill', entry: trade.entry, marketPrice: trade.price });
+        log('ORDER', `${trade.coin} ${trade.side} pending pullback limit expired at ${trade.entry}; market=${trade.price}.`);
+        continue;
+      }
+      const latest5m = getCachedCandles(trade.coin, '5m').at(-1);
+      const latestTime = Number(latest5m?.time || 0);
+      const placedCandleTime = Number(trade.pendingCreatedCandleTime || trade.signalClosedCandleTime || 0);
+      const closedAfterPlacement = latest5m && latestTime && (!placedCandleTime || latestTime > placedCandleTime);
+      const limitTouched = closedAfterPlacement && trade.side === 'LONG'
+        ? Number(latest5m.low) <= Number(trade.entry)
+        : closedAfterPlacement && trade.side === 'SHORT'
+          ? Number(latest5m.high) >= Number(trade.entry)
+          : false;
+      const filled = Boolean(limitTouched);
       if (filled) {
         trade.status = 'OPEN';
         trade.filledAt = new Date().toISOString();
         trade.fillPrice = trade.entry;
-        appendTradeJournalEvent('FILL', trade, { entry: trade.entry, marketPrice: trade.price, note: 'Paper/live limit marked filled when price touched entry.' });
+        appendTradeJournalEvent('FILL', trade, { entry: trade.entry, marketPrice: trade.price, candleLow: latest5m?.low || null, candleHigh: latest5m?.high || null, candleTime: latest5m?.time || null, note: 'Paper limit filled only from a closed 5m candle after the order was placed.' });
         log('ORDER', `${trade.coin} ${trade.side} pullback limit filled at ${trade.entry}.`);
       } else {
         continue;
@@ -3069,7 +4080,7 @@ function tp1ReachedForTrade(trade, settings) {
 }
 
 function tp2ReachedForTrade(trade, settings) {
-  const triggerR = 2;
+  const triggerR = currentTargetRForTrade(trade, 'tp2') || 2;
   const r = profitRForTrade(trade);
   const tp2 = Number(trade.tp2 || 0);
   const priceHit = targetPriceHit(trade, tp2);
@@ -3430,9 +4441,22 @@ async function processTradeManagement(rows, settings, trades, wallet, opts = {})
       }
     }
 
+    if (settings.dynamicTpEnabled !== false && r >= 1 && dynamicTpContinuationStrong(row, trade, settings)) {
+      const emaTrail = emaTrailStopForTrade(trade, settings);
+      if (emaTrail && moveTradeStop(trade, emaTrail, 'EMA13 continuation trail')) ms.lastEmaTrail = trade.sl;
+      if (!trade.tp1Done && (Number(trade.estimatedFullTradeProfitUsd || 0) >= Number(settings.targetFullTradeProfitUsd || 5) || Number(settings.targetFullTradeProfitUsd || 0) >= 5)) {
+        const nextTp1R = Math.min(Math.max(Number(settings.dynamicTp1ShiftR || 1.5), Number(settings.tp1TriggerR || 1)), Math.max(1, Number(settings.dynamicTpStrongR || 3) - 0.25));
+        if (moveTargetIfBetter(trade, 'tp1', targetRPrice(trade, nextTp1R), `Strong MACD continuation TP1 shift to ${nextTp1R}R`)) ms.tp1ShiftedR = nextTp1R;
+      }
+    }
+
     const tp1Check = tp1ReachedForTrade(trade, settings);
     if (settings.autoTp1Enabled !== false && !trade.tp1Done && tp1Check.hit) {
-      const closePct = Math.min(Math.max(Number(settings.tp1ClosePct || 50), 1), 90);
+      let closePct = Math.min(Math.max(Number(settings.tp1ClosePct || 50), 1), 90);
+      if (dynamicTpContinuationStrong(row, trade, settings)) {
+        closePct = Math.min(closePct, Math.min(Math.max(Number(settings.dynamicTp1StrongClosePct || 25), 1), 75));
+        pushManagementEvent(trade, `Strong MACD continuation: TP1 partial reduced to ${closePct}% so remaining size can run`);
+      }
       if (opts.live && trade.mode === 'live') {
         try {
           const result = await sendLivePartialCloseOrder(trade, settings, closePct);
@@ -3464,6 +4488,15 @@ async function processTradeManagement(rows, settings, trades, wallet, opts = {})
 
     const tp2Check = tp2ReachedForTrade(trade, settings);
     if (settings.autoTp1Enabled !== false && !trade.tp2Done && trade.tp1Done && tp2Check.hit) {
+      const currentTp2R = currentTargetRForTrade(trade, 'tp2') || 2;
+      const maxDynamicR = Math.min(Math.max(Number(settings.dynamicTpMaxR || 5), 2), 8);
+      if (dynamicTpContinuationStrong(row, trade, settings) && currentTp2R < maxDynamicR - 0.01) {
+        const nextR = Math.min(maxDynamicR, Math.max(currentTp2R + 1, Number(settings.dynamicTpStrongR || 3)));
+        if (moveTargetIfBetter(trade, 'tp2', targetRPrice(trade, nextR), `Strong MACD continuation TP2 extension to ${nextR}R`)) {
+          ms.tp2ExtendedR = nextR;
+          continue;
+        }
+      }
       const closePct = Math.min(Math.max(Number(settings.tp2ClosePct || 100), 1), 100);
       if (opts.live && trade.mode === 'live') {
         try {
@@ -3550,7 +4583,8 @@ async function sendLiveAddOnOrder(trade, row, settings) {
 }
 
 function liveReady(settings, keys) {
-  return Boolean(
+  // V64 locked build: live execution is disabled. API keys can be saved only for wallet/data reference.
+  return false && Boolean(
     !settings.paperTrade &&
     keys.apiKey &&
     keys.secret &&
@@ -3566,6 +4600,7 @@ function liveReady(settings, keys) {
 
 function liveReadinessFailures(settings = loadSettings(), keys = loadKeys(), { ignorePaper = false } = {}) {
   const failures = [];
+  failures.push('V64 paper-only lock: live order execution disabled in this build');
   if (!ignorePaper && settings.paperTrade) failures.push('PAPER mode is active');
   if (!keys.apiKey || !keys.secret) failures.push('API key/secret not saved');
   if (keys.lastTestStatus !== 'pass') failures.push('API test not passed');
@@ -3588,6 +4623,7 @@ function buildTradeRecord(row, settings, mode) {
     id,
     coin: row.coin,
     side: row.dec,
+    tradeStyle: row.candidate.tradeStyle || row.tradeStyle || tradeStyleFromSettings(settings),
     initialEntry: row.candidate.entry,
     entry: row.candidate.entry,
     price: row.price,
@@ -3602,11 +4638,22 @@ function buildTradeRecord(row, settings, mode) {
     chandelierLevel: row.candidate.chandelierLevel || null,
     qty: row.candidate.qty,
     liveOrderSize: row.candidate.liveOrderSize,
+    lotsPurchased: row.candidate.liveOrderSize || row.candidate.qty || 0,
+    confluenceScore: row.candidate.confluenceScore || row.confluenceScore || 0,
     marginUsedUsd: money(row.candidate.marginUsedUsd || plan.marginUsd || 0),
     maxMarginCapUsd: money(row.candidate.maxMarginCapUsd || plan.marginCapUsd || marginCapForSymbol(row.coin, settings)),
     notionalUsd: money(row.candidate.notionalUsd || plan.notionalUsd || 0),
     leverage: Number(row.candidate.leverage || plan.leverage || settings.defaultLeverage),
     estimatedLossAtSlUsd: money(row.candidate.estimatedStopLossUsd || plan.estimatedStopLossUsd || 0),
+    estimatedTp1ProfitUsd: money(row.candidate.estimatedTp1ProfitUsd || plan.estimatedTp1ProfitUsd || 0),
+    estimatedTp2ProfitUsd: money(row.candidate.estimatedTp2ProfitUsd || plan.estimatedTp2ProfitUsd || 0),
+    estimatedFullTradeProfitUsd: money(row.candidate.estimatedFullTradeProfitUsd || plan.estimatedFullTradeProfitUsd || 0),
+    plannedProfitR: money(row.candidate.plannedProfitR || plan.plannedProfitR || plannedExitRMultiple(settings)),
+    minFullTradeProfitUsd: money(row.candidate.minFullTradeProfitUsd || plan.minFullTradeProfitUsd || 0),
+    targetFullTradeProfitUsd: money(row.candidate.targetFullTradeProfitUsd || plan.targetFullTradeProfitUsd || 0),
+    minTargetProfitUsd: money(row.candidate.minTargetProfitUsd || plan.minTargetProfitUsd || 0),
+    targetProfitUsd: money(row.candidate.targetProfitUsd || plan.targetProfitUsd || 0),
+    profitTargetStatus: row.candidate.profitTargetStatus || plan.profitTargetStatus || '',
     initialSl: row.candidate.sl,
     initialRiskDistance: Math.abs(Number(row.candidate.entry || 0) - Number(row.candidate.sl || 0)),
     remainingPct: 100,
@@ -3621,6 +4668,8 @@ function buildTradeRecord(row, settings, mode) {
     addOns: [],
     managementEvents: [],
     openedAt: new Date().toISOString(),
+    signalClosedCandleTime: getCachedCandles(row.coin, '5m').at(-1)?.time || null,
+    pendingCreatedCandleTime: row.candidate.entryType === 'PULLBACK_LIMIT' ? (getCachedCandles(row.coin, '5m').at(-1)?.time || null) : null,
     rr: row.candidate.rr,
     score: row.score,
     entryReason: [row.entryReason || row.whyReason || row.blockedBy || row.candidate.slReason || 'Entry conditions passed', row.candidate.entryReasonExtra].filter(Boolean).join(' | '),
@@ -3960,6 +5009,15 @@ async function openLiveTrade(row, settings, trades, wallet) {
   row.candidate.notionalUsd = plan.notionalUsd;
   row.candidate.leverage = plan.leverage;
   row.candidate.estimatedStopLossUsd = plan.estimatedStopLossUsd;
+  row.candidate.estimatedTp1ProfitUsd = plan.estimatedTp1ProfitUsd;
+  row.candidate.estimatedTp2ProfitUsd = plan.estimatedTp2ProfitUsd;
+  row.candidate.estimatedFullTradeProfitUsd = plan.estimatedFullTradeProfitUsd;
+  row.candidate.plannedProfitR = plan.plannedProfitR;
+  row.candidate.minFullTradeProfitUsd = plan.minFullTradeProfitUsd;
+  row.candidate.targetFullTradeProfitUsd = plan.targetFullTradeProfitUsd;
+  row.candidate.minTargetProfitUsd = plan.minTargetProfitUsd;
+  row.candidate.targetProfitUsd = plan.targetProfitUsd;
+  row.candidate.profitTargetStatus = plan.profitTargetStatus;
   row.candidate.liveOrderSize = plan.liveOrderSize;
 
   const trade = buildTradeRecord(row, settings, 'live');
@@ -4127,6 +5185,9 @@ function metricsFromTrades(trades, wallet) {
   const decisive = wins + losses;
   const winRate = decisive ? (wins / decisive) * 100 : 0;
   const openPnl = pct(open.reduce((s, t) => s + (Number(t.pnl) || 0), 0));
+  const grossWinUsd = pct(closed.filter(t => Number(t.pnl || 0) > 0).reduce((s, t) => s + Number(t.pnl || 0), 0));
+  const grossLossUsd = pct(closed.filter(t => Number(t.pnl || 0) < 0).reduce((s, t) => s + Number(t.pnl || 0), 0));
+  const grossLossUsdAbs = pct(Math.abs(grossLossUsd));
   const closedPnl = pct(closed.reduce((s, t) => s + (Number(t.pnl) || 0), 0));
   const best = closed.length ? Math.max(...closed.map(t => Number(t.pnl) || 0)) : 0;
   const worst = closed.length ? Math.min(...closed.map(t => Number(t.pnl) || 0)) : 0;
@@ -4137,7 +5198,11 @@ function metricsFromTrades(trades, wallet) {
     breakeven,
     winRate: pct(winRate),
     openPnl,
+    grossWinUsd,
+    grossLossUsd,
+    grossLossUsdAbs,
     closedPnl,
+    netClosedPnl: closedPnl,
     totalPnl: pct(openPnl + closedPnl),
     best: pct(best),
     worst: pct(worst),
@@ -4202,6 +5267,12 @@ function getStatePayload(settings = loadSettings(), wallet = loadWallet(), trade
       maxMarginPerCoinUsd: settings.maxMarginPerCoinUsd,
       majorCoinMaxMarginUsd: settings.majorCoinMaxMarginUsd,
       maxStopLossUsd: settings.maxStopLossUsd,
+      minFullTradeProfitUsd: settings.minFullTradeProfitUsd ?? settings.minTargetProfitUsd,
+      targetFullTradeProfitUsd: settings.targetFullTradeProfitUsd ?? settings.targetProfitUsd,
+      minTargetProfitUsd: settings.minFullTradeProfitUsd ?? settings.minTargetProfitUsd,
+      targetProfitUsd: settings.targetFullTradeProfitUsd ?? settings.targetProfitUsd,
+      autoSizeToTargetProfit: settings.autoSizeToTargetProfit,
+      blockTinyProfitTrades: settings.blockTinyProfitTrades,
       totalBotMarginUsed: money(totalBotMarginUsed(displayTrades)),
       remainingBotAllocation: money(Math.max(0, effectiveBotAllocationUsd(settings) - totalBotMarginUsed(displayTrades)))
     },
@@ -4412,15 +5483,15 @@ function staticFile(req, res, pathname) {
 function validateSettingsPatch(patch) {
   const out = {};
   const numericFields = [
-    'emaPeriod', 'emaSlopeThresholdPct', 'atrPeriod', 'atrStopMultiplier', 'supertrendMultiplier', 'kdeThreshold',
+    'emaPeriod', 'entryEmaFastPeriod', 'entryEmaSlowPeriod', 'trendEmaPeriod', 'dominantEmaPeriod', 'rsiPeriod', 'cciPeriod', 'volumeSpikeMultiplier', 'minConfluenceScore', 'aPlusConfluenceScore', 'tier3MinConfluenceScore', 'minMomentumConfirmations', 'structureProximityAtr', 'vwapLookback', 'marketMemoryScanDepth', 'marketMemoryTopMatches', 'marketMemoryPatternLength', 'marketMemoryFutureLookahead', 'marketMemorySensitivity', 'marketMemoryMinSimilarityPct', 'marketMemoryCloudAtrMult', 'marketMemoryNearCloudAtrMult', 'marketMemoryMaxExtensionAtr', 'marketMemoryMinForwardMoveAtr', 'emaSlopeThresholdPct', 'atrPeriod', 'atrStopMultiplier', 'supertrendMultiplier', 'kdeThreshold',
     'kdeLookback', 'relativeVolumeLookback', 'htfMinimumAligned', 'trendVotesRequired', 'zoneProximityPct', 'riskPercent', 'defaultLeverage',
     'maxLeverage', 'maxConcurrentPositions', 'maxBotAllocationUsd', 'liveWalletAllocationPct', 'liveMaxBotAllocationUsd', 'maxMarginPerCoinUsd', 'majorCoinMaxMarginUsd',
     'initialMarginUsd', 'majorInitialMarginUsd', 'maxStopLossUsd', 'minEntryMarginUsd', 'addOnStepMarginUsd',
     'majorAddOnStepMarginUsd', 'maxAddOnsPerCoin', 'profitAddOnTriggerR', 'profitAddOnSizePct', 'profitAddOnMinScore',
-    'breakEvenTriggerR', 'breakEvenBufferR', 'tp1TriggerR', 'qualitySizeScore1', 'qualitySizeMultiplier1', 'qualitySizeScore2', 'qualitySizeMultiplier2', 'maxQualitySizeMultiplier',
+    'breakEvenTriggerR', 'breakEvenBufferR', 'tp1TriggerR', 'institutionalEmaFastPeriod', 'institutionalEmaMidPeriod', 'institutionalEmaSlowPeriod', 'institutionalPullbackLookback', 'institutionalPullbackAtrMult', 'institutionalMaxExtensionAtr', 'institutionalPatternLookback', 'dynamicTpStrongR', 'dynamicTpMaxR', 'dynamicTp1ShiftR', 'dynamicTp1StrongClosePct', 'trailingStopEmaPeriod', 'trailingStopAtrBuffer', 'qualitySizeScore1', 'qualitySizeMultiplier1', 'qualitySizeScore2', 'qualitySizeMultiplier2', 'maxQualitySizeMultiplier',
     'dailyDrawdownLimitPct', 'weeklyDrawdownLimitPct', 'monthlyDrawdownLimitPct',
     'maxFundingRatePct8h', 'extremeFundingRatePct8h', 'newsBlackoutBeforeMin', 'newsBlackoutAfterMin', 'minRR', 'autoScanSeconds',
-    'marketDataRefreshSeconds', 'liveOrderSize', 'macdFastLength', 'macdSlowLength', 'macdSignalLength', 'mtfEmaPeriod', 'minEmaGapPct', 'divergencePivotLeft', 'divergencePivotRight', 'divergenceLookback', 'minDivergenceMacdPct', 'entrySignalWindowCandles', 'histColorLookback', 'tradingViewSignalFreshnessSeconds', 'sarMacdEmaPeriod', 'sarMacdSarStep', 'sarMacdSarMax', 'sarMacdAdxThreshold', 'sarMacdPullbackLookback', 'sarMacdMaxDistanceAtr', 'sarMacdSwingLookback', 'sarMacdEmaStopBufferAtr', 'twoPoleFilterLength', 'twoPoleBuyMaxLevel', 'twoPoleSellMinLevel', 'twoPoleDeltaVolumeThresholdPct', 'breakoutLookback', 'breakoutConsolidationLookback', 'breakoutMaxRangeAtrMult', 'breakoutMomentumBodyAtrMult', 'breakoutSlBufferAtrMult', 'breakoutTp1R', 'chandelierLength', 'chandelierAtrMult', 'totalWalletAmount', 'maxTradesPerDay', 'maxDailyLossUsd', 'maxConsecutiveLosses', 'paperMinScore', 'adrUsedLimitPct', 'timeFailureCandles', 'pendingExpiryMinutes', 'minSlAtrMult', 'minTrendQuality', 'moveSlAfterTp1MinR', 'moveSlAfterTp1MinAge', 'rewardTargetR', 'slSwingLookback', 'slBufferAtrMult', 'maxTechnicalSlAtrMult', 'pullbackAtrMult', 'pullbackMaxAtrMult', 'tp1ClosePct', 'tp2ClosePct', 'tp3ClosePct'
+    'marketDataRefreshSeconds', 'liveOrderSize', 'macdFastLength', 'macdSlowLength', 'macdSignalLength', 'mtfEmaPeriod', 'minEmaGapPct', 'divergencePivotLeft', 'divergencePivotRight', 'divergenceLookback', 'minDivergenceMacdPct', 'entrySignalWindowCandles', 'histColorLookback', 'tradingViewSignalFreshnessSeconds', 'sarMacdEmaPeriod', 'sarMacdSarStep', 'sarMacdSarMax', 'sarMacdAdxThreshold', 'sarMacdPullbackLookback', 'sarMacdMaxDistanceAtr', 'sarMacdSwingLookback', 'sarMacdEmaStopBufferAtr', 'twoPoleFilterLength', 'twoPoleBuyMaxLevel', 'twoPoleSellMinLevel', 'twoPoleDeltaVolumeThresholdPct', 'breakoutLookback', 'breakoutConsolidationLookback', 'breakoutMaxRangeAtrMult', 'breakoutMomentumBodyAtrMult', 'breakoutSlBufferAtrMult', 'breakoutTp1R', 'chandelierLength', 'chandelierAtrMult', 'totalWalletAmount', 'maxTradesPerDay', 'maxDailyLossUsd', 'maxConsecutiveLosses', 'paperMinScore', 'adrUsedLimitPct', 'timeFailureCandles', 'pendingExpiryMinutes', 'minSlAtrMult', 'minTrendQuality', 'moveSlAfterTp1MinR', 'moveSlAfterTp1MinAge', 'rewardTargetR', 'targetFullTradeProfitUsd', 'minFullTradeProfitUsd', 'targetProfitUsd', 'minTargetProfitUsd', 'slSwingLookback', 'slBufferAtrMult', 'maxTechnicalSlAtrMult', 'pullbackAtrMult', 'pullbackMaxAtrMult', 'tp1ClosePct', 'tp2ClosePct', 'tp3ClosePct'
   ];
   for (const field of numericFields) {
     if (Object.prototype.hasOwnProperty.call(patch, field)) {
@@ -4435,9 +5506,15 @@ function validateSettingsPatch(patch) {
   if (typeof patch.entryModel === 'string') out.entryModel = patch.entryModel.trim().toUpperCase();
   if (typeof patch.zeroLineMode === 'string') out.zeroLineMode = patch.zeroLineMode.trim().toLowerCase();
   if (typeof patch.requireDivergenceForEntry === 'boolean') out.requireDivergenceForEntry = patch.requireDivergenceForEntry;
+  if (typeof patch.institutionalEmaEnabled === 'boolean') out.institutionalEmaEnabled = patch.institutionalEmaEnabled;
+  if (typeof patch.institutionalRequireEmaStack === 'boolean') out.institutionalRequireEmaStack = patch.institutionalRequireEmaStack;
+  if (typeof patch.institutionalRequirePullback === 'boolean') out.institutionalRequirePullback = patch.institutionalRequirePullback;
+  if (typeof patch.institutionalRequirePriceAction === 'boolean') out.institutionalRequirePriceAction = patch.institutionalRequirePriceAction;
+  if (typeof patch.institutionalRequireHtfMacd === 'boolean') out.institutionalRequireHtfMacd = patch.institutionalRequireHtfMacd;
+  if (typeof patch.dynamicTpEnabled === 'boolean') out.dynamicTpEnabled = patch.dynamicTpEnabled;
   if (typeof patch.tradingViewWebhookToken === 'string') out.tradingViewWebhookToken = patch.tradingViewWebhookToken.trim() || DEFAULT_SETTINGS.tradingViewWebhookToken;
   if (typeof patch.entryOrderType === 'string') out.entryOrderType = patch.entryOrderType === 'market' ? 'market' : 'limit';
-  if (typeof patch.paperTrade === 'boolean') out.paperTrade = patch.paperTrade;
+  if (typeof patch.paperTrade === 'boolean') out.paperTrade = true;
   if (typeof patch.maxOnePositionPerAsset === 'boolean') out.maxOnePositionPerAsset = patch.maxOnePositionPerAsset;
   if (typeof patch.tradeManagementEnabled === 'boolean') out.tradeManagementEnabled = patch.tradeManagementEnabled;
   if (typeof patch.autoMoveSlEnabled === 'boolean') out.autoMoveSlEnabled = patch.autoMoveSlEnabled;
@@ -4462,10 +5539,18 @@ function validateSettingsPatch(patch) {
   if (typeof patch.breakoutUseChandelierTrail === 'boolean') out.breakoutUseChandelierTrail = patch.breakoutUseChandelierTrail;
   if (typeof patch.sdZoneHardBlock === 'boolean') out.sdZoneHardBlock = patch.sdZoneHardBlock;
   if (typeof patch.highProbabilityMode === 'boolean') out.highProbabilityMode = patch.highProbabilityMode;
+  if (typeof patch.vwapConfluenceEnabled === 'boolean') out.vwapConfluenceEnabled = patch.vwapConfluenceEnabled;
+  if (typeof patch.volumeSpikeConfluenceEnabled === 'boolean') out.volumeSpikeConfluenceEnabled = patch.volumeSpikeConfluenceEnabled;
+  if (typeof patch.marketMemoryEnabled === 'boolean') out.marketMemoryEnabled = patch.marketMemoryEnabled;
+  if (typeof patch.marketMemoryRequirePullback === 'boolean') out.marketMemoryRequirePullback = patch.marketMemoryRequirePullback;
+  if (typeof patch.marketMemoryRequireTopMatchOutcome === 'boolean') out.marketMemoryRequireTopMatchOutcome = patch.marketMemoryRequireTopMatchOutcome;
   if (typeof patch.technicalSlEnabled === 'boolean') out.technicalSlEnabled = patch.technicalSlEnabled;
   if (typeof patch.requireClosedCandle === 'boolean') out.requireClosedCandle = patch.requireClosedCandle;
   if (typeof patch.requirePullbackForExecution === 'boolean') out.requirePullbackForExecution = patch.requirePullbackForExecution;
   if (typeof patch.allowMarketWhenNoPullback === 'boolean') out.allowMarketWhenNoPullback = patch.allowMarketWhenNoPullback;
+  if (typeof patch.autoSizeToTargetProfit === 'boolean') out.autoSizeToTargetProfit = patch.autoSizeToTargetProfit;
+  if (typeof patch.blockTinyProfitTrades === 'boolean') out.blockTinyProfitTrades = patch.blockTinyProfitTrades;
+  if (typeof patch.autoUseMaxLeverageForProfitTarget === 'boolean') out.autoUseMaxLeverageForProfitTarget = patch.autoUseMaxLeverageForProfitTarget;
   if (typeof patch.paperUseDeltaWalletReference === 'boolean') out.paperUseDeltaWalletReference = patch.paperUseDeltaWalletReference;
   if (typeof patch.paperLiveCompatibleSizing === 'boolean') out.paperLiveCompatibleSizing = patch.paperLiveCompatibleSizing;
   if (typeof patch.paperExecutionMode === 'string') out.paperExecutionMode = patch.paperExecutionMode === 'review' ? 'review' : 'auto';
@@ -4476,6 +5561,13 @@ function validateSettingsPatch(patch) {
   out.maxLeverage = Math.min(Math.max(out.maxLeverage ?? DEFAULT_SETTINGS.maxLeverage, 1), 25);
   out.maxConcurrentPositions = Math.min(Math.max(Math.floor(out.maxConcurrentPositions ?? DEFAULT_SETTINGS.maxConcurrentPositions), 1), 5);
   out.maxBotAllocationUsd = Math.min(Math.max(out.maxBotAllocationUsd ?? DEFAULT_SETTINGS.maxBotAllocationUsd, 1), 100000);
+  const rawTargetFull = out.targetFullTradeProfitUsd ?? out.targetProfitUsd ?? DEFAULT_SETTINGS.targetFullTradeProfitUsd ?? DEFAULT_SETTINGS.targetProfitUsd;
+  const rawMinFull = out.minFullTradeProfitUsd ?? out.minTargetProfitUsd ?? DEFAULT_SETTINGS.minFullTradeProfitUsd ?? DEFAULT_SETTINGS.minTargetProfitUsd;
+  out.targetFullTradeProfitUsd = Math.min(Math.max(rawTargetFull, 0), 1000);
+  out.minFullTradeProfitUsd = Math.min(Math.max(rawMinFull, 0), Math.max(out.targetFullTradeProfitUsd || DEFAULT_SETTINGS.targetFullTradeProfitUsd, 0));
+  // Backward-compatible aliases only. UI and sizing use full-trade fields.
+  out.targetProfitUsd = out.targetFullTradeProfitUsd;
+  out.minTargetProfitUsd = out.minFullTradeProfitUsd;
   out.liveWalletAllocationPct = Math.min(Math.max(out.liveWalletAllocationPct ?? DEFAULT_SETTINGS.liveWalletAllocationPct, 1), 100);
   out.liveMaxBotAllocationUsd = Math.min(Math.max(out.liveMaxBotAllocationUsd ?? DEFAULT_SETTINGS.liveMaxBotAllocationUsd, 0), 1000000);
   out.maxMarginPerCoinUsd = Math.min(Math.max(out.maxMarginPerCoinUsd ?? DEFAULT_SETTINGS.maxMarginPerCoinUsd, 1), 10000);
@@ -4484,7 +5576,7 @@ function validateSettingsPatch(patch) {
   out.majorInitialMarginUsd = Math.min(Math.max(out.majorInitialMarginUsd ?? DEFAULT_SETTINGS.majorInitialMarginUsd, 1), out.majorCoinMaxMarginUsd);
   out.addOnStepMarginUsd = Math.min(Math.max(out.addOnStepMarginUsd ?? DEFAULT_SETTINGS.addOnStepMarginUsd, 1), out.maxMarginPerCoinUsd);
   out.majorAddOnStepMarginUsd = Math.min(Math.max(out.majorAddOnStepMarginUsd ?? DEFAULT_SETTINGS.majorAddOnStepMarginUsd, 1), out.majorCoinMaxMarginUsd);
-  out.maxStopLossUsd = Math.min(Math.max(out.maxStopLossUsd ?? DEFAULT_SETTINGS.maxStopLossUsd, 0.1), 3);
+  out.maxStopLossUsd = Math.min(Math.max(out.maxStopLossUsd ?? DEFAULT_SETTINGS.maxStopLossUsd, 0.1), 10);
   out.minEntryMarginUsd = Math.min(Math.max(out.minEntryMarginUsd ?? DEFAULT_SETTINGS.minEntryMarginUsd, 1), 1000);
   out.maxAddOnsPerCoin = Math.min(Math.max(Math.floor(out.maxAddOnsPerCoin ?? DEFAULT_SETTINGS.maxAddOnsPerCoin), 0), 5);
   out.breakEvenTriggerR = Math.min(Math.max(Number(out.breakEvenTriggerR ?? DEFAULT_SETTINGS.breakEvenTriggerR), 0.25), 5);
@@ -4498,6 +5590,25 @@ function validateSettingsPatch(patch) {
   out.qualitySizeScore2 = Math.min(Math.max(Number(out.qualitySizeScore2 ?? DEFAULT_SETTINGS.qualitySizeScore2), out.qualitySizeScore1), 99);
   out.qualitySizeMultiplier2 = Math.min(Math.max(Number(out.qualitySizeMultiplier2 ?? DEFAULT_SETTINGS.qualitySizeMultiplier2), out.qualitySizeMultiplier1), 5);
   out.maxQualitySizeMultiplier = Math.min(Math.max(Number(out.maxQualitySizeMultiplier ?? DEFAULT_SETTINGS.maxQualitySizeMultiplier), 1), 5);
+  out.institutionalEmaEnabled = typeof out.institutionalEmaEnabled === 'boolean' ? out.institutionalEmaEnabled : DEFAULT_SETTINGS.institutionalEmaEnabled;
+  out.institutionalRequireEmaStack = typeof out.institutionalRequireEmaStack === 'boolean' ? out.institutionalRequireEmaStack : DEFAULT_SETTINGS.institutionalRequireEmaStack;
+  out.institutionalRequirePullback = typeof out.institutionalRequirePullback === 'boolean' ? out.institutionalRequirePullback : DEFAULT_SETTINGS.institutionalRequirePullback;
+  out.institutionalRequirePriceAction = typeof out.institutionalRequirePriceAction === 'boolean' ? out.institutionalRequirePriceAction : DEFAULT_SETTINGS.institutionalRequirePriceAction;
+  out.institutionalRequireHtfMacd = typeof out.institutionalRequireHtfMacd === 'boolean' ? out.institutionalRequireHtfMacd : DEFAULT_SETTINGS.institutionalRequireHtfMacd;
+  out.dynamicTpEnabled = typeof out.dynamicTpEnabled === 'boolean' ? out.dynamicTpEnabled : DEFAULT_SETTINGS.dynamicTpEnabled;
+  out.institutionalEmaFastPeriod = Math.min(Math.max(Math.floor(out.institutionalEmaFastPeriod ?? DEFAULT_SETTINGS.institutionalEmaFastPeriod), 3), 50);
+  out.institutionalEmaMidPeriod = Math.min(Math.max(Math.floor(out.institutionalEmaMidPeriod ?? DEFAULT_SETTINGS.institutionalEmaMidPeriod), out.institutionalEmaFastPeriod + 1), 100);
+  out.institutionalEmaSlowPeriod = Math.min(Math.max(Math.floor(out.institutionalEmaSlowPeriod ?? DEFAULT_SETTINGS.institutionalEmaSlowPeriod), out.institutionalEmaMidPeriod + 1), 300);
+  out.institutionalPullbackLookback = Math.min(Math.max(Math.floor(out.institutionalPullbackLookback ?? DEFAULT_SETTINGS.institutionalPullbackLookback), 3), 30);
+  out.institutionalPullbackAtrMult = Math.min(Math.max(Number(out.institutionalPullbackAtrMult ?? DEFAULT_SETTINGS.institutionalPullbackAtrMult), 0.1), 5);
+  out.institutionalMaxExtensionAtr = Math.min(Math.max(Number(out.institutionalMaxExtensionAtr ?? DEFAULT_SETTINGS.institutionalMaxExtensionAtr), 0.5), 8);
+  out.institutionalPatternLookback = Math.min(Math.max(Math.floor(out.institutionalPatternLookback ?? DEFAULT_SETTINGS.institutionalPatternLookback), 8), 80);
+  out.dynamicTpStrongR = Math.min(Math.max(Number(out.dynamicTpStrongR ?? DEFAULT_SETTINGS.dynamicTpStrongR), 2), 8);
+  out.dynamicTpMaxR = Math.min(Math.max(Number(out.dynamicTpMaxR ?? DEFAULT_SETTINGS.dynamicTpMaxR), out.dynamicTpStrongR), 8);
+  out.dynamicTp1ShiftR = Math.min(Math.max(Number(out.dynamicTp1ShiftR ?? DEFAULT_SETTINGS.dynamicTp1ShiftR), 1), out.dynamicTpStrongR);
+  out.dynamicTp1StrongClosePct = Math.min(Math.max(Number(out.dynamicTp1StrongClosePct ?? DEFAULT_SETTINGS.dynamicTp1StrongClosePct), 1), 90);
+  out.trailingStopEmaPeriod = Math.min(Math.max(Math.floor(out.trailingStopEmaPeriod ?? DEFAULT_SETTINGS.trailingStopEmaPeriod), 3), 50);
+  out.trailingStopAtrBuffer = Math.min(Math.max(Number(out.trailingStopAtrBuffer ?? DEFAULT_SETTINGS.trailingStopAtrBuffer), 0), 2);
   out.tradeManagementEnabled = typeof out.tradeManagementEnabled === 'boolean' ? out.tradeManagementEnabled : DEFAULT_SETTINGS.tradeManagementEnabled;
   out.autoMoveSlEnabled = typeof out.autoMoveSlEnabled === 'boolean' ? out.autoMoveSlEnabled : DEFAULT_SETTINGS.autoMoveSlEnabled;
   out.autoTp1Enabled = typeof out.autoTp1Enabled === 'boolean' ? out.autoTp1Enabled : DEFAULT_SETTINGS.autoTp1Enabled;
@@ -4523,6 +5634,34 @@ function validateSettingsPatch(patch) {
   out.macdFastLength = Math.min(Math.max(Math.floor(out.macdFastLength ?? DEFAULT_SETTINGS.macdFastLength), 2), 50);
   out.macdSlowLength = Math.min(Math.max(Math.floor(out.macdSlowLength ?? DEFAULT_SETTINGS.macdSlowLength), out.macdFastLength + 1), 100);
   out.macdSignalLength = Math.min(Math.max(Math.floor(out.macdSignalLength ?? DEFAULT_SETTINGS.macdSignalLength), 2), 50);
+  out.entryEmaFastPeriod = Math.min(Math.max(Math.floor(out.entryEmaFastPeriod ?? DEFAULT_SETTINGS.entryEmaFastPeriod), 3), 21);
+  out.entryEmaSlowPeriod = Math.min(Math.max(Math.floor(out.entryEmaSlowPeriod ?? DEFAULT_SETTINGS.entryEmaSlowPeriod), out.entryEmaFastPeriod + 1), 55);
+  out.trendEmaPeriod = 50;
+  out.dominantEmaPeriod = 200;
+  out.rsiPeriod = Math.min(Math.max(Math.floor(out.rsiPeriod ?? DEFAULT_SETTINGS.rsiPeriod), 5), 50);
+  out.cciPeriod = Math.min(Math.max(Math.floor(out.cciPeriod ?? DEFAULT_SETTINGS.cciPeriod), 5), 60);
+  out.vwapLookback = Math.min(Math.max(Math.floor(out.vwapLookback ?? DEFAULT_SETTINGS.vwapLookback ?? 96), 20), 300);
+  out.volumeSpikeMultiplier = Math.min(Math.max(Number(out.volumeSpikeMultiplier ?? DEFAULT_SETTINGS.volumeSpikeMultiplier), 1), 5);
+  out.minConfluenceScore = Math.min(Math.max(Number(out.minConfluenceScore ?? DEFAULT_SETTINGS.minConfluenceScore), 5), 12);
+  out.aPlusConfluenceScore = Math.min(Math.max(Number(out.aPlusConfluenceScore ?? DEFAULT_SETTINGS.aPlusConfluenceScore), out.minConfluenceScore), 13);
+  out.tier3MinConfluenceScore = Math.min(Math.max(Number(out.tier3MinConfluenceScore ?? DEFAULT_SETTINGS.tier3MinConfluenceScore), out.minConfluenceScore), 13);
+  out.minMomentumConfirmations = Math.min(Math.max(Math.floor(out.minMomentumConfirmations ?? DEFAULT_SETTINGS.minMomentumConfirmations), 2), 5);
+  out.structureProximityAtr = Math.min(Math.max(Number(out.structureProximityAtr ?? DEFAULT_SETTINGS.structureProximityAtr), 0.25), 4);
+  out.vwapConfluenceEnabled = typeof out.vwapConfluenceEnabled === 'boolean' ? out.vwapConfluenceEnabled : DEFAULT_SETTINGS.vwapConfluenceEnabled;
+  out.volumeSpikeConfluenceEnabled = typeof out.volumeSpikeConfluenceEnabled === 'boolean' ? out.volumeSpikeConfluenceEnabled : DEFAULT_SETTINGS.volumeSpikeConfluenceEnabled;
+  out.marketMemoryEnabled = typeof out.marketMemoryEnabled === 'boolean' ? out.marketMemoryEnabled : DEFAULT_SETTINGS.marketMemoryEnabled;
+  out.marketMemoryRequirePullback = typeof out.marketMemoryRequirePullback === 'boolean' ? out.marketMemoryRequirePullback : DEFAULT_SETTINGS.marketMemoryRequirePullback;
+  out.marketMemoryRequireTopMatchOutcome = typeof out.marketMemoryRequireTopMatchOutcome === 'boolean' ? out.marketMemoryRequireTopMatchOutcome : DEFAULT_SETTINGS.marketMemoryRequireTopMatchOutcome;
+  out.marketMemoryScanDepth = Math.min(Math.max(Math.floor(out.marketMemoryScanDepth ?? DEFAULT_SETTINGS.marketMemoryScanDepth), 120), 900);
+  out.marketMemoryTopMatches = Math.min(Math.max(Math.floor(out.marketMemoryTopMatches ?? DEFAULT_SETTINGS.marketMemoryTopMatches), 1), 10);
+  out.marketMemoryPatternLength = Math.min(Math.max(Math.floor(out.marketMemoryPatternLength ?? DEFAULT_SETTINGS.marketMemoryPatternLength), 5), 30);
+  out.marketMemoryFutureLookahead = Math.min(Math.max(Math.floor(out.marketMemoryFutureLookahead ?? DEFAULT_SETTINGS.marketMemoryFutureLookahead), 3), 30);
+  out.marketMemorySensitivity = Math.min(Math.max(Number(out.marketMemorySensitivity ?? DEFAULT_SETTINGS.marketMemorySensitivity), 0.3), 5);
+  out.marketMemoryMinSimilarityPct = Math.min(Math.max(Number(out.marketMemoryMinSimilarityPct ?? DEFAULT_SETTINGS.marketMemoryMinSimilarityPct), 55), 98);
+  out.marketMemoryCloudAtrMult = Math.min(Math.max(Number(out.marketMemoryCloudAtrMult ?? DEFAULT_SETTINGS.marketMemoryCloudAtrMult), 0.2), 3);
+  out.marketMemoryNearCloudAtrMult = Math.min(Math.max(Number(out.marketMemoryNearCloudAtrMult ?? DEFAULT_SETTINGS.marketMemoryNearCloudAtrMult), 0), 2);
+  out.marketMemoryMaxExtensionAtr = Math.min(Math.max(Number(out.marketMemoryMaxExtensionAtr ?? DEFAULT_SETTINGS.marketMemoryMaxExtensionAtr), 0.5), 5);
+  out.marketMemoryMinForwardMoveAtr = Math.min(Math.max(Number(out.marketMemoryMinForwardMoveAtr ?? DEFAULT_SETTINGS.marketMemoryMinForwardMoveAtr), 0), 3);
   out.sarMacdModuleEnabled = typeof out.sarMacdModuleEnabled === 'boolean' ? out.sarMacdModuleEnabled : DEFAULT_SETTINGS.sarMacdModuleEnabled;
   out.sarMacdAllowLocalEntry = typeof out.sarMacdAllowLocalEntry === 'boolean' ? out.sarMacdAllowLocalEntry : DEFAULT_SETTINGS.sarMacdAllowLocalEntry;
   out.sarMacdBlockLateMomentum = typeof out.sarMacdBlockLateMomentum === 'boolean' ? out.sarMacdBlockLateMomentum : DEFAULT_SETTINGS.sarMacdBlockLateMomentum;
@@ -4583,8 +5722,10 @@ function validateSettingsPatch(patch) {
   out.requirePullbackForExecution = typeof out.requirePullbackForExecution === 'boolean' ? out.requirePullbackForExecution : DEFAULT_SETTINGS.requirePullbackForExecution;
   out.allowMarketWhenNoPullback = typeof out.allowMarketWhenNoPullback === 'boolean' ? out.allowMarketWhenNoPullback : DEFAULT_SETTINGS.allowMarketWhenNoPullback;
   out.entryOrderType = out.entryOrderType === 'market' && out.allowMarketWhenNoPullback ? 'market' : 'limit';
-  out.signalSource = 'macd_divergence_mtf_ema';
-  out.strategyMode = 'MACD_DIVERGENCE_MTF_EMA';
+  out.signalSource = 'institutional_ema_macd_mtf';
+  out.strategyMode = 'INSTITUTIONAL_EMA_MACD_MTF';
+  out.paperTrade = true;
+  out.liveAddOnsEnabled = false;
   out.exchange = 'delta_exchange_india';
   out.executionApi = 'delta_exchange_india';
   return out;
@@ -4765,7 +5906,9 @@ function latestClosedChartSignal(symbol, candles, settings) {
 function buildChartPayload(symbol, resolution = '5m', settings = loadSettings()) {
   const sym = String(symbol || settings.assets?.[0] || 'BTCUSD').toUpperCase();
   const res = normalizeResolution(resolution || settings.executionTimeframe || '5m');
-  const fullClosedCandles = getCachedCandles(sym, res);
+  let fullClosedCandles = getCachedCandles(sym, res);
+  const usingSyntheticChart = !fullClosedCandles.length;
+  if (usingSyntheticChart) fullClosedCandles = syntheticChartCandlesFromHistory(sym, res);
   const closedSlice = fullClosedCandles.slice(-180);
   const closedChartOffset = Math.max(0, fullClosedCandles.length - closedSlice.length);
 
@@ -4773,8 +5916,10 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
   const visualFullCandles = visual.candles;
   const candles = visualFullCandles.slice(-(visual.usesLivePreview ? 181 : 180));
 
-  const ema15Closed = getCachedCandles(sym, '15m');
-  const ema1hClosed = getCachedCandles(sym, '1h');
+  let ema15Closed = getCachedCandles(sym, '15m');
+  let ema1hClosed = getCachedCandles(sym, '1h');
+  if (!ema15Closed.length) ema15Closed = syntheticChartCandlesFromHistory(sym, '15m');
+  if (!ema1hClosed.length) ema1hClosed = syntheticChartCandlesFromHistory(sym, '1h');
   const ema15Visual = livePreviewCandles(sym, '15m', ema15Closed, settings).candles;
   const ema1hVisual = livePreviewCandles(sym, '1h', ema1hClosed, settings).candles;
   const emaLen = Math.min(Math.max(Math.floor(Number(settings.mtfEmaPeriod || settings.emaPeriod || 50)), 5), 200);
@@ -4782,9 +5927,20 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
   const ema1hSeriesRaw = emaSeries(ema1hVisual.map(c => c.close), emaLen);
   const ema15 = alignTimeSeriesToCandles(candles, ema15Visual, ema15SeriesRaw);
   const ema1h = alignTimeSeriesToCandles(candles, ema1hVisual, ema1hSeriesRaw);
+  const execCloses = visualFullCandles.map(c => c.close);
+  const execSliceStart = Math.max(0, visualFullCandles.length - candles.length);
+  const ema9Exec = emaSeries(execCloses, Number(settings.entryEmaFastPeriod || 9)).slice(execSliceStart);
+  const ema21Exec = emaSeries(execCloses, Number(settings.entryEmaSlowPeriod || 21)).slice(execSliceStart);
+  const ema13Exec = emaSeries(execCloses, Number(settings.institutionalEmaFastPeriod || 13)).slice(execSliceStart);
+  const ema50Exec = emaSeries(execCloses, Number(settings.institutionalEmaMidPeriod || 50)).slice(execSliceStart);
+  const ema200Exec = emaSeries(execCloses, Number(settings.institutionalEmaSlowPeriod || 200)).slice(execSliceStart);
 
   // Chart MACD is computed from the full visible/live-preview series and then sliced, so it matches the plotted candles.
   // The scanner signal below still uses closed 5m candles only.
+  const vwapFull = cumulativeVwapSeries(visualFullCandles, Math.min(Math.max(Number(settings.vwapLookback || 96), 20), 300)).slice(execSliceStart);
+  const rsiFull = calculateRsiSeries(execCloses, Number(settings.rsiPeriod || 14)).slice(execSliceStart);
+  const cciFull = calculateCciSeries(visualFullCandles, Number(settings.cciPeriod || 20)).slice(execSliceStart);
+
   const macdFull = macdSeriesForCandles(visualFullCandles, settings);
   const macdSliceStart = Math.max(0, visualFullCandles.length - candles.length);
   const macd = {
@@ -4804,29 +5960,63 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
   const plannedEntry = chartPullback?.entry || currentPrice;
   const sl = signal?.pass ? signal.invalidationLevel : null;
   const risk = sl ? Math.abs(plannedEntry - sl) : 0;
-  const tp1 = signal?.pass ? (side === 'LONG' ? plannedEntry + risk : plannedEntry - risk) : null;
-  const tp2 = signal?.pass ? (side === 'LONG' ? plannedEntry + risk * 2 : plannedEntry - risk * 2) : null;
-  const plan = signal?.pass ? { side, entry: roundCoin(sym, plannedEntry), currentPrice: roundCoin(sym, currentPrice), sl, tp1: roundCoin(sym, tp1), tp2: roundCoin(sym, tp2), rr: '1:2', active: true, entryType: chartPullback ? 'PULLBACK_LIMIT' : 'IMMEDIATE', pullbackPlan: chartPullback } : { side, entry: null, sl: null, tp1: null, tp2: null, rr: '1:2', active: false };
+  const tp1 = signal?.pass ? (Number(signal.tp1) || (side === 'LONG' ? plannedEntry + risk : plannedEntry - risk)) : null;
+  const tp2 = signal?.pass ? (Number(signal.tp2) || (side === 'LONG' ? plannedEntry + risk * 2 : plannedEntry - risk * 2)) : null;
+  const activeConf = signal?.pass ? (side === 'LONG' ? signal.institutionalEma?.long?.confluence : signal.institutionalEma?.short?.confluence) : null;
+  let plan = signal?.pass ? { side, entry: roundCoin(sym, plannedEntry), currentPrice: roundCoin(sym, currentPrice), sl, tp1: roundCoin(sym, tp1), tp2: roundCoin(sym, tp2), rr: signal?.dynamicTargetR ? `1:${signal.dynamicTargetR}` : '1:2', active: true, entryType: chartPullback ? 'PULLBACK_LIMIT' : 'IMMEDIATE', pullbackPlan: chartPullback, confluenceScore: activeConf?.score || 0, confluence: activeConf } : { side, entry: null, sl: null, tp1: null, tp2: null, rr: '1:2', active: false };
+  if (plan.active && plan.entry && plan.sl) {
+    const product = state.delta.productsBySymbol?.[sym] || null;
+    const useExchangeCompatibleSizing = Boolean(product && (settings.paperLiveCompatibleSizing !== false || (!settings.paperTrade && liveReady(settings, loadKeys()))));
+    const sizingPlan = calculateMarginPlan({ coin: sym, price: plan.entry, candidate: { entry: plan.entry, sl: plan.sl } }, settings, loadTrades(), product, null, { live: useExchangeCompatibleSizing });
+    plan = {
+      ...plan,
+      marginUsedUsd: sizingPlan.marginUsd,
+      notionalUsd: sizingPlan.notionalUsd,
+      leverage: sizingPlan.leverage,
+      estimatedStopLossUsd: sizingPlan.estimatedStopLossUsd,
+      estimatedTp1ProfitUsd: sizingPlan.estimatedTp1ProfitUsd,
+      estimatedTp2ProfitUsd: sizingPlan.estimatedTp2ProfitUsd,
+      estimatedFullTradeProfitUsd: sizingPlan.estimatedFullTradeProfitUsd,
+      plannedProfitR: sizingPlan.plannedProfitR,
+      minFullTradeProfitUsd: sizingPlan.minFullTradeProfitUsd,
+      targetFullTradeProfitUsd: sizingPlan.targetFullTradeProfitUsd,
+      minTargetProfitUsd: sizingPlan.minTargetProfitUsd,
+      targetProfitUsd: sizingPlan.targetProfitUsd,
+      profitTargetStatus: sizingPlan.profitTargetStatus,
+      sizingAllowed: sizingPlan.allowed,
+      sizingBlockedReason: sizingPlan.blockedReason
+    };
+  }
   return {
     symbol: sym,
     resolution: res,
     exchange: 'Delta Exchange India',
-    source: candles.length
-      ? (visual.usesLivePreview ? 'Delta closed candles + live ticker preview. Bot entries still use closed 5m candles only.' : 'Delta /v2/history/candles closed candles')
-      : 'No candle data loaded',
+    source: usingSyntheticChart
+      ? 'Synthetic fallback chart from local price history. Live trading still requires Delta candle data.'
+      : (visual.usesLivePreview ? 'Delta closed candles + live ticker preview. Bot entries still use closed 5m candles only.' : 'Delta /v2/history/candles closed candles'),
     lastFetchAt: state.delta.candlesLastFetchAt?.[candleKey(sym, res)] || null,
     chartOffset: closedChartOffset,
     candles,
     currentPrice: roundCoin(sym, currentPrice),
     usesLivePreview: Boolean(visual.usesLivePreview),
     indicators: {
+      ema9Exec,
+      ema21Exec,
+      ema13Exec,
+      ema50Exec,
+      ema200Exec,
       ema15,
       ema1h,
       macdLine: macd.lineSeries || [],
       macdSignal: macd.signalSeries || [],
-      macdHist: macd.histSeries || []
+      macdHist: macd.histSeries || [],
+      vwap: vwapFull || [],
+      rsi: rsiFull || [],
+      cci: cciFull || []
     },
     signal,
+    supportResistance: chartSr,
+    confluence: activeConf,
     plan,
     tradingViewUrl: `https://www.tradingview.com/chart/?symbol=DELTA:${encodeURIComponent(sym)}`,
     warning: res !== '5m' ? 'Reference view only. Strategy entries are evaluated on closed 5m candles.' : (visual.usesLivePreview ? 'Live candle is visual only. Orders trigger after the 5m candle closes.' : '')
@@ -5175,7 +6365,7 @@ function createServer() {
 
   return http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v57-macd-mtf-ema-immediate-limit-audited', mode: loadSettings().paperTrade ? 'paper' : 'live' });
+    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v64-market-memory-paper-lock', mode: loadSettings().paperTrade ? 'paper' : 'live' });
     if (url.pathname === '/api/login' && req.method === 'POST') return loginRoute(req, res);
     if (url.pathname === '/api/logout') return logoutRoute(req, res);
     if (!requireDashboardAuth(req, res, url.pathname)) return;
@@ -5196,7 +6386,7 @@ function startAutoScan() {
 if (require.main === module) {
   const server = createServer();
   server.listen(PORT, () => {
-    console.log(`Trading Journal MACD Divergence MTF EMA Bot V57 running at http://localhost:${PORT}`);
+    console.log(`Trading Journal EMA + MACD + Market Memory Paper Bot V64 running at http://localhost:${PORT}`);
     console.log(`Execution venue: Delta Exchange India only`);
     console.log(`Data directory: ${DATA_DIR}`);
   });
@@ -5218,5 +6408,9 @@ module.exports = {
   liveReady,
   refreshDeltaPublicData,
   DEFAULT_SETTINGS,
-  DEFAULT_WALLET
+  DEFAULT_WALLET,
+  calculateMarginPlan,
+  profitTargetSettings,
+  plannedExitRMultiple,
+  estimatedExitPlanProfit
 };

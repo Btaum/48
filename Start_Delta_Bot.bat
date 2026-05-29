@@ -1,10 +1,10 @@
 @echo off
 setlocal enabledelayedexpansion
-title Trading Journal MACD Divergence Bot Launcher
+title Trading Journal Institutional EMA + MACD Bot Launcher
 
 echo.
 echo ================================
-echo   Trading Journal MACD Divergence Bot Launcher
+echo   Trading Journal Institutional EMA + MACD Bot Launcher
 echo ================================
 echo.
 
@@ -36,7 +36,7 @@ REM Check project files
 if not exist "package.json" (
     echo ERROR: package.json not found.
     echo Put this Start_Delta_Bot.bat file INSIDE the extracted bot folder.
-    echo Example: inside the extracted trading_journal_macd_divergence folder.
+    echo Example: inside the extracted institutional_ema_macd_mtf_bot folder.
     echo.
     pause
     exit /b 1
@@ -57,7 +57,7 @@ if not exist "node_modules" (
 )
 
 echo.
-echo Starting Trading Journal MACD Divergence dashboard...
+echo Starting Trading Journal Institutional EMA + MACD dashboard...
 echo Keep this window open while the bot is running.
 echo.
 

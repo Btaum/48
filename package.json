@@ -1,14 +1,14 @@
 {
-  "name": "trading-journal-macd-divergence-mtf-ema",
-  "version": "5.7.0",
-  "description": "Delta Exchange India MACD + MTF EMA futures bot V57 with immediate limit default entry, optional pullback limit mode, larger signal windows, readable UI, open/pending trades above scanner, and audit checks.",
+  "name": "trading-journal-confluence-structure-execution-v64",
+  "version": "6.4.0",
+  "description": "Delta Exchange India paper-only live-mimic bot V64 with EMA/MACD, Market Memory similar-history pullback gate, closed-candle-only execution, structural SL/TP, and trade win/loss totals.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
     "test": "node scripts/smoke-test.js",
-    "check": "node --check server.js && node --check public/app.js && node scripts/smoke-test.js && node scripts/frontend-render-test.js && node scripts/audit-v57.js"
+    "check": "node --check server.js && node --check public/app.js && node scripts/smoke-test.js && node scripts/frontend-render-test.js && node scripts/audit-v64.js"
   },
   "keywords": [
     "crypto",

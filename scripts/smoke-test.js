@@ -7,7 +7,7 @@ const os = require('os');
 const { performance } = require('perf_hooks');
 
 const root = path.resolve(__dirname, '..');
-const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'macd-div-mtf-test-'));
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'inst-ema-macd-test-'));
 process.env.DATA_DIR = tmp;
 process.env.PORT = '0';
 process.env.DELTA_SYNC_DISABLED = '1';
@@ -36,7 +36,7 @@ function validateStaticControls() {
   const js = read('public/app.js');
   const css = read('public/styles.css');
   const requiredHtml = ['Trading Journal', 'data-page="dashboard"', 'data-page="chart"', 'data-page="strategies"', 'data-page="trades"', 'data-page="logs"', 'data-page="settings"', 'id="modeSwitch"', 'id="botSwitch"', 'data-filter="ALL"', 'data-filter="LONG"', 'data-filter="SHORT"', 'data-filter="WAIT"', 'data-filter="STRONG"', 'id="refreshBtn"'];
-  const requiredJs = ['MACD Divergence + MTF EMA', 'EMA50 (15m MTF)', 'EMA50 (1h MTF)', 'MACD 12/26/9', 'chartCanvas', 'Forecast / Projection', 'data-chart-tab', 'apiKeyForm', 'Delta Coin Universe', 'addAssetBtn', 'data-remove-asset', '/api/chart', '/api/delta-symbols', '/api/auto-setup', '/api/emergency-stop', '/api/outbound-ip'];
+  const requiredJs = ['EMA + MACD + Market Memory', 'EMA9', 'EMA21', 'EMA50', 'EMA200', 'VWAP', 'MACD 12/26/9', 'chartCanvas', 'Forecast / Projection', 'data-chart-tab', 'apiKeyForm', 'Market Memory layer', 'Closed Wins Amount', 'Closed Losses Amount', 'Delta Coin Universe', 'addAssetBtn', 'data-remove-asset', '/api/chart', '/api/delta-symbols', '/api/auto-setup', '/api/emergency-stop', '/api/outbound-ip'];
   const requiredCss = ['--panel:#ffffff', '--text:#0b0f14', 'chart-layout', 'strategy-grid', 'coin-logo', 'asset-manager'];
   for (const token of requiredHtml) assert.ok(html.includes(token), `Missing HTML control ${token}`);
   for (const token of requiredJs) assert.ok(js.includes(token), `Missing JS content ${token}`);
@@ -67,12 +67,30 @@ function validateStaticControls() {
     assert.ok(Array.isArray(state.data.rows) && state.data.rows.length >= 5, 'Scanner rows missing');
     assert.equal(state.data.settings.exchange, 'delta_exchange_india');
     assert.equal(state.data.settings.executionApi, 'delta_exchange_india');
-    assert.equal(state.data.settings.strategyMode, 'MACD_DIVERGENCE_MTF_EMA');
-    assert.equal(state.data.settings.signalSource, 'macd_divergence_mtf_ema');
+    assert.equal(state.data.settings.strategyMode, 'INSTITUTIONAL_EMA_MACD_MTF');
+    assert.equal(state.data.settings.signalSource, 'institutional_ema_macd_mtf');
     assert.equal(state.data.settings.primaryTimeframe, '5m');
     assert.equal(state.data.settings.executionTimeframe, '5m');
     assert.deepEqual(state.data.settings.higherTimeframes, ['15m', '1h']);
     assert.equal(state.data.settings.mtfEmaPeriod, 50);
+    assert.equal(state.data.settings.institutionalEmaEnabled, true);
+    assert.equal(state.data.settings.marketMemoryEnabled, true);
+    assert.equal(state.data.settings.marketMemoryRequirePullback, true);
+    assert.ok(state.data.settings.marketMemoryMinSimilarityPct >= 55);
+    assert.equal(state.data.settings.institutionalRequirePullback, true);
+    assert.equal(state.data.settings.paperTrade, true);
+    assert.equal(state.data.settings.liveReady, false);
+    assert.equal(state.data.settings.entryEmaFastPeriod, 9);
+    assert.equal(state.data.settings.entryEmaSlowPeriod, 21);
+    assert.equal(state.data.settings.trendEmaPeriod, 50);
+    assert.equal(state.data.settings.dominantEmaPeriod, 200);
+    assert.equal(state.data.settings.rsiPeriod, 14);
+    assert.equal(state.data.settings.vwapConfluenceEnabled, true);
+    assert.ok(state.data.settings.minConfluenceScore >= 5);
+    assert.equal(state.data.settings.institutionalRequirePriceAction, true);
+    assert.equal(state.data.settings.dynamicTpEnabled, true);
+    assert.equal(state.data.settings.minFullTradeProfitUsd, 2);
+    assert.equal(state.data.settings.targetFullTradeProfitUsd, 5);
     assert.equal(state.data.settings.macdFastLength, 12);
     assert.equal(state.data.settings.macdSlowLength, 26);
     assert.equal(state.data.settings.macdSignalLength, 9);
@@ -80,6 +98,7 @@ function validateStaticControls() {
     assert.equal(state.data.settings.breakoutModuleEnabled, false);
     assert.equal(state.data.settings.vwapModuleEnabled, false);
     assert.ok(state.data.rows.every(r => Object.prototype.hasOwnProperty.call(r, 'macdDivergenceSignal')), 'Rows need MACD divergence payload');
+    assert.ok(state.data.rows.every(r => Object.prototype.hasOwnProperty.call(r, 'confluenceScore')), 'Rows need confluence score');
 
     const outbound = await request(base, '/api/outbound-ip', { method: 'POST', body: '{}' });
     assert.equal(outbound.data.apiStatus.serverOutboundIp, '127.0.0.1');
@@ -91,9 +110,17 @@ function validateStaticControls() {
     assert.equal(chart.data.symbol, 'BTCUSD');
     assert.equal(chart.data.resolution, '5m');
     assert.ok(Array.isArray(chart.data.candles), 'Chart candles payload missing');
+    assert.ok(Array.isArray(chart.data.indicators.ema9Exec), 'Chart EMA9 payload missing');
+    assert.ok(Array.isArray(chart.data.indicators.ema21Exec), 'Chart EMA21 payload missing');
+    assert.ok(Array.isArray(chart.data.indicators.vwap), 'Chart VWAP payload missing');
+    assert.ok(Array.isArray(chart.data.indicators.rsi), 'Chart RSI payload missing');
+    assert.ok(Array.isArray(chart.data.indicators.cci), 'Chart CCI payload missing');
+    assert.ok(chart.data.supportResistance, 'Chart support/resistance missing');
 
     const scan = await request(base, '/api/scan', { method: 'POST', body: '{}' });
     assert.ok(scan.data.metrics, 'Scan metrics missing');
+    assert.ok(Object.prototype.hasOwnProperty.call(scan.data.metrics, 'grossWinUsd'), 'Trade gross win metric missing');
+    assert.ok(Object.prototype.hasOwnProperty.call(scan.data.metrics, 'grossLossUsdAbs'), 'Trade gross loss metric missing');
 
     const onPaper = await request(base, '/api/toggle-live', { method: 'POST', body: JSON.stringify({ enabled: true }) });
     assert.equal(onPaper.data.settings.botEnabled, true, 'BOT ON failed in paper mode');
@@ -110,7 +137,7 @@ function validateStaticControls() {
     assert.equal(settings.data.settings.assets.length, 3);
     assert.deepEqual(settings.data.settings.assets, ['BTCUSD','ETHUSD','SOLUSD']);
 
-    const webhook = await request(base, '/api/tradingview-webhook', { method: 'POST', body: JSON.stringify({ token: 'change-me', symbol: 'BTCUSD', side: 'LONG', strategy: 'MACD Divergence MTF EMA' }) });
+    const webhook = await request(base, '/api/tradingview-webhook', { method: 'POST', body: JSON.stringify({ token: 'change-me', symbol: 'BTCUSD', side: 'LONG', strategy: 'Institutional EMA MACD MTF' }) });
     assert.equal(webhook.data.symbol, 'BTCUSD');
     assert.equal(webhook.data.side, 'LONG');
 
@@ -122,7 +149,7 @@ function validateStaticControls() {
     const tradesFile = path.join(tmp, 'trades.json');
     assert.ok(fs.existsSync(tradesFile), 'trades.json must exist for saved trade ledger');
 
-    console.log('PASS: MACD Divergence + MTF EMA bot, clean white UI, chart page, settings, trade ledger, API routes and scanner loop validated.');
+    console.log('PASS: V64 Market Memory live-mimic paper bot, chart visuals, settings, trade ledger, API routes and scanner loop validated.');
   } finally {
     await new Promise(resolve => server.close(resolve));
     fs.rmSync(tmp, { recursive: true, force: true });
