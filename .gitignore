@@ -16,3 +16,7 @@ data/trades.json
 data/webhookSignals.json
 data/paperWallet.json
 data/*.tmp
+node_modules/
+.env
+*.log
+data/*.json

@@ -120,9 +120,15 @@ function dashboardPage() {
       ${kpi('Total Trades', m.totalTrades || 0)}${kpi('Wins', m.wins || 0, 'green')}${kpi('Losses', m.losses || 0, 'red')}${kpi('Win Rate', `${Number(m.winRate || 0).toFixed(0)}%`, 'green')}
       ${kpi('Funds Used', money(fundsUsed), 'yellow')}${kpi('Available Allocation', money(app.state.risk?.remainingBotAllocation || 0), 'green')}${kpi('Open P/L', money(m.openPnl), clsPnL(m.openPnl))}${kpi(app.state.wallet?.walletSynced ? 'Delta Wallet Ref.' : 'Wallet', app.state.wallet?.walletSynced ? money(app.state.wallet?.equity) : 'SYNC NEEDED', app.state.wallet?.walletSynced ? '' : 'yellow')}
     </section>
+<<<<<<< HEAD
     <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades stay above scanner signals. V64 paper-only live-mimic.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
     <section class="panel"><div class="panel-title"><h2>Scanner Signals</h2><div class="legend"><b class="green">LONG</b><b class="red">SHORT</b><b class="yellow">WAIT</b></div></div>
       <div class="table-wrap"><table><thead><tr><th>Coin</th><th>Decision</th><th>Style</th><th>Signal</th><th>Entry</th><th>SL</th><th>TP1</th><th>TP2</th><th>Funds</th><th>Lots</th><th>Conf.</th><th>Est full-plan $</th><th>RR</th><th>MACD</th><th>Reason</th></tr></thead><tbody>${scannerRows(app.state.rows || [])}</tbody></table></div></section>`;
+=======
+    <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades and pending pullback limit orders appear here first.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>SL</th><th>TP1</th><th>TP2</th><th>Est full-plan $</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
+    <section class="panel"><div class="panel-title"><h2>Scanner Signals</h2><div class="legend"><b class="green">LONG</b><b class="red">SHORT</b><b class="yellow">WAIT</b></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Coin</th><th>Decision</th><th>Signal</th><th>Entry</th><th>SL</th><th>TP1</th><th>TP2</th><th>Est full-plan $</th><th>RR</th><th>MACD</th><th>Reason</th></tr></thead><tbody>${scannerRows(app.state.rows || [])}</tbody></table></div></section>`;
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
 }
 
 
@@ -130,22 +136,30 @@ function scannerRows(rows) {
   let list = rows.slice();
   if (app.filter === 'LONG' || app.filter === 'SHORT' || app.filter === 'WAIT') list = list.filter(r => r.dec === app.filter);
   if (app.filter === 'STRONG') list = list.filter(r => r.q === 'STRONG');
+<<<<<<< HEAD
   return list.map(r => {
     const candidate = r.candidate || {};
     const lots = candidate.lotsPurchased ?? candidate.liveOrderSize ?? candidate.qty;
     const conf = r.confluenceScore ?? candidate.confluenceScore ?? r.confluence?.score;
     return `<tr class="signal-row ${String(r.dec).toLowerCase()}"><td>${coinLogo(r.coin)}<b>${esc(r.coin)}</b></td><td class="${clsSide(r.dec)}">${esc(r.dec)}</td><td><span class="pill pill-data">${esc(r.tradeStyle || '-')}</span></td><td>${signalSourceLabel(r)}</td><td>${num(r.en)}</td><td>${num(r.sl)}</td><td>${num(r.t1)}</td><td>${num(r.t2)}</td><td>${money(candidate.marginUsd ?? r.marginUsd)}</td><td>${num(lots)}</td><td>${Number.isFinite(Number(conf)) ? Number(conf).toFixed(0) : '-'}</td><td class="green">${money(r.estimatedFullTradeProfitUsd)}</td><td>${esc(r.rr || '-')}</td><td>${esc(r.macdStatus || '-')}</td><td class="wide-cell">${esc(rowWhyText(r)).slice(0, 300)}</td></tr>`;
   }).join('') || '<tr><td colspan="15" class="empty">No scanner rows.</td></tr>';
+=======
+  return list.map(r => `<tr class="signal-row ${String(r.dec).toLowerCase()}"><td>${coinLogo(r.coin)}<b>${esc(r.coin)}</b></td><td class="${clsSide(r.dec)}">${esc(r.dec)}</td><td>${signalSourceLabel(r)}</td><td>${num(r.en)}</td><td>${num(r.sl)}</td><td>${num(r.t1)}</td><td>${num(r.t2)}</td><td class="green">${money(r.estimatedFullTradeProfitUsd)}</td><td>${esc(r.rr || '-')}</td><td>${esc(r.macdStatus || '-')}</td><td class="wide-cell">${esc(rowWhyText(r)).slice(0, 260)}</td></tr>`).join('') || '<tr><td colspan="11" class="empty">No scanner rows.</td></tr>';
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
 }
 
 
 function statusClass(status) { const s = String(status || '').toUpperCase(); return s === 'PENDING_LIMIT' ? 'yellow' : s === 'OPEN' ? 'green' : ''; }
 function openTradesRows(open) {
+<<<<<<< HEAD
   return open.map(t => {
     const lots = t.lotsPurchased ?? t.liveOrderSize ?? t.qty;
     const conf = t.confluenceScore ?? t.confluence?.score;
     return `<tr><td>${coinLogo(t.coin)}<b>${esc(t.coin)}</b></td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td><span class="pill pill-data">${esc(t.tradeStyle || '-')}</span></td><td class="${statusClass(t.status)}"><b>${esc(t.status || 'OPEN')}</b>${t.entryType ? `<small class="row-note">${esc(t.entryType)}</small>` : ''}</td><td>${esc(t.mode || 'paper')}</td><td>${num(t.entry)}</td><td>${num(t.price)}</td><td>${money(t.marginUsedUsd)}</td><td>${num(lots)}</td><td>${num(t.sl)}</td><td>${num(t.tp1)}</td><td>${num(t.tp2)}</td><td>${Number.isFinite(Number(conf)) ? Number(conf).toFixed(0) : '-'}</td><td class="green">${money(t.estimatedFullTradeProfitUsd)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td>${num(t.rr)}</td><td><button class="action-close" data-close="${esc(t.id)}">Close</button></td></tr>`;
   }).join('') || '<tr><td colspan="17" class="empty">No open or pending trades.</td></tr>';
+=======
+  return open.map(t => `<tr><td>${coinLogo(t.coin)}<b>${esc(t.coin)}</b></td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td class="${statusClass(t.status)}"><b>${esc(t.status || 'OPEN')}</b>${t.entryType ? `<small class="row-note">${esc(t.entryType)}</small>` : ''}</td><td>${esc(t.mode || 'paper')}</td><td>${num(t.entry)}</td><td>${num(t.price)}</td><td>${money(t.marginUsedUsd)}</td><td>${num(t.sl)}</td><td>${num(t.tp1)}</td><td>${num(t.tp2)}</td><td class="green">${money(t.estimatedFullTradeProfitUsd)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td>${num(t.rr)}</td><td><button class="action-close" data-close="${esc(t.id)}">Close</button></td></tr>`).join('') || '<tr><td colspan="14" class="empty">No open or pending trades.</td></tr>';
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
 }
 
 
@@ -224,19 +238,32 @@ function forecastTabContent(row, side, plan) {
   }
   if (app.chart.tab === 'Projection') {
     return `<div class="projection-card ${side === 'LONG' ? 'long' : 'short'}"><h3>${side} Projection</h3>
+<<<<<<< HEAD
       ${active ? `<div class="plan-grid"><span>Entry</span><b>${num(plan.entry)}</b><span>Entry style</span><b>${esc(plan.entryType || 'LIMIT')}</b><span>Stop-Loss</span><b class="red">${num(plan.sl)}</b><span>TP1</span><b class="green">${num(plan.tp1)}</b><span>TP2 / dynamic target</span><b class="green">${num(plan.tp2)}</b><span>Risk/Reward</span><b>${esc(plan.rr)}</b><span>Est. full-plan profit</span><b class="green">${money(plan.estimatedFullTradeProfitUsd)}</b><span>Minimum full-plan</span><b>${money(plan.minFullTradeProfitUsd ?? plan.minTargetProfitUsd)}</b></div>${!executionReady ? `<p class="warning-box"><b>Projection is visual until execution guard passes:</b> ${esc(blockedBy || 'Check scanner row WHY column.')}</p>` : ''}` : `<p class="yellow"><b>No active projection.</b></p><p>Projection is blocked until the selected confluence entry model passes on closed candles.</p>`}
       <p class="muted">SL is structure-first. If the structural SL is wide, lots reduce; SL is not tightened inside normal crypto noise.</p>
+=======
+      ${active ? `<div class="plan-grid"><span>Entry</span><b>${num(plan.entry)}</b><span>Entry style</span><b>${esc(plan.entryType || 'LIMIT')}</b><span>Stop-Loss</span><b class="red">${num(plan.sl)}</b><span>TP1</span><b class="green">${num(plan.tp1)}</b><span>TP2</span><b class="green">${num(plan.tp2)}</b><span>Risk/Reward</span><b>${esc(plan.rr)}</b><span>Est. full-plan profit</span><b class="green">${money(plan.estimatedFullTradeProfitUsd)}</b><span>Minimum full-plan</span><b>${money(plan.minFullTradeProfitUsd ?? plan.minTargetProfitUsd)}</b></div>${!executionReady ? `<p class="warning-box"><b>Projection is visual only until execution guard passes:</b> ${esc(blockedBy || 'Check scanner row WHY column.')}</p>` : ''}` : `<p class="yellow"><b>No active projection.</b></p><p>Projection is blocked until the selected MACD + MTF EMA entry model passes on a closed 5m candle.</p>`}
+      <p class="muted">The chart uses real Delta OHLC candles, not synthetic demo candles.</p>
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
     </div>${conditionList}`;
   }
   return `<div class="projection-card ${side === 'LONG' ? 'long' : 'short'}"><h3>${side} Setup</h3>
     <p><b>Bias:</b> <span class="${clsSide(side)}">${side}</span></p>
     <p><b>Entry:</b> ${active ? num(plan.entry) : 'WAIT'}</p>
     <p><b>Entry style:</b> ${active ? esc(pullbackText) : 'WAIT'}</p>
+<<<<<<< HEAD
     <p><b>Stop-Loss:</b> <span class="red">${active ? num(plan.sl) : 'WAIT'}</span> <span class="muted">beyond structure + ATR buffer</span></p>
     <p><b>Take-Profit 1:</b> <span class="green">${active ? num(plan.tp1) : 'WAIT'}</span> <span class="muted">partial profit</span></p>
     <p><b>Take-Profit 2:</b> <span class="green">${active ? num(plan.tp2) : 'WAIT'}</span> <span class="muted">extends only when trend remains strong</span></p>
     <p><b>Risk/Reward:</b> ${esc(plan.rr)}</p><p><b>Estimated full-plan profit:</b> <span class="green">${active ? money(plan.estimatedFullTradeProfitUsd) : 'WAIT'}</span></p>
     ${!active ? `<p class="warning-box">No trade: need one valid structure location, directional bias, 3 confirmations, trigger candle, and valid SL/RR.</p>` : ''}
+=======
+    <p><b>Stop-Loss:</b> <span class="red">${active ? num(plan.sl) : 'WAIT'}</span></p>
+    <p><b>Take-Profit 1:</b> <span class="green">${active ? num(plan.tp1) : 'WAIT'}</span> <span class="muted">1R partial</span></p>
+    <p><b>Take-Profit 2:</b> <span class="green">${active ? num(plan.tp2) : 'WAIT'}</span> <span class="muted">2R final</span></p>
+    <p><b>Risk/Reward:</b> ${esc(plan.rr)}</p><p><b>Estimated full-plan profit:</b> <span class="green">${active ? money(plan.estimatedFullTradeProfitUsd) : 'WAIT'}</span></p><p><b>Minimum full-trade profit:</b> ${active ? money(plan.minFullTradeProfitUsd ?? plan.minTargetProfitUsd) : 'WAIT'}</p>
+    ${!active ? `<p class="warning-box">No trade yet: the selected entry model must pass with MTF EMA bias, MACD histogram change, closed-candle crossover, technical SL, and risk checks.</p>` : ''}
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
   </div>${conditionList}`;
 }
 
@@ -389,6 +416,7 @@ function strategiesPage() {
 
 function tradesPage() {
   const closed = app.state.closedTrades || [];
+<<<<<<< HEAD
   const m = app.state.metrics || {};
   const grossWins = Number.isFinite(Number(m.grossWinUsd)) ? Number(m.grossWinUsd) : closed.filter(t=>Number(t.pnl||0)>0).reduce((a,t)=>a+Number(t.pnl||0),0);
   const grossLosses = Number.isFinite(Number(m.grossLossUsdAbs)) ? Number(m.grossLossUsdAbs) : Math.abs(closed.filter(t=>Number(t.pnl||0)<0).reduce((a,t)=>a+Number(t.pnl||0),0));
@@ -396,6 +424,9 @@ function tradesPage() {
   const openPnl = Number(m.openPnl || 0);
   const tradesStats = `<section class="kpi-grid trades-kpi"><div class="kpi-card"><span>Closed Wins Amount</span><strong class="green">${money(grossWins)}</strong><small>${esc(m.wins ?? 0)} wins</small></div><div class="kpi-card"><span>Closed Losses Amount</span><strong class="red">-${money(grossLosses)}</strong><small>${esc(m.losses ?? 0)} losses</small></div><div class="kpi-card"><span>Net Closed P/L</span><strong class="${clsPnL(netClosed)}">${money(netClosed)}</strong><small>Win rate ${Number(m.winRate || 0).toFixed(1)}%</small></div><div class="kpi-card"><span>Open / Unrealized P/L</span><strong class="${clsPnL(openPnl)}">${money(openPnl)}</strong><small>Total P/L ${money(m.totalPnl || 0)}</small></div></section>`;
   return `${tradesStats}<section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>Why</th><th>Action</th></tr></thead><tbody>${(app.state.openTrades||[]).map(t=>{ const lots=t.lotsPurchased??t.liveOrderSize??t.qty; const conf=t.confluenceScore??t.confluence?.score; return `<tr><td>${coinLogo(t.coin)}${esc(t.coin)}</td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td><span class="pill pill-data">${esc(t.tradeStyle || '-')}</span></td><td class="${statusClass(t.status)}"><b>${esc(t.status||'OPEN')}</b>${t.entryType ? `<small class="row-note">${esc(t.entryType)}</small>` : ''}</td><td>${esc(t.mode||'paper')}</td><td>${num(t.entry)}</td><td>${num(t.price)}</td><td>${money(t.marginUsedUsd)}</td><td>${num(lots)}</td><td>${num(t.sl)}</td><td>${num(t.tp1)}</td><td>${num(t.tp2)}</td><td>${Number.isFinite(Number(conf)) ? Number(conf).toFixed(0) : '-'}</td><td class="green">${money(t.estimatedFullTradeProfitUsd)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td class="wide-cell">${esc(t.entryReason||'-').slice(0,300)}</td><td><button class="action-close" data-close="${esc(t.id)}">Close</button></td></tr>`; }).join('') || '<tr><td colspan="17" class="empty">No open or pending trades.</td></tr>'}</tbody></table></div></section>
+=======
+  return `<section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>SL</th><th>TP1</th><th>TP2</th><th>Est full-plan $</th><th>P/L</th><th>Why</th><th>Action</th></tr></thead><tbody>${(app.state.openTrades||[]).map(t=>`<tr><td>${coinLogo(t.coin)}${esc(t.coin)}</td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td class="${statusClass(t.status)}"><b>${esc(t.status||'OPEN')}</b></td><td>${esc(t.mode||'paper')}</td><td>${num(t.entry)}</td><td>${num(t.price)}</td><td>${money(t.marginUsedUsd)}</td><td>${num(t.sl)}</td><td>${num(t.tp1)}</td><td>${num(t.tp2)}</td><td class="green">${money(t.estimatedFullTradeProfitUsd)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td class="wide-cell">${esc(t.entryReason||'-').slice(0,300)}</td><td><button class="action-close" data-close="${esc(t.id)}">Close</button></td></tr>`).join('') || '<tr><td colspan="14" class="empty">No open or pending trades.</td></tr>'}</tbody></table></div></section>
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
   <section class="panel"><div class="panel-title"><h2>Saved Closed Trades</h2><span class="muted">Saved in data/trades.json and journaled in data/tradeJournal.json</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Entry</th><th>Exit</th><th>P/L</th><th>Result</th><th>Reason</th><th>Closed</th></tr></thead><tbody>${closed.map(t=>`<tr><td>${coinLogo(t.coin)}${esc(t.coin)}</td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td>${num(t.entry)}</td><td>${num(t.exit)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td>${esc(t.result)}</td><td>${esc(t.closeReason||'-')}</td><td>${t.closedAt?new Date(t.closedAt).toLocaleString():'-'}</td></tr>`).join('') || '<tr><td colspan="8" class="empty">No closed trades saved yet.</td></tr>'}</tbody></table></div></section>`;
 }
 
@@ -462,7 +493,11 @@ async function loadDeltaSymbols() {
 
 function settingsPage() {
   const s = app.state.settings, a = app.state.apiStatus || {};
+<<<<<<< HEAD
   return `${assetManagerHtml()}<section class="settings-layout"><section class="panel"><div class="panel-title"><h2>Strategy Settings</h2><span class="pill pill-data">EMA + MACD + Market Memory</span></div><p class="warning-box"><b>V64:</b> Paper-only live-mimic build. Closed-candle only, Market Memory similar-history pullback, limit-first execution, then structure SL/TP before entry. SL is structure-first; lots reduce when SL is wide.</p><form id="strategySettingsForm" class="settings-grid">
+=======
+  return `${assetManagerHtml()}<section class="settings-layout"><section class="panel"><div class="panel-title"><h2>Strategy Settings</h2><span class="pill pill-data">5m MACD + MTF EMA</span></div><p class="warning-box"><b>V59:</b> Practical mode matches your manual trigger: 15m/1h MTF EMA bias + closed 5m MACD crossover + histogram color change. Default execution uses an immediate limit order at the current price after the closed-candle trigger and auto-sizes from the full TP1+TP2 exit plan, not TP2 alone. Optional pullback-limit mode is available, but it can miss fast winning moves.</p><form id="strategySettingsForm" class="settings-grid">
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
     <div class="field"><label>Entry model</label><select name="entryModel"><option value="PRACTICAL_MTF_MACD" ${s.entryModel !== 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'selected' : ''}>Practical: MTF EMA + MACD cross + histogram change</option><option value="STRICT_TRANSCRIPT_DIVERGENCE" ${s.entryModel === 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'selected' : ''}>Strict transcript: divergence + zero-line hard</option></select></div>
     <div class="field"><label>Zero-line mode</label><select name="zeroLineMode"><option value="soft" ${s.zeroLineMode !== 'hard' ? 'selected' : ''}>Soft context</option><option value="hard" ${s.zeroLineMode === 'hard' ? 'selected' : ''}>Hard blocker</option></select></div>
     <div class="field"><label>Require divergence for entry</label><select name="requireDivergenceForEntry"><option value="false" ${!s.requireDivergenceForEntry ? 'selected' : ''}>No — show as context</option><option value="true" ${s.requireDivergenceForEntry ? 'selected' : ''}>Yes — hard blocker</option></select></div>
@@ -502,6 +537,7 @@ function settingsPage() {
     <div class="field"><label>SL ATR buffer</label><input name="slBufferAtrMult" type="number" step="0.01" value="${esc(s.slBufferAtrMult || 0.25)}"></div>
     <div class="field"><label>TP1 close %</label><input name="tp1ClosePct" type="number" min="0" max="100" value="${esc(s.tp1ClosePct || 50)}"></div>
     <div class="field"><label>TP2 close remaining %</label><input name="tp2ClosePct" type="number" min="0" max="100" value="${esc(s.tp2ClosePct || 100)}"></div>
+<<<<<<< HEAD
     <div class="field"><label>Dynamic TP extension</label><select name="dynamicTpEnabled"><option value="true" ${s.dynamicTpEnabled !== false ? 'selected' : ''}>On — MACD strength extends TP</option><option value="false" ${s.dynamicTpEnabled === false ? 'selected' : ''}>Off</option></select></div>
     <div class="field"><label>Strong MACD TP2 target R</label><input name="dynamicTpStrongR" type="number" min="2" max="8" step="0.5" value="${esc(s.dynamicTpStrongR || 3)}"></div>
     <div class="field"><label>Max dynamic TP R</label><input name="dynamicTpMaxR" type="number" min="2" max="8" step="0.5" value="${esc(s.dynamicTpMaxR || 5)}"></div>
@@ -509,6 +545,8 @@ function settingsPage() {
     <div class="field"><label>Strong MACD TP1 close %</label><input name="dynamicTp1StrongClosePct" type="number" min="1" max="90" value="${esc(s.dynamicTp1StrongClosePct || 25)}"></div>
     <div class="field"><label>EMA trail period</label><input name="trailingStopEmaPeriod" type="number" min="3" max="50" value="${esc(s.trailingStopEmaPeriod || 13)}"></div>
     <div class="field"><label>EMA trail ATR buffer</label><input name="trailingStopAtrBuffer" type="number" min="0" max="2" step="0.05" value="${esc(s.trailingStopAtrBuffer || 0.20)}"></div>
+=======
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
     <div class="field"><label>Max margin / coin</label><input name="maxMarginPerCoinUsd" type="number" value="${esc(s.maxMarginPerCoinUsd)}"></div>
     <div class="field"><label>Bot allocation</label><input name="maxBotAllocationUsd" type="number" value="${esc(s.maxBotAllocationUsd)}"></div>
     <div class="field"><label>Entry order type</label><select name="entryOrderType"><option value="limit" ${s.entryOrderType !== 'market' ? 'selected' : ''}>Limit / pullback preferred</option><option value="market" ${s.entryOrderType === 'market' ? 'selected' : ''}>Market only if allowed</option></select></div>
@@ -537,8 +575,12 @@ function render() {
 
 function payloadFromForm(formEl) {
   const fd = new FormData(formEl), out = {};
+<<<<<<< HEAD
   ['maxConcurrentPositions','riskPercent','defaultLeverage','maxLeverage','divergencePivotLeft','divergencePivotRight','divergenceLookback','slBufferAtrMult','tp1ClosePct','tp2ClosePct','maxMarginPerCoinUsd','maxBotAllocationUsd','entrySignalWindowCandles','histColorLookback','pullbackAtrMult','pullbackMaxAtrMult','targetFullTradeProfitUsd','minFullTradeProfitUsd','institutionalEmaFastPeriod','institutionalEmaMidPeriod','institutionalEmaSlowPeriod','institutionalPullbackLookback','institutionalPullbackAtrMult','institutionalMaxExtensionAtr','institutionalPatternLookback','marketMemoryScanDepth','marketMemoryTopMatches','marketMemoryPatternLength','marketMemoryFutureLookahead','marketMemorySensitivity','marketMemoryMinSimilarityPct','marketMemoryCloudAtrMult','marketMemoryNearCloudAtrMult','marketMemoryMaxExtensionAtr','marketMemoryMinForwardMoveAtr','dynamicTpStrongR','dynamicTpMaxR','dynamicTp1ShiftR','dynamicTp1StrongClosePct','trailingStopEmaPeriod','trailingStopAtrBuffer','minConfluenceScore','aPlusConfluenceScore','tier3MinConfluenceScore','minMomentumConfirmations','structureProximityAtr','volumeSpikeMultiplier','vwapLookback'].forEach(k => { if (fd.has(k)) out[k] = Number(fd.get(k)); });
   ['institutionalEmaEnabled','institutionalRequireEmaStack','institutionalRequirePullback','institutionalRequirePriceAction','institutionalRequireHtfMacd','marketMemoryEnabled','marketMemoryRequirePullback','marketMemoryRequireTopMatchOutcome','dynamicTpEnabled','vwapConfluenceEnabled','volumeSpikeConfluenceEnabled'].forEach(k => { if (fd.has(k)) out[k] = String(fd.get(k)) === 'true'; });
+=======
+  ['maxConcurrentPositions','riskPercent','defaultLeverage','maxLeverage','divergencePivotLeft','divergencePivotRight','divergenceLookback','slBufferAtrMult','tp1ClosePct','tp2ClosePct','maxMarginPerCoinUsd','maxBotAllocationUsd','entrySignalWindowCandles','histColorLookback','pullbackAtrMult','pullbackMaxAtrMult','targetFullTradeProfitUsd','minFullTradeProfitUsd'].forEach(k => { if (fd.has(k)) out[k] = Number(fd.get(k)); });
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
   if (fd.has('entryModel')) out.entryModel = String(fd.get('entryModel') || 'PRACTICAL_MTF_MACD');
   if (fd.has('zeroLineMode')) out.zeroLineMode = String(fd.get('zeroLineMode') || 'soft');
   if (fd.has('requireDivergenceForEntry')) out.requireDivergenceForEntry = String(fd.get('requireDivergenceForEntry')) === 'true';
@@ -548,7 +590,10 @@ function payloadFromForm(formEl) {
   if (fd.has('autoSizeToTargetProfit')) out.autoSizeToTargetProfit = String(fd.get('autoSizeToTargetProfit')) === 'true';
   if (fd.has('blockTinyProfitTrades')) out.blockTinyProfitTrades = String(fd.get('blockTinyProfitTrades')) === 'true';
   if (fd.has('autoUseMaxLeverageForProfitTarget')) out.autoUseMaxLeverageForProfitTarget = String(fd.get('autoUseMaxLeverageForProfitTarget')) === 'true';
+<<<<<<< HEAD
   out.paperTrade = true;
+=======
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
   return out;
 }
 

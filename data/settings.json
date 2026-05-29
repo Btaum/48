@@ -11,8 +11,12 @@
     "ETHUSD",
     "SOLUSD",
     "XRPUSD",
+<<<<<<< HEAD
     "BNBUSD",
     "DOGEUSD",
+=======
+    "APTUSD",
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
     "ADAUSD"
   ],
   "primaryTimeframe": "5m",
@@ -47,7 +51,11 @@
   "autoTp1Enabled": true,
   "breakEvenTriggerR": 1,
   "breakEvenBufferR": 0.03,
+<<<<<<< HEAD
   "riskPercent": 1.0,
+=======
+  "riskPercent": 0.5,
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
   "defaultLeverage": 25,
   "maxLeverage": 25,
   "maxConcurrentPositions": 3,
@@ -63,7 +71,11 @@
   ],
   "initialMarginUsd": 10,
   "majorInitialMarginUsd": 20,
+<<<<<<< HEAD
   "maxStopLossUsd": 7,
+=======
+  "maxStopLossUsd": 2,
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
   "minEntryMarginUsd": 1,
   "paperLiveCompatibleSizing": true,
   "paperUseDeltaWalletReference": true,
@@ -78,6 +90,7 @@
   "monthlyDrawdownLimitPct": -20,
   "entryModel": "PRACTICAL_MTF_MACD",
   "requireDivergenceForEntry": false,
+<<<<<<< HEAD
   "zeroLineMode": "hard",
   "entrySignalWindowCandles": 2,
   "histColorLookback": 6,
@@ -149,3 +162,20 @@
   "vwapModuleEnabled": false,
   "vwapAllowLocalEntry": false
 }
+=======
+  "zeroLineMode": "soft",
+  "entrySignalWindowCandles": 6,
+  "histColorLookback": 12,
+  "requirePullbackForExecution": false,
+  "pullbackAtrMult": 0.2,
+  "pullbackMaxAtrMult": 1.5,
+  "allowMarketWhenNoPullback": false,
+  "autoSizeToTargetProfit": true,
+  "minTargetProfitUsd": 1,
+  "targetProfitUsd": 2,
+  "blockTinyProfitTrades": true,
+  "autoUseMaxLeverageForProfitTarget": true,
+  "targetFullTradeProfitUsd": 2,
+  "minFullTradeProfitUsd": 1
+}
+>>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
