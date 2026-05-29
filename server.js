@@ -11,11 +11,7 @@ const ROOT = __dirname;
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 8080);
-<<<<<<< HEAD
 const USER_AGENT = 'TradingNorth-Confluence-Structure-Execution/64.0';
-=======
-const USER_AGENT = 'TradingNorth-MACDMTFEMA/59.0';
->>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
 
 const DASHBOARD_PASSWORD = String(process.env.DASHBOARD_PASSWORD || '').trim();
 const DASHBOARD_SESSION_SECRET = String(process.env.DASHBOARD_SESSION_SECRET || process.env.DASHBOARD_PASSWORD || crypto.randomBytes(32).toString('hex'));
@@ -155,11 +151,7 @@ const DEFAULT_SETTINGS = {
   majorMarginCoins: ['BTCUSD', 'ETHUSD'],
   initialMarginUsd: 10,
   majorInitialMarginUsd: 20,
-<<<<<<< HEAD
   maxStopLossUsd: 7,
-=======
-  maxStopLossUsd: 2,
->>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
   minEntryMarginUsd: 1,
   tradeManagementEnabled: true,
   autoMoveSlEnabled: true,
@@ -196,17 +188,10 @@ const DEFAULT_SETTINGS = {
   minRR: 2,
   rewardTargetR: 2,
   autoSizeToTargetProfit: true,
-<<<<<<< HEAD
   minFullTradeProfitUsd: 2,
   minTargetProfitUsd: 2, // backward compatibility only
   targetFullTradeProfitUsd: 5,
   targetProfitUsd: 5, // backward compatibility only
-=======
-  minFullTradeProfitUsd: 1,
-  minTargetProfitUsd: 1, // backward compatibility only
-  targetFullTradeProfitUsd: 2,
-  targetProfitUsd: 2, // backward compatibility only
->>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
   blockTinyProfitTrades: true,
   autoUseMaxLeverageForProfitTarget: true,
   highProbabilityMode: true,
@@ -3758,11 +3743,7 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   if (profile.decision !== 'LONG' && profile.decision !== 'SHORT') return null;
   const direction = profile.decision;
   const currentPrice = Number(profile.price || 0);
-<<<<<<< HEAD
   // V60: secondary pullback preference stays separate from the institutional EMA50 pullback gate, not a second mandatory signal after the MACD trigger.
-=======
-  // V59: pullback is an execution preference, not a second mandatory signal after the MACD trigger.
->>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
   // Default behavior: enter with a limit order at the current closed-candle/ticker price.
   // If Require Pullback is enabled, place a pending pullback limit instead.
   const pullbackPlan = settings.entryOrderType !== 'market' && settings.requirePullbackForExecution === true
@@ -3819,14 +3800,10 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
     tp1R,
     sizingMultiplier: sizing.multiplier,
     sizingReason: sizing.reason,
-<<<<<<< HEAD
     exitPlan: 'Confluence + structure + execution plan: one valid location, MTF EMA trend, Market Memory similar-history pullback, MACD timing, RSI/CCI/VWAP/volume confirmation. SL stays beyond invalidation/cloud/swing with ATR buffer; sizing reduces if SL is wide. TP1 partial at 1R; TP2 extends only when confluence and momentum remain strong.',
     tradeStyle,
     confluenceScore: (direction === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence?.score : profile.macdDivergenceSignal?.institutionalEma?.short?.confluence?.score) || 0,
     confluence: direction === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence : profile.macdDivergenceSignal?.institutionalEma?.short?.confluence,
-=======
-    exitPlan: 'MACD Divergence + MTF EMA Plan: TP1 partial at 1R, move SL to breakeven/profit, TP2 closes remaining position at 2R. No other strategy modules are used.',
->>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
     entryType: pullbackPlan ? 'PULLBACK_LIMIT' : (settings.entryOrderType === 'market' ? 'MARKET_OR_IMMEDIATE' : 'IMMEDIATE_LIMIT'),
     orderType: settings.entryOrderType === 'market' ? 'market' : 'limit',
     currentPrice: roundCoin(profile.symbol, currentPrice),
@@ -5983,16 +5960,10 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
   const plannedEntry = chartPullback?.entry || currentPrice;
   const sl = signal?.pass ? signal.invalidationLevel : null;
   const risk = sl ? Math.abs(plannedEntry - sl) : 0;
-<<<<<<< HEAD
   const tp1 = signal?.pass ? (Number(signal.tp1) || (side === 'LONG' ? plannedEntry + risk : plannedEntry - risk)) : null;
   const tp2 = signal?.pass ? (Number(signal.tp2) || (side === 'LONG' ? plannedEntry + risk * 2 : plannedEntry - risk * 2)) : null;
   const activeConf = signal?.pass ? (side === 'LONG' ? signal.institutionalEma?.long?.confluence : signal.institutionalEma?.short?.confluence) : null;
   let plan = signal?.pass ? { side, entry: roundCoin(sym, plannedEntry), currentPrice: roundCoin(sym, currentPrice), sl, tp1: roundCoin(sym, tp1), tp2: roundCoin(sym, tp2), rr: signal?.dynamicTargetR ? `1:${signal.dynamicTargetR}` : '1:2', active: true, entryType: chartPullback ? 'PULLBACK_LIMIT' : 'IMMEDIATE', pullbackPlan: chartPullback, confluenceScore: activeConf?.score || 0, confluence: activeConf } : { side, entry: null, sl: null, tp1: null, tp2: null, rr: '1:2', active: false };
-=======
-  const tp1 = signal?.pass ? (side === 'LONG' ? plannedEntry + risk : plannedEntry - risk) : null;
-  const tp2 = signal?.pass ? (side === 'LONG' ? plannedEntry + risk * 2 : plannedEntry - risk * 2) : null;
-  let plan = signal?.pass ? { side, entry: roundCoin(sym, plannedEntry), currentPrice: roundCoin(sym, currentPrice), sl, tp1: roundCoin(sym, tp1), tp2: roundCoin(sym, tp2), rr: '1:2', active: true, entryType: chartPullback ? 'PULLBACK_LIMIT' : 'IMMEDIATE', pullbackPlan: chartPullback } : { side, entry: null, sl: null, tp1: null, tp2: null, rr: '1:2', active: false };
->>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
   if (plan.active && plan.entry && plan.sl) {
     const product = state.delta.productsBySymbol?.[sym] || null;
     const useExchangeCompatibleSizing = Boolean(product && (settings.paperLiveCompatibleSizing !== false || (!settings.paperTrade && liveReady(settings, loadKeys()))));
@@ -6394,11 +6365,7 @@ function createServer() {
 
   return http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-<<<<<<< HEAD
     if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v64-market-memory-paper-lock', mode: loadSettings().paperTrade ? 'paper' : 'live' });
-=======
-    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v59-macd-mtf-ema-full-plan-profit-audited', mode: loadSettings().paperTrade ? 'paper' : 'live' });
->>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
     if (url.pathname === '/api/login' && req.method === 'POST') return loginRoute(req, res);
     if (url.pathname === '/api/logout') return logoutRoute(req, res);
     if (!requireDashboardAuth(req, res, url.pathname)) return;
@@ -6419,11 +6386,7 @@ function startAutoScan() {
 if (require.main === module) {
   const server = createServer();
   server.listen(PORT, () => {
-<<<<<<< HEAD
     console.log(`Trading Journal EMA + MACD + Market Memory Paper Bot V64 running at http://localhost:${PORT}`);
-=======
-    console.log(`Trading Journal MACD Divergence MTF EMA Bot V59 running at http://localhost:${PORT}`);
->>>>>>> a27d754590c85a16cd9e1218b83f7ecd177f9072
     console.log(`Execution venue: Delta Exchange India only`);
     console.log(`Data directory: ${DATA_DIR}`);
   });
