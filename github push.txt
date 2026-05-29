@@ -1,0 +1,11 @@
+git init
+git remote remove origin 2>nul
+git remote add origin https://github.com/Btaum/48.git
+git branch -M main
+git status
+git add .
+git commit -m "Build V65 EMA50 200 memory cloud paper bot"
+git pull origin main --allow-unrelated-histories --no-rebase
+git add .
+git commit -m "Merge V65 bot with GitHub repo" || echo No merge commit needed
+git push -u origin main

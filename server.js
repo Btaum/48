@@ -11,7 +11,7 @@ const ROOT = __dirname;
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 8080);
-const USER_AGENT = 'TradingNorth-Confluence-Structure-Execution/65.0';
+const USER_AGENT = 'TradingNorth-Confluence-Structure-Execution/66.0-LIVE-ARMED';
 
 const DASHBOARD_PASSWORD = String(process.env.DASHBOARD_PASSWORD || '').trim();
 const DASHBOARD_SESSION_SECRET = String(process.env.DASHBOARD_SESSION_SECRET || process.env.DASHBOARD_PASSWORD || crypto.randomBytes(32).toString('hex'));
@@ -376,7 +376,7 @@ function enforceTimeframePolicy(settings = {}) {
     macdTrendTimeframe: '1h',
     higherTimeframes: ['15m', '1h'],
     htfMinimumAligned: 1,
-    paperTrade: true,
+    paperTrade: typeof settings.paperTrade === 'boolean' ? settings.paperTrade : true,
     signalSource: 'ema50_200_macd_memory_cloud',
     strategyMode: 'EMA50_200_MACD_MEMORY_CLOUD',
     emaPeriod,
@@ -4591,8 +4591,8 @@ async function sendLiveAddOnOrder(trade, row, settings) {
 }
 
 function liveReady(settings, keys) {
-  // V65 locked build: live execution is disabled. API keys can be saved only for wallet/data reference.
-  return false && Boolean(
+  // V66 live-armed build: live execution is allowed only after API test, explicit live confirmation, Delta wallet sync, and positions sync.
+  return Boolean(
     !settings.paperTrade &&
     keys.apiKey &&
     keys.secret &&
@@ -4608,7 +4608,6 @@ function liveReady(settings, keys) {
 
 function liveReadinessFailures(settings = loadSettings(), keys = loadKeys(), { ignorePaper = false } = {}) {
   const failures = [];
-  failures.push('V65 paper-only lock: live order execution disabled in this build');
   if (!ignorePaper && settings.paperTrade) failures.push('PAPER mode is active');
   if (!keys.apiKey || !keys.secret) failures.push('API key/secret not saved');
   if (keys.lastTestStatus !== 'pass') failures.push('API test not passed');
@@ -5005,7 +5004,7 @@ function authoritativeTrades(settings, localTrades = loadTrades()) {
 
 async function openLiveTrade(row, settings, trades, wallet) {
   const keys = loadKeys();
-  if (!liveReady(settings, keys)) throw new Error('Live mode is not fully confirmed. Keep paper mode ON until API test passes.');
+  if (!liveReady(settings, keys)) throw new Error('Live mode is not fully confirmed. Check API test, live confirmation, wallet sync, market data and position sync.');
   if (state.delta.status !== 'LIVE_DELTA') throw new Error('Delta public market data is not live. Refusing live order.');
   if (state.deltaPositions.status !== 'LIVE_POSITIONS') throw new Error('Delta account positions are not synced. Click Sync Account Now before live orders.');
   const product = state.delta.productsBySymbol?.[String(row.coin).toUpperCase()];
@@ -5522,7 +5521,7 @@ function validateSettingsPatch(patch) {
   if (typeof patch.dynamicTpEnabled === 'boolean') out.dynamicTpEnabled = patch.dynamicTpEnabled;
   if (typeof patch.tradingViewWebhookToken === 'string') out.tradingViewWebhookToken = patch.tradingViewWebhookToken.trim() || DEFAULT_SETTINGS.tradingViewWebhookToken;
   if (typeof patch.entryOrderType === 'string') out.entryOrderType = patch.entryOrderType === 'market' ? 'market' : 'limit';
-  if (typeof patch.paperTrade === 'boolean') out.paperTrade = true;
+  if (typeof patch.paperTrade === 'boolean') out.paperTrade = patch.paperTrade;
   if (typeof patch.maxOnePositionPerAsset === 'boolean') out.maxOnePositionPerAsset = patch.maxOnePositionPerAsset;
   if (typeof patch.tradeManagementEnabled === 'boolean') out.tradeManagementEnabled = patch.tradeManagementEnabled;
   if (typeof patch.autoMoveSlEnabled === 'boolean') out.autoMoveSlEnabled = patch.autoMoveSlEnabled;
@@ -5732,7 +5731,7 @@ function validateSettingsPatch(patch) {
   out.entryOrderType = out.entryOrderType === 'market' && out.allowMarketWhenNoPullback ? 'market' : 'limit';
   out.signalSource = 'ema50_200_macd_memory_cloud';
   out.strategyMode = 'EMA50_200_MACD_MEMORY_CLOUD';
-  out.paperTrade = true;
+  out.paperTrade = typeof out.paperTrade === 'boolean' ? out.paperTrade : true;
   out.liveAddOnsEnabled = false;
   out.exchange = 'delta_exchange_india';
   out.executionApi = 'delta_exchange_india';
@@ -6148,6 +6147,16 @@ async function apiRoute(req, res, pathname) {
           return sendError(res, 400, `LIVE blocked: ${syncFailures.join('; ')}. ${state.deltaPositions.message || state.walletLive.message || ''}`.trim());
         }
       }
+      if (wantsLiveMode) {
+        settings.paperTrade = false;
+        settings.botEnabled = false;
+        log('SAFE', 'LIVE mode armed after API/wallet/position sync. BOT remains OFF until manually started.');
+      }
+      if (Object.prototype.hasOwnProperty.call(body, 'paperTrade') && body.paperTrade === true) {
+        settings.paperTrade = true;
+        settings.botEnabled = false;
+        log('SAFE', 'PAPER mode selected. BOT switched OFF.');
+      }
       // Selecting PAPER should not delete saved API authorization. Keys/test state are reset only when keys are changed, deleted, or test fails.
       saveSettings(settings);
       if (Object.prototype.hasOwnProperty.call(body, 'totalWalletAmount') && settings.paperTrade) {
@@ -6376,7 +6385,7 @@ function createServer() {
 
   return http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v65-ema50-200-memory-cloud-paper-lock', mode: loadSettings().paperTrade ? 'paper' : 'live' });
+    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v66-ema50-200-memory-cloud-live-armed', mode: loadSettings().paperTrade ? 'paper' : 'live' });
     if (url.pathname === '/api/login' && req.method === 'POST') return loginRoute(req, res);
     if (url.pathname === '/api/logout') return logoutRoute(req, res);
     if (!requireDashboardAuth(req, res, url.pathname)) return;

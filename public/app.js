@@ -76,17 +76,17 @@ function renderHeader() {
   $('#lastUpdate').textContent = new Date(app.state.lastScanAt || app.state.serverTime).toLocaleString();
   $('#coinCount').textContent = app.state.coins || 0;
   $('#sourceText').textContent = s.marketDataSource || 'Delta Exchange India';
-  $('#modeBadge').textContent = 'PAPER LOCK';
-  $('#modeBadge').className = 'pill pill-paper';
+  $('#modeBadge').textContent = s.paperTrade ? 'PAPER' : 'LIVE';
+  $('#modeBadge').className = `pill ${s.paperTrade ? 'pill-paper' : 'pill-red'}`;
   $('#dataBadge').textContent = s.deltaStatus === 'LIVE_DELTA' ? 'LIVE DATA' : 'FALLBACK DATA';
   $('#dataBadge').className = `pill ${s.deltaStatus === 'LIVE_DELTA' ? 'pill-data' : 'pill-warn'}`;
   $('#botSwitch').checked = Boolean(s.botEnabled);
   $('#botSwitchText').textContent = s.botEnabled ? 'BOT ON' : 'BOT OFF';
   const modeSwitch = $('#modeSwitch');
   if (modeSwitch) {
-    modeSwitch.checked = false;
-    modeSwitch.disabled = true;
-    modeSwitch.title = 'V65 is paper-only. Live execution is disabled.';
+    modeSwitch.checked = !s.paperTrade;
+    modeSwitch.disabled = false;
+    modeSwitch.title = s.paperTrade ? 'Switch to LIVE only after API/wallet sync.' : 'LIVE mode armed. Real orders can be placed when BOT is ON.';
   }
 }
 
@@ -95,9 +95,9 @@ function renderHeader() {
 function controlBar() {
   const s = app.state.settings;
   return `<section class="control-bar">
-    <span class="pill pill-data">Strategy: V65 EMA50/200 + MACD Divergence + Memory Cloud</span>
+    <span class="pill pill-data">Strategy: V66 LIVE-ARMED EMA50/200 + MACD Divergence + Memory Cloud</span>
     <span class="pill ${s.botEnabled ? 'pill-data' : 'pill-warn'}">${s.botEnabled ? 'BOT ON' : 'BOT OFF'}</span>
-    <span class="pill pill-paper">PAPER ONLY — LIVE LOCKED</span>
+    <span class="pill ${s.paperTrade ? 'pill-paper' : 'pill-red'}">${s.paperTrade ? 'PAPER MODE' : 'LIVE MODE — REAL ORDERS'}</span>
     <button id="scanNowBtn" class="btn-blue">Scan Now</button>
     <button id="startBotBtn" class="btn-green">Start Bot</button>
     <button id="stopBotBtn" class="btn-yellow">Stop Bot</button>
@@ -120,7 +120,7 @@ function dashboardPage() {
       ${kpi('Total Trades', m.totalTrades || 0)}${kpi('Wins', m.wins || 0, 'green')}${kpi('Losses', m.losses || 0, 'red')}${kpi('Win Rate', `${Number(m.winRate || 0).toFixed(0)}%`, 'green')}
       ${kpi('Funds Used', money(fundsUsed), 'yellow')}${kpi('Available Allocation', money(app.state.risk?.remainingBotAllocation || 0), 'green')}${kpi('Open P/L', money(m.openPnl), clsPnL(m.openPnl))}${kpi(app.state.wallet?.walletSynced ? 'Delta Wallet Ref.' : 'Wallet', app.state.wallet?.walletSynced ? money(app.state.wallet?.equity) : 'SYNC NEEDED', app.state.wallet?.walletSynced ? '' : 'yellow')}
     </section>
-    <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades stay above scanner signals. V65 paper-only live-mimic.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
+    <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades stay above scanner signals. V66 live-armed; paper remains available.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
     <section class="panel"><div class="panel-title"><h2>Scanner Signals</h2><div class="legend"><b class="green">LONG</b><b class="red">SHORT</b><b class="yellow">WAIT</b></div></div>
       <div class="table-wrap"><table><thead><tr><th>Coin</th><th>Decision</th><th>Style</th><th>Signal</th><th>Entry</th><th>SL</th><th>TP1</th><th>TP2</th><th>Funds</th><th>Lots</th><th>Conf.</th><th>Est full-plan $</th><th>RR</th><th>MACD</th><th>Reason</th></tr></thead><tbody>${scannerRows(app.state.rows || [])}</tbody></table></div></section>`;
 }
@@ -482,7 +482,7 @@ async function loadDeltaSymbols() {
 
 function settingsPage() {
   const s = app.state.settings, a = app.state.apiStatus || {};
-  return `${assetManagerHtml()}<section class="settings-layout"><section class="panel"><div class="panel-title"><h2>Strategy Settings</h2><span class="pill pill-data">EMA50/200 + MACD + Memory Cloud</span></div><p class="warning-box"><b>V65:</b> Paper-only live-mimic build. Closed-candle only, Market Memory similar-history pullback, limit-first execution, then structure SL/TP before entry. SL is structure-first; lots reduce when SL is wide.</p><form id="strategySettingsForm" class="settings-grid">
+  return `${assetManagerHtml()}<section class="settings-layout"><section class="panel"><div class="panel-title"><h2>Strategy Settings</h2><span class="pill pill-data">EMA50/200 + MACD + Memory Cloud</span></div><p class="warning-box"><b>V66:</b> LIVE-ARMED build. Closed-candle only, Market Memory similar-history pullback, limit-first execution, then structure SL/TP before entry. LIVE requires API test + wallet/position sync + explicit confirmation. SL is structure-first; lots reduce when SL is wide.</p><form id="strategySettingsForm" class="settings-grid">
     <div class="field"><label>Entry model</label><select name="entryModel"><option value="PRACTICAL_MTF_MACD" ${s.entryModel !== 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'selected' : ''}>Practical: MTF EMA + MACD cross + histogram change</option><option value="STRICT_TRANSCRIPT_DIVERGENCE" ${s.entryModel === 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'selected' : ''}>Strict transcript: divergence + zero-line hard</option></select></div>
     <div class="field"><label>Zero-line mode</label><select name="zeroLineMode"><option value="soft" ${s.zeroLineMode !== 'hard' ? 'selected' : ''}>Soft context</option><option value="hard" ${s.zeroLineMode === 'hard' ? 'selected' : ''}>Hard blocker</option></select></div>
     <div class="field"><label>Require divergence for entry</label><select name="requireDivergenceForEntry"><option value="false" ${!s.requireDivergenceForEntry ? 'selected' : ''}>No — show as context</option><option value="true" ${s.requireDivergenceForEntry ? 'selected' : ''}>Yes — hard blocker</option></select></div>
@@ -529,8 +529,14 @@ function settingsPage() {
     <div class="field"><label>Strong MACD TP1 close %</label><input name="dynamicTp1StrongClosePct" type="number" min="1" max="90" value="${esc(s.dynamicTp1StrongClosePct || 25)}"></div>
     <div class="field"><label>EMA trail period</label><input name="trailingStopEmaPeriod" type="number" min="3" max="50" value="${esc(s.trailingStopEmaPeriod || 13)}"></div>
     <div class="field"><label>EMA trail ATR buffer</label><input name="trailingStopAtrBuffer" type="number" min="0" max="2" step="0.05" value="${esc(s.trailingStopAtrBuffer || 0.20)}"></div>
-    <div class="field"><label>Max margin / coin</label><input name="maxMarginPerCoinUsd" type="number" value="${esc(s.maxMarginPerCoinUsd)}"></div>
-    <div class="field"><label>Bot allocation</label><input name="maxBotAllocationUsd" type="number" value="${esc(s.maxBotAllocationUsd)}"></div>
+    <div class="field"><label>Normal coin initial margin $</label><input name="initialMarginUsd" type="number" min="1" step="1" value="${esc(s.initialMarginUsd)}"></div>
+    <div class="field"><label>BTC/ETH initial margin $</label><input name="majorInitialMarginUsd" type="number" min="1" step="1" value="${esc(s.majorInitialMarginUsd)}"></div>
+    <div class="field"><label>Max margin / coin $</label><input name="maxMarginPerCoinUsd" type="number" min="1" step="1" value="${esc(s.maxMarginPerCoinUsd)}"></div>
+    <div class="field"><label>BTC/ETH max margin $</label><input name="majorCoinMaxMarginUsd" type="number" min="1" step="1" value="${esc(s.majorCoinMaxMarginUsd)}"></div>
+    <div class="field"><label>Max SL loss / trade $</label><input name="maxStopLossUsd" type="number" min="0.1" step="0.1" value="${esc(s.maxStopLossUsd)}"></div>
+    <div class="field"><label>Paper bot allocation $</label><input name="maxBotAllocationUsd" type="number" min="1" step="1" value="${esc(s.maxBotAllocationUsd)}"></div>
+    <div class="field"><label>Live wallet allocation %</label><input name="liveWalletAllocationPct" type="number" min="1" max="100" step="1" value="${esc(s.liveWalletAllocationPct)}"></div>
+    <div class="field"><label>Live max bot allocation $</label><input name="liveMaxBotAllocationUsd" type="number" min="0" step="1" value="${esc(s.liveMaxBotAllocationUsd)}"></div>
     <div class="field"><label>Entry order type</label><select name="entryOrderType"><option value="limit" ${s.entryOrderType !== 'market' ? 'selected' : ''}>Limit / pullback preferred</option><option value="market" ${s.entryOrderType === 'market' ? 'selected' : ''}>Market only if allowed</option></select></div>
     <div class="field"><label>Require pullback execution</label><select name="requirePullbackForExecution"><option value="false" ${s.requirePullbackForExecution === false ? 'selected' : ''}>No — immediate limit after signal (not recommended)</option><option value="true" ${s.requirePullbackForExecution !== false ? 'selected' : ''}>Yes — wait/place pullback limit (recommended)</option></select></div>
     <div class="field"><label>Pullback ATR gap</label><input name="pullbackAtrMult" type="number" step="0.01" value="${esc(s.pullbackAtrMult ?? 0.20)}"></div>
@@ -538,7 +544,7 @@ function settingsPage() {
     <div class="field"><label>Allow market fallback</label><select name="allowMarketWhenNoPullback"><option value="false" ${!s.allowMarketWhenNoPullback ? 'selected' : ''}>No — safer</option><option value="true" ${s.allowMarketWhenNoPullback ? 'selected' : ''}>Yes — only if explicitly selected</option></select></div>
     <button class="btn-green" type="submit">Save Strategy Settings</button>
   </form></section>
-  <section class="panel"><div class="panel-title"><h2>Delta India API</h2></div><form id="apiKeyForm" class="settings-grid"><div class="field"><label>Base URL</label><input name="deltaBaseUrl" value="${esc(s.deltaBaseUrl)}"></div><div class="field"><label>API key</label><input name="apiKey" value="${esc(app.apiDraft.apiKey)}" placeholder="${a.keysConfigured ? esc(a.keyPreview) : 'Paste key'}"></div><div class="field"><label>API secret</label><input name="secret" type="password" value="${esc(app.apiDraft.secret)}" placeholder="Paste secret"></div><div class="field"><label>Whitelist IP</label><input name="whitelistedIpNote" value="${esc(app.apiDraft.whitelistedIpNote || a.whitelistedIpNote || a.serverOutboundIp || '')}"></div><button type="button" id="detectAndTestBtn" class="btn-blue">Detect IP + Test</button><button type="submit" class="btn-green">Save + Auto Setup</button><button type="button" id="clearKeysBtn" class="btn-red">Delete API Key</button></form><p class="warning-box">V65 paper-only lock: API keys may sync wallet/data reference, but live order execution is disabled from UI and backend.</p></section></section>`;
+  <section class="panel"><div class="panel-title"><h2>Delta India API</h2><span class="pill ${s.paperTrade ? 'pill-paper' : 'pill-red'}">${s.paperTrade ? 'PAPER' : 'LIVE ARMED'}</span></div><form id="apiKeyForm" class="settings-grid"><div class="field"><label>Base URL</label><input name="deltaBaseUrl" value="${esc(s.deltaBaseUrl)}"></div><div class="field"><label>API key</label><input name="apiKey" value="${esc(app.apiDraft.apiKey)}" placeholder="${a.keysConfigured ? esc(a.keyPreview) : 'Paste key'}"></div><div class="field"><label>API secret</label><input name="secret" type="password" value="${esc(app.apiDraft.secret)}" placeholder="Paste secret"></div><div class="field"><label>Whitelist IP</label><input name="whitelistedIpNote" value="${esc(app.apiDraft.whitelistedIpNote || a.whitelistedIpNote || a.serverOutboundIp || '')}"></div><div class="field wide"><label><input name="liveTradingConfirmed" type="checkbox" ${a.liveTradingConfirmed ? 'checked' : ''}> I understand LIVE mode sends real Delta orders</label></div><button type="button" id="detectAndTestBtn" class="btn-blue">Detect IP + Test</button><button type="submit" class="btn-green">Save + Auto Setup</button><button type="button" id="clearKeysBtn" class="btn-red">Delete API Key</button></form><p class="warning-box">LIVE mode is blocked until API test passes, wallet sync passes, positions sync passes, and this live confirmation checkbox is saved. BOT stays OFF after switching modes.</p></section></section>`;
 }
 
 function render() {
@@ -557,7 +563,7 @@ function render() {
 
 function payloadFromForm(formEl) {
   const fd = new FormData(formEl), out = {};
-  ['maxConcurrentPositions','riskPercent','defaultLeverage','maxLeverage','divergencePivotLeft','divergencePivotRight','divergenceLookback','slBufferAtrMult','tp1ClosePct','tp2ClosePct','maxMarginPerCoinUsd','maxBotAllocationUsd','entrySignalWindowCandles','histColorLookback','pullbackAtrMult','pullbackMaxAtrMult','targetFullTradeProfitUsd','minFullTradeProfitUsd','institutionalEmaFastPeriod','institutionalEmaMidPeriod','institutionalEmaSlowPeriod','institutionalPullbackLookback','institutionalPullbackAtrMult','institutionalMaxExtensionAtr','institutionalPatternLookback','marketMemoryScanDepth','marketMemoryTopMatches','marketMemoryPatternLength','marketMemoryFutureLookahead','marketMemorySensitivity','marketMemoryMinSimilarityPct','marketMemoryCloudAtrMult','marketMemoryNearCloudAtrMult','marketMemoryMaxExtensionAtr','marketMemoryMinForwardMoveAtr','dynamicTpStrongR','dynamicTpMaxR','dynamicTp1ShiftR','dynamicTp1StrongClosePct','trailingStopEmaPeriod','trailingStopAtrBuffer','minConfluenceScore','aPlusConfluenceScore','tier3MinConfluenceScore','minMomentumConfirmations','structureProximityAtr','volumeSpikeMultiplier','vwapLookback'].forEach(k => { if (fd.has(k)) out[k] = Number(fd.get(k)); });
+  ['maxConcurrentPositions','riskPercent','defaultLeverage','maxLeverage','initialMarginUsd','majorInitialMarginUsd','majorCoinMaxMarginUsd','maxStopLossUsd','liveWalletAllocationPct','liveMaxBotAllocationUsd','divergencePivotLeft','divergencePivotRight','divergenceLookback','slBufferAtrMult','tp1ClosePct','tp2ClosePct','maxMarginPerCoinUsd','maxBotAllocationUsd','entrySignalWindowCandles','histColorLookback','pullbackAtrMult','pullbackMaxAtrMult','targetFullTradeProfitUsd','minFullTradeProfitUsd','institutionalEmaFastPeriod','institutionalEmaMidPeriod','institutionalEmaSlowPeriod','institutionalPullbackLookback','institutionalPullbackAtrMult','institutionalMaxExtensionAtr','institutionalPatternLookback','marketMemoryScanDepth','marketMemoryTopMatches','marketMemoryPatternLength','marketMemoryFutureLookahead','marketMemorySensitivity','marketMemoryMinSimilarityPct','marketMemoryCloudAtrMult','marketMemoryNearCloudAtrMult','marketMemoryMaxExtensionAtr','marketMemoryMinForwardMoveAtr','dynamicTpStrongR','dynamicTpMaxR','dynamicTp1ShiftR','dynamicTp1StrongClosePct','trailingStopEmaPeriod','trailingStopAtrBuffer','minConfluenceScore','aPlusConfluenceScore','tier3MinConfluenceScore','minMomentumConfirmations','structureProximityAtr','volumeSpikeMultiplier','vwapLookback'].forEach(k => { if (fd.has(k)) out[k] = Number(fd.get(k)); });
   ['institutionalEmaEnabled','institutionalRequireEmaStack','institutionalRequirePullback','institutionalRequirePriceAction','institutionalRequireHtfMacd','marketMemoryEnabled','marketMemoryRequirePullback','marketMemoryRequireTopMatchOutcome','dynamicTpEnabled','vwapConfluenceEnabled','volumeSpikeConfluenceEnabled'].forEach(k => { if (fd.has(k)) out[k] = String(fd.get(k)) === 'true'; });
   if (fd.has('entryModel')) out.entryModel = String(fd.get('entryModel') || 'PRACTICAL_MTF_MACD');
   if (fd.has('zeroLineMode')) out.zeroLineMode = String(fd.get('zeroLineMode') || 'soft');
@@ -568,7 +574,7 @@ function payloadFromForm(formEl) {
   if (fd.has('autoSizeToTargetProfit')) out.autoSizeToTargetProfit = String(fd.get('autoSizeToTargetProfit')) === 'true';
   if (fd.has('blockTinyProfitTrades')) out.blockTinyProfitTrades = String(fd.get('blockTinyProfitTrades')) === 'true';
   if (fd.has('autoUseMaxLeverageForProfitTarget')) out.autoUseMaxLeverageForProfitTarget = String(fd.get('autoUseMaxLeverageForProfitTarget')) === 'true';
-  out.paperTrade = true;
+  // Mode is controlled by the PAPER/LIVE switch, not by this strategy form.
   return out;
 }
 
@@ -577,15 +583,19 @@ async function saveSettings(form) { app.state = await api('/api/settings', { met
 async function setBot(on) { try { app.state = await api('/api/toggle-live', { method:'POST', body: JSON.stringify({ enabled: Boolean(on) }) }); render(); toast(on ? 'Bot ON.' : 'Bot OFF.'); } catch(e) { await loadState({silent:true}); toast(e.message); } }
 async function setMode(live) {
   try {
-    app.state = await api('/api/settings', { method:'POST', body: JSON.stringify({ paperTrade: true }) });
+    if (live && !confirm('Switch to LIVE mode? This can place REAL Delta Exchange orders after BOT is turned ON. Continue?')) {
+      render();
+      return;
+    }
+    app.state = await api('/api/settings', { method:'POST', body: JSON.stringify({ paperTrade: !live }) });
     render();
-    toast('V65 is locked to PAPER mode. Live execution is disabled.');
+    toast(live ? 'LIVE mode armed. BOT is OFF; start manually only after checking settings.' : 'PAPER mode selected. BOT OFF.');
   } catch(e) { await loadState({silent:true}); toast(e.message); }
 }
 
 
 async function emergencyStop() { app.state = await api('/api/emergency-stop', { method:'POST', body:'{}' }); render(); toast('Emergency stop: BOT OFF and PAPER mode enforced.'); }
-async function saveApi() { const f=$('#apiKeyForm'), fd=new FormData(f); const payload={ apiKey:String(fd.get('apiKey')||'').trim(), secret:String(fd.get('secret')||'').trim(), deltaBaseUrl:String(fd.get('deltaBaseUrl')||'').trim(), whitelistedIpNote:String(fd.get('whitelistedIpNote')||'').trim(), liveTradingConfirmed:Boolean(app.state.apiStatus?.liveTradingConfirmed) }; const result = await api('/api/auto-setup', { method:'POST', body: JSON.stringify(payload), timeoutMs: 25000 }); app.state = result.state || app.state; render(); toast(result.completed ? 'API saved and synced.' : 'API setup incomplete. Check readiness.'); }
+async function saveApi() { const f=$('#apiKeyForm'), fd=new FormData(f); const payload={ apiKey:String(fd.get('apiKey')||'').trim(), secret:String(fd.get('secret')||'').trim(), deltaBaseUrl:String(fd.get('deltaBaseUrl')||'').trim(), whitelistedIpNote:String(fd.get('whitelistedIpNote')||'').trim(), liveTradingConfirmed:Boolean(fd.get('liveTradingConfirmed')) }; const result = await api('/api/auto-setup', { method:'POST', body: JSON.stringify(payload), timeoutMs: 25000 }); app.state = result.state || app.state; render(); toast(result.completed ? 'API saved and synced.' : 'API setup incomplete. Check readiness.'); }
 async function detectAndTest() { app.state = await api('/api/outbound-ip', { method:'POST', body:'{}' }); render(); try { app.state = await api('/api/test-keys', { method:'POST', body:'{}' }); render(); toast('Connection test passed.'); } catch(e) { toast(e.message); } }
 async function closeTrade(id) { const data = await api('/api/close-trade', { method:'POST', body: JSON.stringify({ id }) }); app.state = data.state; render(); toast(`Closed ${data.closed.coin} ${data.closed.side || ''}.`); }
 

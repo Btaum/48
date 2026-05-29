@@ -1,4 +1,4 @@
-# V65 EMA50/200 + MACD Divergence + Market Memory Cloud Paper Bot
+# V66 EMA50/200 + MACD Divergence + Market Memory Cloud Paper Bot
 
 ## Core strategy
 - 5m execution candles only.
@@ -10,7 +10,7 @@
 - VWAP, RSI, CCI, volume spike, breakout, SAR, and two-pole are not hard entry gates in this build.
 
 ## Execution policy
-- Paper-only lock remains active.
+- Live-armed lock remains active.
 - Closed 5m candles only for signal confirmation.
 - Pullback-limit first execution.
 - Market entry remains blocked unless explicitly changed later.

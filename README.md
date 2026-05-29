@@ -1,6 +1,6 @@
 # V64 EMA + MACD + Market Memory Paper Bot
 
-Delta Exchange India paper-only live-mimic build.
+Delta Exchange India live-armed live-mimic build.
 
 ## Core rule
 
