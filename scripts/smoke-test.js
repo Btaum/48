@@ -36,7 +36,7 @@ function validateStaticControls() {
   const js = read('public/app.js');
   const css = read('public/styles.css');
   const requiredHtml = ['Trading Journal', 'data-page="dashboard"', 'data-page="chart"', 'data-page="strategies"', 'data-page="trades"', 'data-page="logs"', 'data-page="settings"', 'id="modeSwitch"', 'id="botSwitch"', 'data-filter="ALL"', 'data-filter="LONG"', 'data-filter="SHORT"', 'data-filter="WAIT"', 'data-filter="STRONG"', 'id="refreshBtn"'];
-  const requiredJs = ['EMA + MACD + Market Memory', 'EMA9', 'EMA21', 'EMA50', 'EMA200', 'VWAP', 'MACD 12/26/9', 'chartCanvas', 'Forecast / Projection', 'data-chart-tab', 'apiKeyForm', 'Market Memory layer', 'Closed Wins Amount', 'Closed Losses Amount', 'Delta Coin Universe', 'addAssetBtn', 'data-remove-asset', '/api/chart', '/api/delta-symbols', '/api/auto-setup', '/api/emergency-stop', '/api/outbound-ip'];
+  const requiredJs = ['EMA50/200 + MACD + Memory Cloud', 'EMA50', 'EMA200', 'Memory Cloud', 'MACD 12/26/9', 'chartCanvas', 'Forecast / Projection', 'data-chart-tab', 'apiKeyForm', 'Market Memory layer', 'Closed Wins Amount', 'Closed Losses Amount', 'Delta Coin Universe', 'addAssetBtn', 'data-remove-asset', '/api/chart', '/api/delta-symbols', '/api/auto-setup', '/api/emergency-stop', '/api/outbound-ip'];
   const requiredCss = ['--panel:#ffffff', '--text:#0b0f14', 'chart-layout', 'strategy-grid', 'coin-logo', 'asset-manager'];
   for (const token of requiredHtml) assert.ok(html.includes(token), `Missing HTML control ${token}`);
   for (const token of requiredJs) assert.ok(js.includes(token), `Missing JS content ${token}`);
@@ -67,8 +67,8 @@ function validateStaticControls() {
     assert.ok(Array.isArray(state.data.rows) && state.data.rows.length >= 5, 'Scanner rows missing');
     assert.equal(state.data.settings.exchange, 'delta_exchange_india');
     assert.equal(state.data.settings.executionApi, 'delta_exchange_india');
-    assert.equal(state.data.settings.strategyMode, 'INSTITUTIONAL_EMA_MACD_MTF');
-    assert.equal(state.data.settings.signalSource, 'institutional_ema_macd_mtf');
+    assert.equal(state.data.settings.strategyMode, 'EMA50_200_MACD_MEMORY_CLOUD');
+    assert.equal(state.data.settings.signalSource, 'ema50_200_macd_memory_cloud');
     assert.equal(state.data.settings.primaryTimeframe, '5m');
     assert.equal(state.data.settings.executionTimeframe, '5m');
     assert.deepEqual(state.data.settings.higherTimeframes, ['15m', '1h']);
@@ -80,12 +80,11 @@ function validateStaticControls() {
     assert.equal(state.data.settings.institutionalRequirePullback, true);
     assert.equal(state.data.settings.paperTrade, true);
     assert.equal(state.data.settings.liveReady, false);
-    assert.equal(state.data.settings.entryEmaFastPeriod, 9);
-    assert.equal(state.data.settings.entryEmaSlowPeriod, 21);
+    assert.equal(state.data.settings.entryEmaFastPeriod, 50);
+    assert.equal(state.data.settings.entryEmaSlowPeriod, 200);
     assert.equal(state.data.settings.trendEmaPeriod, 50);
     assert.equal(state.data.settings.dominantEmaPeriod, 200);
-    assert.equal(state.data.settings.rsiPeriod, 14);
-    assert.equal(state.data.settings.vwapConfluenceEnabled, true);
+    assert.equal(state.data.settings.vwapConfluenceEnabled, false);
     assert.ok(state.data.settings.minConfluenceScore >= 5);
     assert.equal(state.data.settings.institutionalRequirePriceAction, true);
     assert.equal(state.data.settings.dynamicTpEnabled, true);
@@ -110,11 +109,11 @@ function validateStaticControls() {
     assert.equal(chart.data.symbol, 'BTCUSD');
     assert.equal(chart.data.resolution, '5m');
     assert.ok(Array.isArray(chart.data.candles), 'Chart candles payload missing');
-    assert.ok(Array.isArray(chart.data.indicators.ema9Exec), 'Chart EMA9 payload missing');
-    assert.ok(Array.isArray(chart.data.indicators.ema21Exec), 'Chart EMA21 payload missing');
-    assert.ok(Array.isArray(chart.data.indicators.vwap), 'Chart VWAP payload missing');
-    assert.ok(Array.isArray(chart.data.indicators.rsi), 'Chart RSI payload missing');
-    assert.ok(Array.isArray(chart.data.indicators.cci), 'Chart CCI payload missing');
+    assert.ok(Array.isArray(chart.data.indicators.ema50Exec), 'Chart EMA50 payload missing');
+    assert.ok(Array.isArray(chart.data.indicators.ema200Exec), 'Chart EMA200 payload missing');
+    assert.ok(Array.isArray(chart.data.indicators.memoryLine), 'Chart Memory line payload missing');
+    assert.ok(Array.isArray(chart.data.indicators.memoryCloudHigh), 'Chart Memory cloud high payload missing');
+    assert.ok(Array.isArray(chart.data.indicators.memoryCloudLow), 'Chart Memory cloud low payload missing');
     assert.ok(chart.data.supportResistance, 'Chart support/resistance missing');
 
     const scan = await request(base, '/api/scan', { method: 'POST', body: '{}' });
@@ -149,7 +148,7 @@ function validateStaticControls() {
     const tradesFile = path.join(tmp, 'trades.json');
     assert.ok(fs.existsSync(tradesFile), 'trades.json must exist for saved trade ledger');
 
-    console.log('PASS: V64 Market Memory live-mimic paper bot, chart visuals, settings, trade ledger, API routes and scanner loop validated.');
+    console.log('PASS: V65 EMA50/200 + Market Memory cloud live-mimic paper bot, chart visuals, settings, trade ledger, API routes and scanner loop validated.');
   } finally {
     await new Promise(resolve => server.close(resolve));
     fs.rmSync(tmp, { recursive: true, force: true });

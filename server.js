@@ -11,7 +11,7 @@ const ROOT = __dirname;
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 8080);
-const USER_AGENT = 'TradingNorth-Confluence-Structure-Execution/64.0';
+const USER_AGENT = 'TradingNorth-Confluence-Structure-Execution/65.0';
 
 const DASHBOARD_PASSWORD = String(process.env.DASHBOARD_PASSWORD || '').trim();
 const DASHBOARD_SESSION_SECRET = String(process.env.DASHBOARD_SESSION_SECRET || process.env.DASHBOARD_PASSWORD || crypto.randomBytes(32).toString('hex'));
@@ -49,8 +49,8 @@ const DEFAULT_SETTINGS = {
   paperTrade: true,
   exchange: 'delta_exchange_india',
   executionApi: 'delta_exchange_india',
-  signalSource: 'institutional_ema_macd_mtf',
-  strategyMode: 'INSTITUTIONAL_EMA_MACD_MTF',
+  signalSource: 'ema50_200_macd_memory_cloud',
+  strategyMode: 'EMA50_200_MACD_MEMORY_CLOUD',
   deltaBaseUrl: 'https://api.india.delta.exchange',
   assets: Object.keys(BASE_PRICE),
   primaryTimeframe: '5m',
@@ -59,19 +59,19 @@ const DEFAULT_SETTINGS = {
   emaFastTimeframe: '15m',
   emaSlowTimeframe: '1h',
   higherTimeframes: ['15m', '1h'],
-  entryEmaFastPeriod: 9,
-  entryEmaSlowPeriod: 21,
+  entryEmaFastPeriod: 50, // legacy compatibility only; not used as a fast EMA gate
+  entryEmaSlowPeriod: 200, // legacy compatibility only; not used as a fast EMA gate
   trendEmaPeriod: 50,
   dominantEmaPeriod: 200,
   rsiPeriod: 14,
   cciPeriod: 20,
-  vwapConfluenceEnabled: true,
-  volumeSpikeConfluenceEnabled: true,
+  vwapConfluenceEnabled: false,
+  volumeSpikeConfluenceEnabled: false,
   volumeSpikeMultiplier: 1.25,
-  minConfluenceScore: 7,
-  aPlusConfluenceScore: 10,
-  tier3MinConfluenceScore: 10,
-  minMomentumConfirmations: 3,
+  minConfluenceScore: 6,
+  aPlusConfluenceScore: 9,
+  tier3MinConfluenceScore: 9,
+  minMomentumConfirmations: 2,
   structureProximityAtr: 1.35,
   emaPeriod: 50,
   mtfEmaPeriod: 50,
@@ -85,8 +85,8 @@ const DEFAULT_SETTINGS = {
   institutionalRequireEmaStack: true,
   institutionalRequirePullback: true,
   institutionalRequirePriceAction: true,
-  institutionalRequireHtfMacd: true,
-  institutionalEmaFastPeriod: 13,
+  institutionalRequireHtfMacd: false,
+  institutionalEmaFastPeriod: 50, // legacy compatibility only; EMA fast/mid stack removed
   institutionalEmaMidPeriod: 50,
   institutionalEmaSlowPeriod: 200,
   institutionalPullbackLookback: 10,
@@ -111,9 +111,9 @@ const DEFAULT_SETTINGS = {
   dynamicTpMaxR: 6,
   dynamicTp1ShiftR: 1.5,
   dynamicTp1StrongClosePct: 25,
-  trailingStopEmaPeriod: 13,
+  trailingStopEmaPeriod: 50,
   trailingStopAtrBuffer: 0.20,
-  requireDivergenceForEntry: false,
+  requireDivergenceForEntry: true,
   zeroLineMode: 'hard',
   entrySignalWindowCandles: 2,
   histColorLookback: 6,
@@ -377,25 +377,25 @@ function enforceTimeframePolicy(settings = {}) {
     higherTimeframes: ['15m', '1h'],
     htfMinimumAligned: 1,
     paperTrade: true,
-    signalSource: 'institutional_ema_macd_mtf',
-    strategyMode: 'INSTITUTIONAL_EMA_MACD_MTF',
+    signalSource: 'ema50_200_macd_memory_cloud',
+    strategyMode: 'EMA50_200_MACD_MEMORY_CLOUD',
     emaPeriod,
     mtfEmaPeriod: emaPeriod,
     macdFastLength: 12,
     macdSlowLength: 26,
     macdSignalLength: 9,
-    entryEmaFastPeriod: Math.min(Math.max(Math.floor(Number(settings.entryEmaFastPeriod || 9)), 3), 21),
-    entryEmaSlowPeriod: Math.min(Math.max(Math.floor(Number(settings.entryEmaSlowPeriod || 21)), 5), 55),
+    entryEmaFastPeriod: 50,
+    entryEmaSlowPeriod: 200,
     trendEmaPeriod: 50,
     dominantEmaPeriod: 200,
     rsiPeriod: Math.min(Math.max(Math.floor(Number(settings.rsiPeriod || 14)), 5), 50),
     cciPeriod: Math.min(Math.max(Math.floor(Number(settings.cciPeriod || 20)), 5), 60),
-    vwapConfluenceEnabled: settings.vwapConfluenceEnabled !== false,
-    volumeSpikeConfluenceEnabled: settings.volumeSpikeConfluenceEnabled !== false,
-    minConfluenceScore: Math.min(Math.max(Number(settings.minConfluenceScore || 7), 5), 12),
-    aPlusConfluenceScore: Math.min(Math.max(Number(settings.aPlusConfluenceScore || 10), 8), 12),
-    tier3MinConfluenceScore: Math.min(Math.max(Number(settings.tier3MinConfluenceScore || 10), 8), 12),
-    minMomentumConfirmations: Math.min(Math.max(Math.floor(Number(settings.minMomentumConfirmations || 3)), 2), 5),
+    vwapConfluenceEnabled: settings.vwapConfluenceEnabled === true,
+    volumeSpikeConfluenceEnabled: settings.volumeSpikeConfluenceEnabled === true,
+    minConfluenceScore: Math.min(Math.max(Number(settings.minConfluenceScore || 6), 5), 12),
+    aPlusConfluenceScore: Math.min(Math.max(Number(settings.aPlusConfluenceScore || 9), 8), 12),
+    tier3MinConfluenceScore: Math.min(Math.max(Number(settings.tier3MinConfluenceScore || 9), 8), 12),
+    minMomentumConfirmations: Math.min(Math.max(Math.floor(Number(settings.minMomentumConfirmations || 2)), 2), 5),
     minRR: 2,
     rewardTargetR: 2,
     requireClosedCandle: true,
@@ -1103,23 +1103,14 @@ function confluenceForSide(symbol, direction, candles = [], context = {}, settin
   const closes = rows.map(c => Number(c.close)).filter(n => Number.isFinite(n) && n > 0);
   const p = Number(context.price || closes[closes.length - 1] || 0);
   const atr = Math.max(Number(context.atr || 0), p * 0.001, 0.00000001);
-  const emaFast = latestEma(closes, Number(settings.entryEmaFastPeriod || 9));
-  const emaSlow = latestEma(closes, Number(settings.entryEmaSlowPeriod || 21));
   const emaMid = Number(context.emaMid || latestEma(closes, Number(settings.trendEmaPeriod || 50)) || 0);
   const emaDominant = latestEma(closes, Number(settings.dominantEmaPeriod || 200));
-  const rsiSeries = calculateRsiSeries(closes, Number(settings.rsiPeriod || 14));
-  const rsi = lastFinite(rsiSeries);
-  const cciSeries = calculateCciSeries(rows, Number(settings.cciPeriod || 20));
-  const cci = lastFinite(cciSeries);
-  const vwapSeries = cumulativeVwapSeries(rows, Math.min(Math.max(Number(settings.vwapLookback || 96), 20), 300));
-  const vwap = lastFinite(vwapSeries);
-  const volume = volumeSpikeState(rows, Number(settings.relativeVolumeLookback || 30), Number(settings.volumeSpikeMultiplier || 1.25));
+  const vwapSeries = settings.vwapConfluenceEnabled !== false ? cumulativeVwapSeries(rows, Math.min(Math.max(Number(settings.vwapLookback || 96), 20), 300)) : [];
+  const vwap = settings.vwapConfluenceEnabled !== false ? lastFinite(vwapSeries) : null;
+  const volume = settings.volumeSpikeConfluenceEnabled !== false ? volumeSpikeState(rows, Number(settings.relativeVolumeLookback || 30), Number(settings.volumeSpikeMultiplier || 1.25)) : { pass: true, ratio: 1, reason: 'Volume filter disabled.' };
   const long = direction === 'LONG';
-  const emaTiming = long ? p > emaFast && emaFast >= emaSlow : p < emaFast && emaFast <= emaSlow;
-  const emaTrend = long ? p > emaMid : p < emaMid;
-  const emaDominantOk = Number.isFinite(emaDominant) ? (long ? p > emaDominant || emaMid > emaDominant : p < emaDominant || emaMid < emaDominant) : true;
-  const rsiOk = Number.isFinite(rsi) ? (long ? rsi >= 48 && rsi >= (rsiSeries[rsiSeries.length - 2] ?? rsi) - 1 : rsi <= 52 && rsi <= (rsiSeries[rsiSeries.length - 2] ?? rsi) + 1) : false;
-  const cciOk = Number.isFinite(cci) ? (long ? cci > -80 && cci >= (cciSeries[cciSeries.length - 2] ?? cci) : cci < 80 && cci <= (cciSeries[cciSeries.length - 2] ?? cci)) : false;
+  const ema50Ok = Number.isFinite(emaMid) ? (long ? p >= emaMid : p <= emaMid) : true;
+  const ema200Ok = Number.isFinite(emaDominant) ? (long ? p >= emaDominant || emaMid >= emaDominant : p <= emaDominant || emaMid <= emaDominant) : true;
   const vwapOk = Number.isFinite(vwap) ? (long ? p >= vwap || Math.abs(p - vwap) <= atr * 0.35 : p <= vwap || Math.abs(p - vwap) <= atr * 0.35) : true;
   const structure = structureLocationForSide(symbol, direction, rows, p, atr, emaMid, vwap, settings);
   const macd5Ok = Boolean(context.macd5Ok);
@@ -1130,39 +1121,34 @@ function confluenceForSide(symbol, direction, candles = [], context = {}, settin
   const details = [];
   function add(name, ok, pts, detail='') { if (ok) score += pts; details.push({ name, pass: Boolean(ok), points: ok ? pts : 0, detail }); }
   add('validLocation', structure.pass, 2, structure.reason);
-  add('emaTrend', emaTrend && emaDominantOk && htfTrendOk, 2, `EMA9=${roundCoin(symbol, emaFast)} EMA21=${roundCoin(symbol, emaSlow)} EMA50=${roundCoin(symbol, emaMid)} EMA200=${roundCoin(symbol, emaDominant)}`);
-  add('emaTiming', emaTiming, 1, long ? 'price/EMA9 above EMA21' : 'price/EMA9 below EMA21');
-  add('macd5', macd5Ok, 2, '5m MACD momentum confirms');
-  add('macdHtf', macdHtfOk, 1, '15m/1h MACD confirms');
-  add('rsiControl', rsiOk, 1, `RSI=${pct(rsi)}`);
-  add('cciControl', cciOk, 1, `CCI=${pct(cci)}`);
-  add('vwapBias', settings.vwapConfluenceEnabled === false || vwapOk, 1, `VWAP=${roundCoin(symbol, vwap)}`);
-  add('volume', settings.volumeSpikeConfluenceEnabled === false || volume.pass, 1, volume.reason);
-  add('candleTrigger', priceActionOk, 1, 'engulfing/pin/double top-bottom trigger');
+  add('ema50_200Trend', htfTrendOk && (ema50Ok || ema200Ok), 3, `EMA50=${roundCoin(symbol, emaMid)} EMA200=${roundCoin(symbol, emaDominant)}; MTF EMA50 direction=${htfTrendOk}`);
+  add('macd5', macd5Ok, 2, '5m MACD 12/26/9 confirms timing');
+  add('macdHtfSoft', macdHtfOk || settings.institutionalRequireHtfMacd === false, 1, settings.institutionalRequireHtfMacd === false ? 'Higher-timeframe MACD is advisory, not a blocker.' : '15m/1h MACD confirms.');
+  add('candleTrigger', priceActionOk, 2, 'closed-candle rejection / engulfing / continuation trigger');
+  if (settings.vwapConfluenceEnabled !== false) add('vwapSoft', vwapOk, 0, `VWAP=${roundCoin(symbol, vwap)}`);
+  if (settings.volumeSpikeConfluenceEnabled !== false) add('volumeSoft', volume.pass, 0, volume.reason);
   const confirmations = details.filter(d => d.pass && !['validLocation'].includes(d.name)).length;
+  const maxScore = 10;
   return {
-    pass: score >= Number(settings.minConfluenceScore || 7) && confirmations >= Number(settings.minMomentumConfirmations || 3) && structure.pass,
+    pass: score >= Number(settings.minConfluenceScore || 6) && confirmations >= Number(settings.minMomentumConfirmations || 2) && structure.pass,
     score,
-    maxScore: 13,
+    maxScore,
     confirmations,
-    requiredScore: Number(settings.minConfluenceScore || 7),
-    requiredConfirmations: Number(settings.minMomentumConfirmations || 3),
+    requiredScore: Number(settings.minConfluenceScore || 6),
+    requiredConfirmations: Number(settings.minMomentumConfirmations || 2),
     structure,
     indicators: {
-      ema9: roundCoin(symbol, emaFast),
-      ema21: roundCoin(symbol, emaSlow),
       ema50: roundCoin(symbol, emaMid),
       ema200: roundCoin(symbol, emaDominant),
-      rsi: pct(rsi),
-      cci: pct(cci),
-      vwap: roundCoin(symbol, vwap),
+      vwap: Number.isFinite(vwap) ? roundCoin(symbol, vwap) : null,
       volumeRatio: volume.ratio
     },
     details,
-    reason: `Confluence ${score}/13, confirmations=${confirmations}; ${structure.reason}`
+    vwapOk,
+    volumeOk: volume.pass,
+    reason: `Confluence ${score}/${maxScore}, confirmations=${confirmations}; ${structure.reason}`
   };
 }
-
 
 
 function rmaSeries(values, length) {
@@ -1659,24 +1645,21 @@ function macdMomentumOk(macd, direction, opts = {}) {
 
 function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings) {
   const enabled = settings.institutionalEmaEnabled !== false;
-  if (!enabled) return { enabled: false, ready: true, pass: true, long: { pass: true }, short: { pass: true }, reason: 'Institutional EMA layer disabled' };
+  if (!enabled) return { enabled: false, ready: true, pass: true, long: { pass: true }, short: { pass: true }, reason: 'EMA50/200 layer disabled' };
   const candles5 = getCachedCandles(symbol, '5m');
   const closesFallback = (history || []).map(Number).filter(n => Number.isFinite(n) && n > 0);
   const synthetic = closesFallback.length ? syntheticOhlcFromCloses(closesFallback, atr) : [];
-  const execCandles = candles5.length >= 40 ? candles5 : synthetic;
+  const execCandles = candles5.length >= 80 ? candles5 : synthetic;
   const closes = execCandles.map(c => c.close).filter(n => Number.isFinite(n) && n > 0);
   const p = Number(price || closes[closes.length - 1] || 0);
   const a = Math.max(Number(atr || 0), p * 0.002);
-  const fastLen = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaFastPeriod || 13)), 3), 50);
-  const midLen = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaMidPeriod || 50)), fastLen + 1), 100);
-  const slowLen = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaSlowPeriod || 200)), midLen + 1), 300);
-  if (!p || closes.length < Math.max(40, midLen)) {
-    return { enabled: true, ready: false, pass: false, long: { pass: false }, short: { pass: false }, reason: `Need at least ${Math.max(40, midLen)} candles for institutional EMA warmup` };
+  const midLen = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaMidPeriod || settings.trendEmaPeriod || 50)), 20), 100);
+  const slowLen = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaSlowPeriod || settings.dominantEmaPeriod || 200)), 100), 300);
+  if (!p || closes.length < Math.max(80, midLen)) {
+    return { enabled: true, ready: false, pass: false, long: { pass: false }, short: { pass: false }, reason: `Need at least ${Math.max(80, midLen)} candles for EMA50/200 warmup` };
   }
-  const emaFastSeries = emaSeries(closes, fastLen);
   const emaMidSeries = emaSeries(closes, midLen);
   const emaSlowSeries = emaSeries(closes, slowLen);
-  const emaFast = lastFinite(emaFastSeries);
   const emaMid = lastFinite(emaMidSeries);
   const emaSlow = lastFinite(emaSlowSeries);
   const c15 = getCachedCandles(symbol, '15m');
@@ -1704,7 +1687,7 @@ function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings
     const touched = direction === 'LONG'
       ? recent.some(c => Number(c.low) <= emaMid + a * pbAtr && Number(c.close) >= emaMid - a * pbAtr)
       : recent.some(c => Number(c.high) >= emaMid - a * pbAtr && Number(c.close) <= emaMid + a * pbAtr);
-    const reclaimed = direction === 'LONG' ? p > emaFast && p > emaMid : p < emaFast && p < emaMid;
+    const reclaimed = direction === 'LONG' ? p > emaMid : p < emaMid;
     const notChasing = extensionAtr <= maxExtAtr;
     const swing = direction === 'LONG' ? Math.min(...recent.map(c => Number(c.low)).filter(Number.isFinite)) : Math.max(...recent.map(c => Number(c.high)).filter(Number.isFinite));
     return { pass: Boolean(touched && reclaimed && notChasing), touched, reclaimed, notChasing, minDistAtr: pct(minDistAtr), extensionAtr: pct(extensionAtr), swing };
@@ -1712,12 +1695,14 @@ function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings
 
   function side(direction) {
     const long = direction === 'LONG';
+    const transcriptMtfTrend = long
+      ? ema50_15 > ema50_1h
+      : ema50_15 < ema50_1h;
+    const ema200Protection = Number.isFinite(emaSlow) ? (long ? p >= emaSlow || emaMid >= emaSlow : p <= emaSlow || emaMid <= emaSlow) : true;
     const execStack = long
-      ? p > emaSlow && emaFast > emaMid && emaMid > emaSlow
-      : p < emaSlow && emaFast < emaMid && emaMid < emaSlow;
-    const htfStack = long
-      ? ema50_15 > ema200_15 && ema50_1h > ema200_1h
-      : ema50_15 < ema200_15 && ema50_1h < ema200_1h;
+      ? p >= emaMid && ema200Protection
+      : p <= emaMid && ema200Protection;
+    const htfStack = Boolean(transcriptMtfTrend);
     const pb = pullback(direction);
     const pa = priceActionConfirmation(execCandles, direction, a, patternLookback);
     const macd5Ok = macdMomentumOk(macd5, direction);
@@ -1733,19 +1718,17 @@ function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings
     const requirePriceAction = settings.institutionalRequirePriceAction !== false;
     const requireEmaStack = settings.institutionalRequireEmaStack !== false;
     const requirePullback = settings.institutionalRequirePullback !== false;
-    const requireHtfMacd = settings.institutionalRequireHtfMacd !== false;
+    const requireHtfMacd = settings.institutionalRequireHtfMacd === true;
     const memorySide = long ? (marketMemory.long || {}) : (marketMemory.short || {});
     const memoryPass = settings.marketMemoryEnabled === false || Boolean(memorySide.pass);
-    const stackPass = requireEmaStack ? (execStack && htfStack) : (execStack || htfStack);
+    const stackPass = requireEmaStack ? htfStack : true;
     const pullbackPass = requirePullback ? pb.pass : true;
     const htfMacdPass = requireHtfMacd ? htfMacd : true;
-    const oldStrictPass = stackPass && pullbackPass && pa.pass && htfMacdPass && macd5Ok && memoryPass;
-    const flexiblePass = (execStack || htfStack) && confluence.pass && macd5Ok && pullbackPass && htfMacdPass && memoryPass && (!requirePriceAction || pa.pass);
-    const pass = Boolean(oldStrictPass || flexiblePass);
+    const pass = Boolean(stackPass && confluence.pass && macd5Ok && pullbackPass && htfMacdPass && memoryPass && (!requirePriceAction || pa.pass));
     const rawSl = long ? Math.min(Number(pa.patternLow || p), Number(pb.swing || p)) - a * Math.max(0, Number(settings.slBufferAtrMult ?? 0.25)) : Math.max(Number(pa.patternHigh || p), Number(pb.swing || p)) + a * Math.max(0, Number(settings.slBufferAtrMult ?? 0.25));
     const sl = roundCoin(symbol, rawSl);
     const risk = Math.abs(p - sl);
-    const strongMacd = macd5Ok && macd15Ok && macd1hOk && (long ? macd5.hist > macd5.prevHist : macd5.hist < macd5.prevHist);
+    const strongMacd = macd5Ok && (long ? macd5.hist > macd5.prevHist : macd5.hist < macd5.prevHist) && (htfMacd || requireHtfMacd === false);
     const dynamicTargetR = Math.min(Math.max(strongMacd ? Number(settings.dynamicTpStrongR || 3) : Number(settings.rewardTargetR || 2), 2), Math.max(2, Number(settings.dynamicTpMaxR || 5)));
     const tp1 = roundCoin(symbol, long ? p + risk * Math.max(1, Number(settings.tp1TriggerR || 1)) : p - risk * Math.max(1, Number(settings.tp1TriggerR || 1)));
     const tp2 = roundCoin(symbol, long ? p + risk * dynamicTargetR : p - risk * dynamicTargetR);
@@ -1753,6 +1736,7 @@ function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings
       pass: Boolean(pass),
       execStack,
       htfStack,
+      ema200Protection,
       pullback: pb,
       priceAction: pa,
       macd5Ok,
@@ -1768,7 +1752,7 @@ function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings
       tp1,
       tp2,
       dynamicTargetR,
-      detail: `EMA${fastLen}/${midLen}/${slowLen} stack=${execStack}; HTF 15m+1h EMA50/200=${htfStack}; EMA50 pullback=${pb.pass} dist=${pb.minDistAtr}ATR ext=${pb.extensionAtr}ATR; priceAction=${pa.pattern}; HTF MACD=${htfMacd}; MarketMemory=${memoryPass ? 'PASS' : 'WAIT'} (${memorySide.detail || marketMemory.reason || '-'}); confluence=${confluence.score}/${confluence.maxScore}; location=${confluence.structure.source}; strongMACD=${strongMacd}`
+      detail: `EMA50/200 only; transcript MTF EMA50 15m vs 1h=${htfStack}; local EMA50/200 protection=${ema200Protection}; EMA50 pullback=${pb.pass} dist=${pb.minDistAtr}ATR ext=${pb.extensionAtr}ATR; priceAction=${pa.pattern}; MACD5=${macd5Ok}; HTF MACD advisory=${htfMacd}; MarketMemory=${memoryPass ? 'PASS' : 'WAIT'} (${memorySide.detail || marketMemory.reason || '-'}); confluence=${confluence.score}/${confluence.maxScore}; location=${confluence.structure.source}; strongMACD=${strongMacd}`
     };
   }
 
@@ -1779,10 +1763,10 @@ function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings
     enabled: true,
     ready: true,
     pass,
-    fastLen,
+    fastLen: midLen,
     midLen,
     slowLen,
-    ema13: roundCoin(symbol, emaFast),
+    ema13: null,
     ema50: roundCoin(symbol, emaMid),
     ema200: roundCoin(symbol, emaSlow),
     ema50_15: roundCoin(symbol, ema50_15),
@@ -1795,7 +1779,7 @@ function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings
     marketMemory,
     long,
     short,
-    reason: pass ? `Institutional EMA layer PASS: ${long.pass ? 'LONG' : 'SHORT'} ${long.pass ? long.detail : short.detail}` : `Institutional EMA layer WAIT: long ${long.detail}; short ${short.detail}`
+    reason: pass ? `EMA50/200 + Market Memory layer PASS: ${long.pass ? 'LONG' : 'SHORT'} ${long.pass ? long.detail : short.detail}` : `EMA50/200 + Market Memory layer WAIT: long ${long.detail}; short ${short.detail}`
   };
 }
 
@@ -3109,6 +3093,30 @@ function atrFromCandles(candles = [], length = 14) {
   return slice.reduce((a, b) => a + b, 0) / slice.length;
 }
 
+
+function memoryCloudVisualSeries(candles = [], settings = loadSettings()) {
+  const rows = Array.isArray(candles) ? candles : [];
+  const closes = rows.map(c => Number(c.close || 0));
+  const len = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaMidPeriod || settings.trendEmaPeriod || 50)), 20), 100);
+  const ema = emaSeries(closes, len);
+  const tr = rows.map((c, i) => {
+    const prevClose = i > 0 ? Number(rows[i - 1].close) : Number(c.close);
+    return Math.max(Number(c.high) - Number(c.low), Math.abs(Number(c.high) - prevClose), Math.abs(Number(c.low) - prevClose));
+  });
+  const atrLen = Math.min(Math.max(Math.floor(Number(settings.atrPeriod || 14)), 5), 50);
+  const atr = rmaSeries(tr, atrLen);
+  const cloudMult = Math.min(Math.max(Number(settings.marketMemoryCloudAtrMult || 0.75), 0.2), 3);
+  const line = ema.map((v, i) => Number.isFinite(v) ? v : null);
+  const high = line.map((v, i) => Number.isFinite(v) ? v + Math.max(Number(atr[i] || 0), Math.abs(v) * 0.001) * cloudMult : null);
+  const low = line.map((v, i) => Number.isFinite(v) ? v - Math.max(Number(atr[i] || 0), Math.abs(v) * 0.001) * cloudMult : null);
+  const regime = line.map((v, i) => {
+    if (!Number.isFinite(v)) return 'neutral';
+    const prev = i > 0 && Number.isFinite(line[i - 1]) ? line[i - 1] : v;
+    return v >= prev ? 'bull' : 'bear';
+  });
+  return { line, high, low, regime };
+}
+
 function alignTimeSeriesToCandles(baseCandles = [], sourceCandles = [], values = []) {
   const out = [];
   let j = 0;
@@ -3445,7 +3453,7 @@ function passFail(profile, settings, wallet, trades) {
   const conf = instSide?.confluence || {};
   hard('Structure Location Gate', hasDirection && Boolean(conf.structure?.pass), conf.structure?.reason || 'Need one valid location: S/R, previous high/low sweep, range edge, VWAP, or EMA50 pullback.');
   hard('Confluence Score Gate', hasDirection && Number(conf.score || 0) >= Number(settings.minConfluenceScore || 7) && Number(conf.confirmations || 0) >= Number(settings.minMomentumConfirmations || 3), conf.reason || 'Need structure + trend + at least 3 momentum confirmations.');
-  soft('EMA9/21/50/200 Trend Context', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.execStack || instSide?.htfStack)), instSide?.detail || inst.reason || 'EMA trend context');
+  soft('EMA50/200 Trend Context', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.execStack || instSide?.htfStack)), instSide?.detail || inst.reason || 'EMA trend context');
   soft('EMA/VWAP/SR Pullback Context', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.pullback?.pass || conf.structure?.pass)), instSide?.pullback ? `touched=${instSide.pullback.touched} reclaimed=${instSide.pullback.reclaimed} extension=${instSide.pullback.extensionAtr}ATR` : 'Need controlled location, not middle of nowhere');
   hard('Price-Action Trigger', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.priceAction?.pass)), instSide?.priceAction?.reason || 'Need engulfing, pin bar, double top/bottom confirmation');
   soft('HTF MACD Strength', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.htfMacd || instSide?.macd5Ok)), `5m=${instSide?.macd5Ok || false} 15m=${instSide?.macd15Ok || false} 1h=${instSide?.macd1hOk || false}`);
@@ -3800,7 +3808,7 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
     tp1R,
     sizingMultiplier: sizing.multiplier,
     sizingReason: sizing.reason,
-    exitPlan: 'Confluence + structure + execution plan: one valid location, MTF EMA trend, Market Memory similar-history pullback, MACD timing, RSI/CCI/VWAP/volume confirmation. SL stays beyond invalidation/cloud/swing with ATR buffer; sizing reduces if SL is wide. TP1 partial at 1R; TP2 extends only when confluence and momentum remain strong.',
+    exitPlan: 'Confluence + structure + execution plan: one valid location, EMA50/200 trend, Market Memory similar-history pullback, MACD timing and closed-candle rejection. SL stays beyond invalidation/cloud/swing with ATR buffer; sizing reduces if SL is wide. TP1 partial at 1R; TP2 extends only when confluence and momentum remain strong.',
     tradeStyle,
     confluenceScore: (direction === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence?.score : profile.macdDivergenceSignal?.institutionalEma?.short?.confluence?.score) || 0,
     confluence: direction === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence : profile.macdDivergenceSignal?.institutionalEma?.short?.confluence,
@@ -4583,7 +4591,7 @@ async function sendLiveAddOnOrder(trade, row, settings) {
 }
 
 function liveReady(settings, keys) {
-  // V64 locked build: live execution is disabled. API keys can be saved only for wallet/data reference.
+  // V65 locked build: live execution is disabled. API keys can be saved only for wallet/data reference.
   return false && Boolean(
     !settings.paperTrade &&
     keys.apiKey &&
@@ -4600,7 +4608,7 @@ function liveReady(settings, keys) {
 
 function liveReadinessFailures(settings = loadSettings(), keys = loadKeys(), { ignorePaper = false } = {}) {
   const failures = [];
-  failures.push('V64 paper-only lock: live order execution disabled in this build');
+  failures.push('V65 paper-only lock: live order execution disabled in this build');
   if (!ignorePaper && settings.paperTrade) failures.push('PAPER mode is active');
   if (!keys.apiKey || !keys.secret) failures.push('API key/secret not saved');
   if (keys.lastTestStatus !== 'pass') failures.push('API test not passed');
@@ -5596,9 +5604,9 @@ function validateSettingsPatch(patch) {
   out.institutionalRequirePriceAction = typeof out.institutionalRequirePriceAction === 'boolean' ? out.institutionalRequirePriceAction : DEFAULT_SETTINGS.institutionalRequirePriceAction;
   out.institutionalRequireHtfMacd = typeof out.institutionalRequireHtfMacd === 'boolean' ? out.institutionalRequireHtfMacd : DEFAULT_SETTINGS.institutionalRequireHtfMacd;
   out.dynamicTpEnabled = typeof out.dynamicTpEnabled === 'boolean' ? out.dynamicTpEnabled : DEFAULT_SETTINGS.dynamicTpEnabled;
-  out.institutionalEmaFastPeriod = Math.min(Math.max(Math.floor(out.institutionalEmaFastPeriod ?? DEFAULT_SETTINGS.institutionalEmaFastPeriod), 3), 50);
-  out.institutionalEmaMidPeriod = Math.min(Math.max(Math.floor(out.institutionalEmaMidPeriod ?? DEFAULT_SETTINGS.institutionalEmaMidPeriod), out.institutionalEmaFastPeriod + 1), 100);
-  out.institutionalEmaSlowPeriod = Math.min(Math.max(Math.floor(out.institutionalEmaSlowPeriod ?? DEFAULT_SETTINGS.institutionalEmaSlowPeriod), out.institutionalEmaMidPeriod + 1), 300);
+  out.institutionalEmaFastPeriod = 50;
+  out.institutionalEmaMidPeriod = 50;
+  out.institutionalEmaSlowPeriod = Math.min(Math.max(Math.floor(out.institutionalEmaSlowPeriod ?? DEFAULT_SETTINGS.institutionalEmaSlowPeriod), 100), 300);
   out.institutionalPullbackLookback = Math.min(Math.max(Math.floor(out.institutionalPullbackLookback ?? DEFAULT_SETTINGS.institutionalPullbackLookback), 3), 30);
   out.institutionalPullbackAtrMult = Math.min(Math.max(Number(out.institutionalPullbackAtrMult ?? DEFAULT_SETTINGS.institutionalPullbackAtrMult), 0.1), 5);
   out.institutionalMaxExtensionAtr = Math.min(Math.max(Number(out.institutionalMaxExtensionAtr ?? DEFAULT_SETTINGS.institutionalMaxExtensionAtr), 0.5), 8);
@@ -5634,8 +5642,8 @@ function validateSettingsPatch(patch) {
   out.macdFastLength = Math.min(Math.max(Math.floor(out.macdFastLength ?? DEFAULT_SETTINGS.macdFastLength), 2), 50);
   out.macdSlowLength = Math.min(Math.max(Math.floor(out.macdSlowLength ?? DEFAULT_SETTINGS.macdSlowLength), out.macdFastLength + 1), 100);
   out.macdSignalLength = Math.min(Math.max(Math.floor(out.macdSignalLength ?? DEFAULT_SETTINGS.macdSignalLength), 2), 50);
-  out.entryEmaFastPeriod = Math.min(Math.max(Math.floor(out.entryEmaFastPeriod ?? DEFAULT_SETTINGS.entryEmaFastPeriod), 3), 21);
-  out.entryEmaSlowPeriod = Math.min(Math.max(Math.floor(out.entryEmaSlowPeriod ?? DEFAULT_SETTINGS.entryEmaSlowPeriod), out.entryEmaFastPeriod + 1), 55);
+  out.entryEmaFastPeriod = 50;
+  out.entryEmaSlowPeriod = 200;
   out.trendEmaPeriod = 50;
   out.dominantEmaPeriod = 200;
   out.rsiPeriod = Math.min(Math.max(Math.floor(out.rsiPeriod ?? DEFAULT_SETTINGS.rsiPeriod), 5), 50);
@@ -5722,8 +5730,8 @@ function validateSettingsPatch(patch) {
   out.requirePullbackForExecution = typeof out.requirePullbackForExecution === 'boolean' ? out.requirePullbackForExecution : DEFAULT_SETTINGS.requirePullbackForExecution;
   out.allowMarketWhenNoPullback = typeof out.allowMarketWhenNoPullback === 'boolean' ? out.allowMarketWhenNoPullback : DEFAULT_SETTINGS.allowMarketWhenNoPullback;
   out.entryOrderType = out.entryOrderType === 'market' && out.allowMarketWhenNoPullback ? 'market' : 'limit';
-  out.signalSource = 'institutional_ema_macd_mtf';
-  out.strategyMode = 'INSTITUTIONAL_EMA_MACD_MTF';
+  out.signalSource = 'ema50_200_macd_memory_cloud';
+  out.strategyMode = 'EMA50_200_MACD_MEMORY_CLOUD';
   out.paperTrade = true;
   out.liveAddOnsEnabled = false;
   out.exchange = 'delta_exchange_india';
@@ -5929,11 +5937,13 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
   const ema1h = alignTimeSeriesToCandles(candles, ema1hVisual, ema1hSeriesRaw);
   const execCloses = visualFullCandles.map(c => c.close);
   const execSliceStart = Math.max(0, visualFullCandles.length - candles.length);
-  const ema9Exec = emaSeries(execCloses, Number(settings.entryEmaFastPeriod || 9)).slice(execSliceStart);
-  const ema21Exec = emaSeries(execCloses, Number(settings.entryEmaSlowPeriod || 21)).slice(execSliceStart);
-  const ema13Exec = emaSeries(execCloses, Number(settings.institutionalEmaFastPeriod || 13)).slice(execSliceStart);
-  const ema50Exec = emaSeries(execCloses, Number(settings.institutionalEmaMidPeriod || 50)).slice(execSliceStart);
-  const ema200Exec = emaSeries(execCloses, Number(settings.institutionalEmaSlowPeriod || 200)).slice(execSliceStart);
+  const ema50Exec = emaSeries(execCloses, Number(settings.institutionalEmaMidPeriod || settings.trendEmaPeriod || 50)).slice(execSliceStart);
+  const ema200Exec = emaSeries(execCloses, Number(settings.institutionalEmaSlowPeriod || settings.dominantEmaPeriod || 200)).slice(execSliceStart);
+  const memoryCloudFull = memoryCloudVisualSeries(visualFullCandles, settings);
+  const memoryLine = (memoryCloudFull.line || []).slice(execSliceStart);
+  const memoryCloudHigh = (memoryCloudFull.high || []).slice(execSliceStart);
+  const memoryCloudLow = (memoryCloudFull.low || []).slice(execSliceStart);
+  const memoryRegime = (memoryCloudFull.regime || []).slice(execSliceStart);
 
   // Chart MACD is computed from the full visible/live-preview series and then sliced, so it matches the plotted candles.
   // The scanner signal below still uses closed 5m candles only.
@@ -6000,11 +6010,12 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
     currentPrice: roundCoin(sym, currentPrice),
     usesLivePreview: Boolean(visual.usesLivePreview),
     indicators: {
-      ema9Exec,
-      ema21Exec,
-      ema13Exec,
       ema50Exec,
       ema200Exec,
+      memoryLine,
+      memoryCloudHigh,
+      memoryCloudLow,
+      memoryRegime,
       ema15,
       ema1h,
       macdLine: macd.lineSeries || [],
@@ -6365,7 +6376,7 @@ function createServer() {
 
   return http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v64-market-memory-paper-lock', mode: loadSettings().paperTrade ? 'paper' : 'live' });
+    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v65-ema50-200-memory-cloud-paper-lock', mode: loadSettings().paperTrade ? 'paper' : 'live' });
     if (url.pathname === '/api/login' && req.method === 'POST') return loginRoute(req, res);
     if (url.pathname === '/api/logout') return logoutRoute(req, res);
     if (!requireDashboardAuth(req, res, url.pathname)) return;
@@ -6386,7 +6397,7 @@ function startAutoScan() {
 if (require.main === module) {
   const server = createServer();
   server.listen(PORT, () => {
-    console.log(`Trading Journal EMA + MACD + Market Memory Paper Bot V64 running at http://localhost:${PORT}`);
+    console.log(`Trading Journal EMA + MACD + Market Memory Paper Bot V65 running at http://localhost:${PORT}`);
     console.log(`Execution venue: Delta Exchange India only`);
     console.log(`Data directory: ${DATA_DIR}`);
   });

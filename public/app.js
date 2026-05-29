@@ -86,7 +86,7 @@ function renderHeader() {
   if (modeSwitch) {
     modeSwitch.checked = false;
     modeSwitch.disabled = true;
-    modeSwitch.title = 'V64 is paper-only. Live execution is disabled.';
+    modeSwitch.title = 'V65 is paper-only. Live execution is disabled.';
   }
 }
 
@@ -95,7 +95,7 @@ function renderHeader() {
 function controlBar() {
   const s = app.state.settings;
   return `<section class="control-bar">
-    <span class="pill pill-data">Strategy: V64 EMA + MACD + Market Memory + RSI/CCI/VWAP</span>
+    <span class="pill pill-data">Strategy: V65 EMA50/200 + MACD Divergence + Memory Cloud</span>
     <span class="pill ${s.botEnabled ? 'pill-data' : 'pill-warn'}">${s.botEnabled ? 'BOT ON' : 'BOT OFF'}</span>
     <span class="pill pill-paper">PAPER ONLY — LIVE LOCKED</span>
     <button id="scanNowBtn" class="btn-blue">Scan Now</button>
@@ -120,7 +120,7 @@ function dashboardPage() {
       ${kpi('Total Trades', m.totalTrades || 0)}${kpi('Wins', m.wins || 0, 'green')}${kpi('Losses', m.losses || 0, 'red')}${kpi('Win Rate', `${Number(m.winRate || 0).toFixed(0)}%`, 'green')}
       ${kpi('Funds Used', money(fundsUsed), 'yellow')}${kpi('Available Allocation', money(app.state.risk?.remainingBotAllocation || 0), 'green')}${kpi('Open P/L', money(m.openPnl), clsPnL(m.openPnl))}${kpi(app.state.wallet?.walletSynced ? 'Delta Wallet Ref.' : 'Wallet', app.state.wallet?.walletSynced ? money(app.state.wallet?.equity) : 'SYNC NEEDED', app.state.wallet?.walletSynced ? '' : 'yellow')}
     </section>
-    <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades stay above scanner signals. V64 paper-only live-mimic.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
+    <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades stay above scanner signals. V65 paper-only live-mimic.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
     <section class="panel"><div class="panel-title"><h2>Scanner Signals</h2><div class="legend"><b class="green">LONG</b><b class="red">SHORT</b><b class="yellow">WAIT</b></div></div>
       <div class="table-wrap"><table><thead><tr><th>Coin</th><th>Decision</th><th>Style</th><th>Signal</th><th>Entry</th><th>SL</th><th>TP1</th><th>TP2</th><th>Funds</th><th>Lots</th><th>Conf.</th><th>Est full-plan $</th><th>RR</th><th>MACD</th><th>Reason</th></tr></thead><tbody>${scannerRows(app.state.rows || [])}</tbody></table></div></section>`;
 }
@@ -197,17 +197,14 @@ function forecastTabContent(row, side, plan) {
   const executionReady = active && row && row.pass !== false && (!side || row.dec === side);
   const blockedBy = row?.blockedBy || '';
   const reason = sig.reason || rowWhyText(row);
-  const pullbackText = plan?.entryType === 'PULLBACK_LIMIT' || plan?.pullbackPlan ? `Pullback limit: ${plan?.pullbackPlan?.source || 'ATR/EMA/VWAP/SR'}; current ${num(plan?.currentPrice || data.currentPrice)} → entry ${num(plan?.entry)}` : (plan?.entryType === 'IMMEDIATE_LIMIT' ? 'Immediate limit after signal — allowed only after confluence passes' : 'No chase: wait for structure + trigger candle');
+  const pullbackText = plan?.entryType === 'PULLBACK_LIMIT' || plan?.pullbackPlan ? `Pullback limit: ${plan?.pullbackPlan?.source || 'ATR/EMA50/MemoryCloud/SR'}; current ${num(plan?.currentPrice || data.currentPrice)} → entry ${num(plan?.entry)}` : (plan?.entryType === 'IMMEDIATE_LIMIT' ? 'Immediate limit after signal — allowed only after confluence passes' : 'No chase: wait for structure + trigger candle');
   const conditionList = `<ul class="check-list">
-    ${checkItem(score >= Number(app.state?.settings?.minConfluenceScore || 7), `Confluence score ${Number.isFinite(score) ? score.toFixed(0) : '-'}`, `Need flexible structure + 3 confirmations. Notes: ${(conf.reasons || []).join(' | ').slice(0, 160)}`)}
-    ${checkItem(Boolean(structure.pass), 'Structure location gate', structure.reason || 'Need one valid location: support/resistance, range edge, sweep, VWAP or EMA50 pullback')}
-    ${checkItem(instTrendOk, 'EMA trend context', `EMA9/21 timing + EMA50 trend + EMA200 protection. EMA13 ${num(sig.ema13)} / EMA50 ${num(sig.ema50)} / EMA200 ${num(sig.ema200)}`)}
-    ${checkItem(instPullbackOk, 'EMA/VWAP/SR pullback context', instSide.pullback ? `touched=${instSide.pullback.touched} reclaimed=${instSide.pullback.reclaimed} extension=${instSide.pullback.extensionAtr} ATR` : 'Controlled location required; middle-of-range is rejected')}
+    ${checkItem(score >= Number(app.state?.settings?.minConfluenceScore || 7), `Confluence score ${Number.isFinite(score) ? score.toFixed(0) : '-'}`, `Need structure + EMA50/200 + MACD/memory-cloud confirmations. Notes: ${(conf.reasons || []).join(' | ').slice(0, 160)}`)}
+    ${checkItem(Boolean(structure.pass), 'Structure location gate', structure.reason || 'Need one valid location: support/resistance, range edge, sweep, EMA50 or memory-cloud pullback')}
+    ${checkItem(instTrendOk, 'EMA trend context', `EMA50 trend + EMA200 protection. EMA50 ${num(sig.ema50)} / EMA200 ${num(sig.ema200)}`)}
+    ${checkItem(instPullbackOk, 'EMA50/Memory-cloud/SR pullback context', instSide.pullback ? `touched=${instSide.pullback.touched} reclaimed=${instSide.pullback.reclaimed} extension=${instSide.pullback.extensionAtr} ATR` : 'Controlled location required; middle-of-range is rejected')}
     ${checkItem(instPriceActionOk, 'Execution candle trigger', instSide.priceAction?.reason || 'Engulfing / wick rejection / continuation close')}
     ${checkItem(instMacdOk, 'MACD momentum confirmation', `5m=${instSide.macd5Ok || false} 15m=${instSide.macd15Ok || false} 1h=${instSide.macd1hOk || false}`)}
-    ${checkItem(Boolean(conf.rsiOk), 'RSI/CCI control or divergence', side === 'LONG' ? 'Bull: RSI reclaim 50 / CCI recovery / bullish divergence' : 'Bear: RSI lose 50 / CCI weakness / bearish divergence')}
-    ${checkItem(Boolean(conf.vwapOk), 'VWAP institutional bias', 'Above/reclaim VWAP for long; below/reject VWAP for short')}
-    ${checkItem(Boolean(conf.volumeOk), 'Volume participation', 'Reject breakout/retest if volume does not support move')}
     ${checkItem(histOk || crossOk, 'Closed-candle MACD timing', 'Histogram flip/contraction or confirmed cross; cross alone is never enough')}
   </ul>`;
 
@@ -217,7 +214,7 @@ function forecastTabContent(row, side, plan) {
       <p><b>Execution:</b> ${executionReady ? '<span class="pill pill-data">READY FOR PAPER ENTRY</span>' : `<span class="pill pill-warn">${active ? 'SETUP ACTIVE, EXECUTION BLOCKED' : 'WAIT'}</span>`} <span class="pill pill-paper">paper-only locked</span></p>
       ${active && !executionReady ? `<p class="warning-box"><b>Why not opened:</b> ${esc(blockedBy || rowWhyText(row) || 'Risk/sizing guard blocked execution. Check scanner row WHY column.')}</p>` : ''}
       <p><b>Entry style:</b> ${esc(pullbackText)}</p>
-      <p><b>Forecast:</b> ${active ? 'Entry, SL, TP1, dynamic TP2, structure, EMA, VWAP and MACD are plotted. Bot execution still requires SL/RR sizing guards.' : 'No TP/SL projection until structure + confluence + trigger + risk pass.'}</p>
+      <p><b>Forecast:</b> ${active ? 'Entry, SL, TP1, dynamic TP2, structure, EMA50/200, memory cloud and MACD are plotted. Bot execution still requires SL/RR sizing guards.' : 'No TP/SL projection until structure + confluence + trigger + risk pass.'}</p>
       <p><b>Reason:</b> ${esc(reason).slice(0, 340)}</p>
       ${data.warning ? `<p class="warning-box">${esc(data.warning)}</p>` : ''}
     </div>${conditionList}`;
@@ -236,7 +233,7 @@ function forecastTabContent(row, side, plan) {
     <p><b>Take-Profit 1:</b> <span class="green">${active ? num(plan.tp1) : 'WAIT'}</span> <span class="muted">partial profit</span></p>
     <p><b>Take-Profit 2:</b> <span class="green">${active ? num(plan.tp2) : 'WAIT'}</span> <span class="muted">extends only when trend remains strong</span></p>
     <p><b>Risk/Reward:</b> ${esc(plan.rr)}</p><p><b>Estimated full-plan profit:</b> <span class="green">${active ? money(plan.estimatedFullTradeProfitUsd) : 'WAIT'}</span></p>
-    ${!active ? `<p class="warning-box">No trade: need one valid structure location, directional bias, 3 confirmations, trigger candle, and valid SL/RR.</p>` : ''}
+    ${!active ? `<p class="warning-box">No trade: need one valid structure location, directional bias, memory-cloud pullback, MACD timing, trigger candle, and valid SL/RR.</p>` : ''}
   </div>${conditionList}`;
 }
 
@@ -249,6 +246,33 @@ function svgPathFromSeries(series, x, y) {
     d += `${d ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`;
   });
   return d;
+}
+
+function svgBandAreas(high = [], low = [], regime = [], x, y) {
+  const n = Math.min(high.length, low.length);
+  let out = '';
+  let start = null;
+  let side = '';
+  function flush(end) {
+    if (start === null || end <= start) return;
+    const top = [];
+    const bottom = [];
+    for (let i = start; i <= end; i += 1) {
+      if (!Number.isFinite(high[i]) || !Number.isFinite(low[i])) continue;
+      top.push(`${x(i).toFixed(1)},${y(high[i]).toFixed(1)}`);
+      bottom.unshift(`${x(i).toFixed(1)},${y(low[i]).toFixed(1)}`);
+    }
+    if (top.length > 1 && bottom.length > 1) out += `<polygon points="${top.concat(bottom).join(' ')}" class="memory-cloud ${side === 'bear' ? 'bear' : 'bull'}"/>`;
+  }
+  for (let i = 0; i < n; i += 1) {
+    const ok = Number.isFinite(high[i]) && Number.isFinite(low[i]);
+    const r = String(regime[i] || 'bull') === 'bear' ? 'bear' : 'bull';
+    if (!ok) { flush(i - 1); start = null; side = ''; continue; }
+    if (start === null) { start = i; side = r; continue; }
+    if (r !== side) { flush(i - 1); start = i; side = r; }
+  }
+  flush(n - 1);
+  return out;
 }
 
 function formatTime(sec) {
@@ -270,7 +294,7 @@ function chartSvg(row, side) {
   const x = i => leftPad + i * ((W - leftPad - rightPad) / Math.max(1, candles.length - 1));
   const candleW = Math.max(3, Math.min(9, (W - leftPad - rightPad) / candles.length * 0.62));
 
-  const emaVals = [...(ind.ema9Exec || []), ...(ind.ema21Exec || []), ...(ind.ema13Exec || []), ...(ind.ema50Exec || []), ...(ind.ema200Exec || []), ...(ind.ema15 || []), ...(ind.ema1h || []), ...(ind.vwap || [])].filter(Number.isFinite);
+  const emaVals = [...(ind.ema50Exec || []), ...(ind.ema200Exec || []), ...(ind.ema15 || []), ...(ind.ema1h || []), ...(ind.memoryLine || []), ...(ind.memoryCloudHigh || []), ...(ind.memoryCloudLow || [])].filter(Number.isFinite);
   const planVals = plan.active ? [plan.entry, plan.sl, plan.tp1, plan.tp2] : [];
   const srVals = [sr.support, sr.resistance].filter(v => Number.isFinite(Number(v))).map(Number);
   const lows = candles.map(c => c.low), highs = candles.map(c => c.high);
@@ -301,14 +325,12 @@ function chartSvg(row, side) {
     return `<line x1="${cx.toFixed(1)}" y1="${y(c.high).toFixed(1)}" x2="${cx.toFixed(1)}" y2="${y(c.low).toFixed(1)}" class="wick ${up ? 'up' : 'down'}${liveCls}"/><rect x="${(cx-candleW/2).toFixed(1)}" y="${top.toFixed(1)}" width="${candleW.toFixed(1)}" height="${h.toFixed(1)}" rx="1" class="candle ${up ? 'up' : 'down'}${liveCls}"/>`;
   }).join('');
 
-  const ema9Path = svgPathFromSeries(ind.ema9Exec || [], x, y);
-  const ema21Path = svgPathFromSeries(ind.ema21Exec || [], x, y);
-  const ema13Path = svgPathFromSeries(ind.ema13Exec || [], x, y);
   const ema50Path = svgPathFromSeries(ind.ema50Exec || [], x, y);
   const ema200Path = svgPathFromSeries(ind.ema200Exec || [], x, y);
   const ema15Path = svgPathFromSeries(ind.ema15 || [], x, y);
   const ema1hPath = svgPathFromSeries(ind.ema1h || [], x, y);
-  const vwapPath = svgPathFromSeries(ind.vwap || [], x, y);
+  const memoryLinePath = svgPathFromSeries(ind.memoryLine || [], x, y);
+  const memoryCloud = svgBandAreas(ind.memoryCloudHigh || [], ind.memoryCloudLow || [], ind.memoryRegime || [], x, y);
   const level = (v, klass, label) => !Number.isFinite(Number(v)) ? '' : `<line x1="0" y1="${y(v).toFixed(1)}" x2="${W-rightPad}" y2="${y(v).toFixed(1)}" class="level ${klass}"/><text x="${W-220}" y="${(y(v)-7).toFixed(1)}" class="label ${klass}">${label} ${num(v)}</text>`;
   const zones = plan.active ? (() => {
     const gy = Math.min(y(plan.entry), y(plan.tp2)), gh = Math.abs(y(plan.entry)-y(plan.tp2));
@@ -363,10 +385,10 @@ function chartSvg(row, side) {
     <rect x="0" y="0" width="${W}" height="${H}" fill="#fff"/>${grid.join('')}
     <text x="18" y="24" class="chart-title">${esc(data.symbol.replace('USD','/USD'))} · ${esc(data.resolution)} closed-candle chart · ${esc(data.exchange || 'Delta')}</text>
     <text x="430" y="24" class="chart-ohlc">${esc(ohlc)}</text>
-    <text x="18" y="48" class="legend-cyan">EMA9</text><text x="88" y="48" class="legend-gold">EMA21</text><text x="166" y="48" class="legend-mid">EMA50</text><text x="250" y="48" class="legend-slow">EMA200</text><text x="350" y="48" class="legend-pink">VWAP</text><text x="432" y="48" class="legend-blue">15m</text><text x="488" y="48" class="legend-orange">1h</text>
-    ${zones}${candleEls}<path d="${ema9Path}" class="ema ema9"/><path d="${ema21Path}" class="ema ema21"/><path d="${ema13Path}" class="ema ema13 muted-ema"/><path d="${ema50Path}" class="ema ema50"/><path d="${ema200Path}" class="ema ema200"/><path d="${ema15Path}" class="ema ema15"/><path d="${ema1hPath}" class="ema ema1h"/><path d="${vwapPath}" class="vwap-line"/>${level(sr.support, 'support', 'Support')}${level(sr.resistance, 'resistance', 'Resistance')}${livePriceLine}${divPrice}${level(plan.entry, 'entry', 'Entry')}${level(plan.sl, 'sl', 'Stop-Loss')}${level(plan.tp1, 'tp1', 'TP1')}${level(plan.tp2, 'tp2', 'Take-Profit')}${proj}
+    <text x="18" y="48" class="legend-mid">EMA50</text><text x="96" y="48" class="legend-slow">EMA200</text><text x="190" y="48" class="legend-memory">Memory Cloud</text><text x="314" y="48" class="legend-blue">15m EMA50</text><text x="430" y="48" class="legend-orange">1h EMA50</text>
+    ${memoryCloud}${zones}${candleEls}<path d="${memoryLinePath}" class="memory-line"/><path d="${ema50Path}" class="ema ema50"/><path d="${ema200Path}" class="ema ema200"/><path d="${ema15Path}" class="ema ema15"/><path d="${ema1hPath}" class="ema ema1h"/>${level(sr.support, 'support', 'Support')}${level(sr.resistance, 'resistance', 'Resistance')}${livePriceLine}${divPrice}${level(plan.entry, 'entry', 'Entry')}${level(plan.sl, 'sl', 'Stop-Loss')}${level(plan.tp1, 'tp1', 'TP1')}${level(plan.tp2, 'tp2', 'Take-Profit')}${proj}
     <line x1="0" y1="${priceH}" x2="${W}" y2="${priceH}" class="divider"/>
-    <text x="18" y="${macdTop-10}" class="chart-title">MACD 12/26/9 · histogram expansion/contraction · CCI/RSI/VWAP checked in score${data.usesLivePreview ? ' · live preview' : ''}</text>${macdGrid}${histEls}<path d="${macdPath}" class="macd-line"/><path d="${signalPath}" class="signal-line"/>${divMacd}
+    <text x="18" y="${macdTop-10}" class="chart-title">MACD 12/26/9 · histogram expansion/contraction · closed-candle divergence + memory-cloud pullback${data.usesLivePreview ? ' · live preview' : ''}</text>${macdGrid}${histEls}<path d="${macdPath}" class="macd-line"/><path d="${signalPath}" class="signal-line"/>${divMacd}
   </svg><div class="chart-foot"><span>${esc(data.source || '')}</span><span>${data.lastFetchAt ? `Last candle fetch: ${esc(new Date(data.lastFetchAt).toLocaleString())}` : ''}</span>${tvLink}</div></div>`;
 }
 
@@ -382,10 +404,8 @@ function chartPage() {
 }
 
 function strategiesPage() {
-  return `${coinSelector()}<section class="strategy-grid"><article class="rule-card long"><h2>BULL SETUP</h2><ol><li>One valid location required: support, previous low sweep, range low, demand zone, VWAP reclaim, or EMA50 pullback.</li><li>EMA9/21 handles execution timing; EMA50 controls trend; EMA200 protects dominant bias.</li><li>Bull reversal: sweep/reject low + bullish trigger candle + RSI/CCI recovery or divergence + MACD red bars contract or flip green.</li><li>Bull continuation: price above EMA50, EMA9 &gt; EMA21, pullback respects EMA/VWAP/SR, MACD expands green, RSI stays above 50 or CCI above 0.</li><li>Entry only above trigger candle/minor high. No buy just because CCI/RSI is low.</li><li>SL goes below structure/sweep/engulfing low with ATR buffer. Wider SL reduces lots; it does not get tightened randomly.</li><li>TP1 books partial at nearest resistance or 1R–1.5R. TP2 targets next liquidity/resistance or 2R–3R.</li><li>If trend-strength score remains high, TP2 extends and SL trails below EMA21/new higher low.</li></ol></article><article class="rule-card short"><h2>BEAR SETUP</h2><ol><li>One valid location required: resistance, previous high sweep, range high, supply zone, VWAP rejection, or EMA50 pullback rejection.</li><li>EMA9/21 handles execution timing; EMA50 controls trend; EMA200 protects dominant bias.</li><li>Bear reversal: sweep/reject high + bearish trigger candle + RSI/CCI weakness or divergence + MACD green bars contract or flip red.</li><li>Bear continuation: price below EMA50, EMA9 &lt; EMA21, pullback rejects EMA/VWAP/SR, MACD expands red, RSI stays below 50 or CCI below 0.</li><li>Entry only below trigger candle/minor low. No short just because price is overbought.</li><li>SL goes above structure/sweep/engulfing high with ATR buffer. Wider SL reduces lots; it does not get tightened into wick noise.</li><li>TP1 books partial at nearest support or 1R–1.5R. TP2 targets next liquidity/support or 2R–3R.</li><li>If trend-strength score remains high, TP2 extends and SL trails above EMA21/new lower high.</li></ol></article><aside class="rule-card params"><h2>V64 Execution DNA</h2><p><b>Required:</b> Market Memory similar-history pullback + directional bias + trigger candle + valid SL/RR.</p><p><b>Confirmations:</b> EMA trend, Market Memory cloud retest, MACD 12/26/9, RSI14, CCI20, VWAP, volume spike, ATR extension.</p><p><b>Coins:</b> Tier 1 and Tier 2 preferred. Tier 3 needs A+ score only.</p><p><b>Profit target:</b> normal plan aims for $2–$5; A+ setups may extend TP if wallet risk stays controlled.</p><p><b>Paper lock:</b> live execution is disabled in this build. API keys can be used only for data/wallet reference.</p><p><b>Rejected:</b> middle-of-range entries, chased candles, tight SL inside retest zone, poor R:R, low participation breakouts.</p></aside></section>`;
+  return `${coinSelector()}<section class="strategy-grid"><article class="rule-card long"><h2>BULL SETUP</h2><ol><li>Use only the transcript MTF trend rule: 15m EMA50 must be above 1h EMA50.</li><li>Keep only EMA50 and EMA200 on the chart. EMA8/9/13/21 are removed as hard filters.</li><li>Market Memory cloud must be green/bullish, price must pull back into or near the green cloud, and a closed candle must reject upward.</li><li>MACD 12/26/9 must confirm timing. For the strict transcript setup: MACD and signal stay below zero, price makes lower low, MACD makes higher low, histogram changes color, and bullish crossover confirms.</li><li>Entry is pullback-limit first. Market entry is blocked unless explicitly enabled later.</li><li>SL goes below the cloud/swing/divergence low with ATR buffer. Wider SL reduces lots; it is not tightened into noise.</li><li>TP1 books partial at 1R. TP2 uses 2R minimum and may extend only if momentum remains strong.</li></ol></article><article class="rule-card short"><h2>BEAR SETUP</h2><ol><li>Use only the transcript MTF trend rule: 15m EMA50 must be below 1h EMA50.</li><li>Keep only EMA50 and EMA200 on the chart. EMA8/9/13/21 are removed as hard filters.</li><li>Market Memory cloud must be red/bearish, price must pull back into or near the red cloud, and a closed candle must reject downward.</li><li>MACD 12/26/9 must confirm timing. For the strict transcript setup: MACD and signal stay above zero, price makes higher high, MACD makes lower high, histogram changes color, and bearish crossover confirms.</li><li>Entry is pullback-limit first. Market entry is blocked unless explicitly enabled later.</li><li>SL goes above the cloud/swing/divergence high with ATR buffer. Wider SL reduces lots; it is not tightened into wick noise.</li><li>TP1 books partial at 1R. TP2 uses 2R minimum and may extend only if momentum remains strong.</li></ol></article><aside class="rule-card params"><h2>V65 Execution DNA</h2><p><b>Core:</b> EMA50/200 + Market Memory cloud + MACD divergence/timing.</p><p><b>Removed as hard filters:</b> EMA8/9/13/21, standalone VWAP, RSI, CCI, volume spike, breakout, SAR, two-pole.</p><p><b>Visual:</b> chart tab now shows green/red memory cloud like the reference image, plus EMA50, EMA200, 15m EMA50 and 1h EMA50.</p><p><b>Safety:</b> closed candles only, paper-only live-mimic, limit-first execution, SL/TP plotted before order.</p></aside></section>`;
 }
-
-
 
 function tradesPage() {
   const closed = app.state.closedTrades || [];
@@ -462,7 +482,7 @@ async function loadDeltaSymbols() {
 
 function settingsPage() {
   const s = app.state.settings, a = app.state.apiStatus || {};
-  return `${assetManagerHtml()}<section class="settings-layout"><section class="panel"><div class="panel-title"><h2>Strategy Settings</h2><span class="pill pill-data">EMA + MACD + Market Memory</span></div><p class="warning-box"><b>V64:</b> Paper-only live-mimic build. Closed-candle only, Market Memory similar-history pullback, limit-first execution, then structure SL/TP before entry. SL is structure-first; lots reduce when SL is wide.</p><form id="strategySettingsForm" class="settings-grid">
+  return `${assetManagerHtml()}<section class="settings-layout"><section class="panel"><div class="panel-title"><h2>Strategy Settings</h2><span class="pill pill-data">EMA50/200 + MACD + Memory Cloud</span></div><p class="warning-box"><b>V65:</b> Paper-only live-mimic build. Closed-candle only, Market Memory similar-history pullback, limit-first execution, then structure SL/TP before entry. SL is structure-first; lots reduce when SL is wide.</p><form id="strategySettingsForm" class="settings-grid">
     <div class="field"><label>Entry model</label><select name="entryModel"><option value="PRACTICAL_MTF_MACD" ${s.entryModel !== 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'selected' : ''}>Practical: MTF EMA + MACD cross + histogram change</option><option value="STRICT_TRANSCRIPT_DIVERGENCE" ${s.entryModel === 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'selected' : ''}>Strict transcript: divergence + zero-line hard</option></select></div>
     <div class="field"><label>Zero-line mode</label><select name="zeroLineMode"><option value="soft" ${s.zeroLineMode !== 'hard' ? 'selected' : ''}>Soft context</option><option value="hard" ${s.zeroLineMode === 'hard' ? 'selected' : ''}>Hard blocker</option></select></div>
     <div class="field"><label>Require divergence for entry</label><select name="requireDivergenceForEntry"><option value="false" ${!s.requireDivergenceForEntry ? 'selected' : ''}>No — show as context</option><option value="true" ${s.requireDivergenceForEntry ? 'selected' : ''}>Yes — hard blocker</option></select></div>
@@ -487,7 +507,7 @@ function settingsPage() {
     <div class="field"><label>Max extension from EMA50 ATR</label><input name="institutionalMaxExtensionAtr" type="number" step="0.1" value="${esc(s.institutionalMaxExtensionAtr || 2.2)}"></div>
     <div class="field"><label>MACD cross window candles</label><input name="entrySignalWindowCandles" type="number" min="1" max="12" value="${esc(s.entrySignalWindowCandles || 2)}"></div>
     <div class="field"><label>Histogram color lookback</label><input name="histColorLookback" type="number" min="2" max="30" value="${esc(s.histColorLookback || 6)}"></div>
-    <div class="field"><label>Min confluence score</label><input name="minConfluenceScore" type="number" min="5" max="12" value="${esc(s.minConfluenceScore || 7)}"></div><div class="field"><label>A+ confluence score</label><input name="aPlusConfluenceScore" type="number" min="7" max="13" value="${esc(s.aPlusConfluenceScore || 10)}"></div><div class="field"><label>Tier 3 min score</label><input name="tier3MinConfluenceScore" type="number" min="7" max="13" value="${esc(s.tier3MinConfluenceScore || 10)}"></div><div class="field"><label>Structure proximity ATR</label><input name="structureProximityAtr" type="number" min="0.25" max="4" step="0.05" value="${esc(s.structureProximityAtr || 1.35)}"></div><div class="field"><label>VWAP filter</label><select name="vwapConfluenceEnabled"><option value="true" ${s.vwapConfluenceEnabled !== false ? 'selected' : ''}>On</option><option value="false" ${s.vwapConfluenceEnabled === false ? 'selected' : ''}>Off</option></select></div><div class="field"><label>Volume spike filter</label><select name="volumeSpikeConfluenceEnabled"><option value="true" ${s.volumeSpikeConfluenceEnabled !== false ? 'selected' : ''}>On</option><option value="false" ${s.volumeSpikeConfluenceEnabled === false ? 'selected' : ''}>Off</option></select></div><div class="field"><label>Max concurrent positions</label><input name="maxConcurrentPositions" type="number" min="1" max="5" value="${esc(s.maxConcurrentPositions)}"></div>
+    <div class="field"><label>Min confluence score</label><input name="minConfluenceScore" type="number" min="5" max="12" value="${esc(s.minConfluenceScore || 7)}"></div><div class="field"><label>A+ confluence score</label><input name="aPlusConfluenceScore" type="number" min="7" max="13" value="${esc(s.aPlusConfluenceScore || 10)}"></div><div class="field"><label>Tier 3 min score</label><input name="tier3MinConfluenceScore" type="number" min="7" max="13" value="${esc(s.tier3MinConfluenceScore || 10)}"></div><div class="field"><label>Structure proximity ATR</label><input name="structureProximityAtr" type="number" min="0.25" max="4" step="0.05" value="${esc(s.structureProximityAtr || 1.35)}"></div><div class="field"><label>VWAP filter</label><select name="vwapConfluenceEnabled"><option value="false" ${s.vwapConfluenceEnabled === false ? 'selected' : ''}>Off — not a hard gate</option><option value="true" ${s.vwapConfluenceEnabled === true ? 'selected' : ''}>On — soft/structure only</option></select></div><div class="field"><label>Volume spike filter</label><select name="volumeSpikeConfluenceEnabled"><option value="false" ${s.volumeSpikeConfluenceEnabled === false ? 'selected' : ''}>Off — not a hard gate</option><option value="true" ${s.volumeSpikeConfluenceEnabled === true ? 'selected' : ''}>On — soft only</option></select></div><div class="field"><label>Max concurrent positions</label><input name="maxConcurrentPositions" type="number" min="1" max="5" value="${esc(s.maxConcurrentPositions)}"></div>
     <div class="field"><label>Risk %</label><input name="riskPercent" type="number" step="0.1" value="${esc(s.riskPercent)}"></div>
     <div class="field"><label>Default leverage</label><input name="defaultLeverage" type="number" min="1" max="25" value="${esc(s.defaultLeverage)}"></div>
     <div class="field"><label>Max leverage</label><input name="maxLeverage" type="number" min="1" max="25" value="${esc(s.maxLeverage)}"></div>
@@ -518,7 +538,7 @@ function settingsPage() {
     <div class="field"><label>Allow market fallback</label><select name="allowMarketWhenNoPullback"><option value="false" ${!s.allowMarketWhenNoPullback ? 'selected' : ''}>No — safer</option><option value="true" ${s.allowMarketWhenNoPullback ? 'selected' : ''}>Yes — only if explicitly selected</option></select></div>
     <button class="btn-green" type="submit">Save Strategy Settings</button>
   </form></section>
-  <section class="panel"><div class="panel-title"><h2>Delta India API</h2></div><form id="apiKeyForm" class="settings-grid"><div class="field"><label>Base URL</label><input name="deltaBaseUrl" value="${esc(s.deltaBaseUrl)}"></div><div class="field"><label>API key</label><input name="apiKey" value="${esc(app.apiDraft.apiKey)}" placeholder="${a.keysConfigured ? esc(a.keyPreview) : 'Paste key'}"></div><div class="field"><label>API secret</label><input name="secret" type="password" value="${esc(app.apiDraft.secret)}" placeholder="Paste secret"></div><div class="field"><label>Whitelist IP</label><input name="whitelistedIpNote" value="${esc(app.apiDraft.whitelistedIpNote || a.whitelistedIpNote || a.serverOutboundIp || '')}"></div><button type="button" id="detectAndTestBtn" class="btn-blue">Detect IP + Test</button><button type="submit" class="btn-green">Save + Auto Setup</button><button type="button" id="clearKeysBtn" class="btn-red">Delete API Key</button></form><p class="warning-box">V64 paper-only lock: API keys may sync wallet/data reference, but live order execution is disabled from UI and backend.</p></section></section>`;
+  <section class="panel"><div class="panel-title"><h2>Delta India API</h2></div><form id="apiKeyForm" class="settings-grid"><div class="field"><label>Base URL</label><input name="deltaBaseUrl" value="${esc(s.deltaBaseUrl)}"></div><div class="field"><label>API key</label><input name="apiKey" value="${esc(app.apiDraft.apiKey)}" placeholder="${a.keysConfigured ? esc(a.keyPreview) : 'Paste key'}"></div><div class="field"><label>API secret</label><input name="secret" type="password" value="${esc(app.apiDraft.secret)}" placeholder="Paste secret"></div><div class="field"><label>Whitelist IP</label><input name="whitelistedIpNote" value="${esc(app.apiDraft.whitelistedIpNote || a.whitelistedIpNote || a.serverOutboundIp || '')}"></div><button type="button" id="detectAndTestBtn" class="btn-blue">Detect IP + Test</button><button type="submit" class="btn-green">Save + Auto Setup</button><button type="button" id="clearKeysBtn" class="btn-red">Delete API Key</button></form><p class="warning-box">V65 paper-only lock: API keys may sync wallet/data reference, but live order execution is disabled from UI and backend.</p></section></section>`;
 }
 
 function render() {
@@ -559,7 +579,7 @@ async function setMode(live) {
   try {
     app.state = await api('/api/settings', { method:'POST', body: JSON.stringify({ paperTrade: true }) });
     render();
-    toast('V64 is locked to PAPER mode. Live execution is disabled.');
+    toast('V65 is locked to PAPER mode. Live execution is disabled.');
   } catch(e) { await loadState({silent:true}); toast(e.message); }
 }
 

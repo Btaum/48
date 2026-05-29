@@ -32,21 +32,21 @@ context.__app.state = { lastScanAt: Date.now(), serverTime: Date.now(), coins: 1
 context.__app.page = 'chart';
 context.__app.chart = { coin: 'BTCUSD', timeframe: '5m', tab: 'Long', data: {
   symbol: 'BTCUSD', resolution: '5m', exchange: 'Delta', source: 'frontend render test', candles,
-  indicators: { ema9Exec: series.map(v => v + 120), ema21Exec: series.map(v => v + 60), ema13Exec: series.map(v => v + 80), ema50Exec: series, ema200Exec: series.map(v => v - 220), ema15: series, ema1h: series.map(v => v - 120), vwap: series.map(v => v - 20), rsi: series.map((_, i) => 48 + Math.sin(i / 8) * 8), cci: series.map((_, i) => Math.sin(i / 8) * 120), macdLine: series.map((_, i) => Math.sin(i / 7) * 120), macdSignal: series.map((_, i) => Math.sin((i - 4) / 7) * 100), macdHist: series.map((_, i) => Math.sin(i / 5) * 60) },
+  indicators: { ema50Exec: series, ema200Exec: series.map(v => v - 220), ema15: series, ema1h: series.map(v => v - 120), memoryLine: series.map(v => v - 40), memoryCloudHigh: series.map(v => v + 80), memoryCloudLow: series.map(v => v - 160), memoryRegime: series.map((_, i) => i < 40 ? 'bull' : 'bear'), macdLine: series.map((_, i) => Math.sin(i / 7) * 120), macdSignal: series.map((_, i) => Math.sin((i - 4) / 7) * 100), macdHist: series.map((_, i) => Math.sin(i / 5) * 60) },
   plan: { active: true, side: 'LONG', entry: 73300, sl: 72900, tp1: 73700, tp2: 74100, rr: '1:2' },
   signal: { entrySide: 'LONG', ema15: 73300, ema1h: 73100, macdLine: -20, macdSignal: -25, conditions: { longTrend: true, institutionalExecStack: true, institutionalHtfStack: true, institutionalPullback: true, institutionalPriceAction: true, institutionalHtfMacd: true, momentumOk: true, zeroOk: true, priceLowerLow: true, macdHigherLow: true, histColorChange: true, crossover: true }, institutionalEma: { long: { confluence: { score: 10, structure: { pass: true, reason: 'Near support' }, rsiOk: true, vwapOk: true, volumeOk: true, reasons: ['EMA aligned','MACD aligned'] } } }, divergence: { first: { index: 30 }, second: { index: 45 } } }, supportResistance: { support: 72950, resistance: 73950 }, chartOffset: 0
 }, loading: false, error: '' };
 const html = context.__chartPage();
 assert.ok(html.includes('chart-svg-wrap'), 'Chart SVG wrapper did not render');
-assert.ok(html.includes('EMA9'), 'EMA9 execution EMA label missing');
-assert.ok(html.includes('EMA21'), 'EMA21 execution EMA label missing');
+assert.ok(!html.includes('EMA9'), 'EMA9 label should be removed');
+assert.ok(!html.includes('EMA21'), 'EMA21 label should be removed');
 assert.ok(html.includes('EMA50'), 'EMA50 trend EMA label missing');
 assert.ok(html.includes('EMA200'), 'EMA200 dominant EMA label missing');
-assert.ok(html.includes('VWAP'), 'VWAP label missing');
+assert.ok(html.includes('Memory Cloud'), 'Memory Cloud label missing');
 assert.ok(html.includes('MACD 12/26/9'), 'MACD panel missing');
 assert.ok(html.includes('Entry'), 'Entry level missing');
 assert.ok(html.includes('Stop-Loss'), 'Stop-loss level missing');
 assert.ok(html.includes('Take-Profit'), 'Take-profit level missing');
 assert.ok(html.includes('Forecast / Projection'), 'Forecast panel missing');
 assert.ok(html.includes('Confluence score'), 'Confluence condition panel missing');
-console.log('PASS: frontend chart page renders SVG, V64 EMAs + Market Memory, VWAP, MACD, Entry/SL/TP and projection panel.');
+console.log('PASS: frontend chart page renders SVG, EMA50/200 + Memory Cloud, MACD, Entry/SL/TP and projection panel.');
