@@ -11,7 +11,7 @@ const ROOT = __dirname;
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 8080);
-const USER_AGENT = 'TradingNorth-Confluence-Structure-Execution/69.0-MTF-SR-VOLUME-LIVE';
+const USER_AGENT = 'TradingNorth-Confluence-Structure-Execution/70.0-BALANCED-5M-SCALP-LIVE';
 
 const DASHBOARD_PASSWORD = String(process.env.DASHBOARD_PASSWORD || '').trim();
 const DASHBOARD_SESSION_SECRET = String(process.env.DASHBOARD_SESSION_SECRET || process.env.DASHBOARD_PASSWORD || crypto.randomBytes(32).toString('hex'));
@@ -49,8 +49,8 @@ const DEFAULT_SETTINGS = {
   paperTrade: true,
   exchange: 'delta_exchange_india',
   executionApi: 'delta_exchange_india',
-  signalSource: 'v69_5m_scalp_mtf_sr_volume_memory_cloud',
-  strategyMode: 'V69_5M_SCALP_MTF_SR_VOLUME',
+  signalSource: 'v70_balanced_5m_scalp_mtf_sr_volume_memory_cloud',
+  strategyMode: 'V70_BALANCED_5M_SCALP_MTF_SR_VOLUME',
   deltaBaseUrl: 'https://api.india.delta.exchange',
   assets: Object.keys(BASE_PRICE),
   primaryTimeframe: '5m',
@@ -83,7 +83,7 @@ const DEFAULT_SETTINGS = {
   entryModel: 'PRACTICAL_MTF_MACD',
   institutionalEmaEnabled: true,
   institutionalRequireEmaStack: true,
-  institutionalRequirePullback: false, // V69: EMA50 pullback is advisory; Market Memory cloud pullback is the hard gate
+  institutionalRequirePullback: false, // V70: EMA50 pullback is advisory; Market Memory cloud pullback is the hard gate
   institutionalRequirePriceAction: true,
   institutionalRequireHtfMacd: false,
   institutionalEmaFastPeriod: 50, // legacy compatibility only; EMA fast/mid stack removed
@@ -101,14 +101,14 @@ const DEFAULT_SETTINGS = {
   marketMemoryPatternLength: 10,
   marketMemoryFutureLookahead: 8,
   marketMemorySensitivity: 1.5,
-  marketMemoryMinSimilarityPct: 80,
+  marketMemoryMinSimilarityPct: 72,
   marketMemoryCloudAtrMult: 0.75,
   marketMemoryNearCloudAtrMult: 0.50,
-  marketMemoryMaxExtensionAtr: 2.2,
+  marketMemoryMaxExtensionAtr: 2.4,
   marketMemoryMinForwardMoveAtr: 0.25,
   srVolumeAlignmentEnabled: true,
   requireClosedDailyContext: true,
-  minDailyCandlesForContext: 9,
+  minDailyCandlesForContext: 3,
   requirePreviousDayContext: true,
   requireMtfSupportResistance: true,
   requireVolumeFlowAlignment: true,
@@ -116,7 +116,7 @@ const DEFAULT_SETTINGS = {
   srProximityAtrMult: 1.15,
   srBreakoutRetestAtrMult: 0.65,
   volumeFlowLookback: 24,
-  volumeFlowMinBiasPct: 8,
+  volumeFlowMinBiasPct: 5,
   require5mVolumeFlow: true,
   dynamicTpEnabled: true,
   dynamicTpStrongR: 3.5,
@@ -125,8 +125,8 @@ const DEFAULT_SETTINGS = {
   dynamicTp1StrongClosePct: 25,
   trailingStopEmaPeriod: 50,
   trailingStopAtrBuffer: 0.20,
-  requireDivergenceForEntry: true,
-  zeroLineMode: 'soft', // V69 practical mode: zero-line side is context; divergence/timing/memory cloud are the hard gates
+  requireDivergenceForEntry: false,
+  zeroLineMode: 'soft', // V70 balanced mode: divergence and zero-line side are confluence only; MACD timing remains required
   entrySignalWindowCandles: 3,
   histColorLookback: 8,
   emaSlopeThresholdPct: 0.05,
@@ -390,8 +390,8 @@ function enforceTimeframePolicy(settings = {}) {
     higherTimeframes: ['15m', '1h', '1d'],
     htfMinimumAligned: 1,
     paperTrade: typeof settings.paperTrade === 'boolean' ? settings.paperTrade : true,
-    signalSource: 'v69_5m_scalp_mtf_sr_volume_memory_cloud',
-    strategyMode: 'V69_5M_SCALP_MTF_SR_VOLUME',
+    signalSource: 'v70_balanced_5m_scalp_mtf_sr_volume_memory_cloud',
+    strategyMode: 'V70_BALANCED_5M_SCALP_MTF_SR_VOLUME',
     emaPeriod,
     mtfEmaPeriod: emaPeriod,
     macdFastLength: 12,
@@ -1510,7 +1510,7 @@ function supportResistanceFromCandles(symbol, candles = [], price = 0, atr = 0, 
   const a = Math.max(Number(atr || atrFromCandles(rows, Number(settings.atrPeriod || 14)) || 0), p * 0.001, 0.00000001);
   const lookback = label === '1D' ? Math.min(rows.length, 30) : label === '1H' ? Math.min(rows.length, 72) : Math.min(rows.length, 96);
   const prior = rows.slice(Math.max(0, rows.length - lookback - 1), Math.max(0, rows.length - 1));
-  if (!p || prior.length < Math.min(8, Math.max(1, lookback))) return { ready: false, label, support: null, resistance: null, mid: null, passLong: false, passShort: false, reason: `${label} S/R warmup; blocking V69 context until enough closed ${label} candles exist.` };
+  if (!p || prior.length < Math.min(8, Math.max(1, lookback))) return { ready: false, label, support: null, resistance: null, mid: null, passLong: false, passShort: false, reason: `${label} S/R warmup; blocking V70 context until enough closed ${label} candles exist.` };
   const support = Math.min(...prior.map(c => Number(c.low)).filter(Number.isFinite));
   const resistance = Math.max(...prior.map(c => Number(c.high)).filter(Number.isFinite));
   const mid = (support + resistance) / 2;
@@ -1551,7 +1551,7 @@ function previousDayContext(symbol, candles1d = [], price = 0, settings = loadSe
   const rows = (candles1d || []).filter(c => c && Number.isFinite(c.open) && Number.isFinite(c.high) && Number.isFinite(c.low) && Number.isFinite(c.close));
   const p = Number(price || rows.at(-1)?.close || 0);
   const prev = rows.length >= 2 ? rows[rows.length - 2] : rows[0];
-  if (!prev || !p) return { ready: false, passLong: false, passShort: false, reason: 'Previous-day candle warmup; blocking V69 context until previous daily candle exists.' };
+  if (!prev || !p) return { ready: false, passLong: false, passShort: false, reason: 'Previous-day candle warmup; blocking V70 context until previous daily candle exists.' };
   const open = Number(prev.open), high = Number(prev.high), low = Number(prev.low), close = Number(prev.close);
   const range = Math.max(high - low, p * 0.001, 0.00000001);
   const mid = (high + low) / 2;
@@ -1586,7 +1586,7 @@ function directionalVolumeFlow(candles = [], direction = 'LONG', settings = load
   const rows = (candles || []).filter(c => c && Number.isFinite(c.open) && Number.isFinite(c.close));
   const lookback = Math.min(Math.max(Math.floor(Number(settings.volumeFlowLookback || 24)), 8), 96);
   const slice = rows.slice(-lookback);
-  if (slice.length < Math.min(8, lookback)) return { ready: false, pass: false, bias: 'UNKNOWN', biasPct: 0, reason: `${label} volume flow warmup; blocking V69 volume context.` };
+  if (slice.length < Math.min(8, lookback)) return { ready: false, pass: false, bias: 'UNKNOWN', biasPct: 0, reason: `${label} volume flow warmup; blocking V70 volume context.` };
   let bullVol = 0, bearVol = 0, neutralVol = 0;
   for (const c of slice) {
     const vol = Math.max(0, Number(c.volume || 0));
@@ -1596,7 +1596,7 @@ function directionalVolumeFlow(candles = [], direction = 'LONG', settings = load
     else neutralVol += weight;
   }
   const total = bullVol + bearVol + neutralVol;
-  if (!total) return { ready: false, pass: false, bias: 'UNKNOWN', biasPct: 0, reason: `${label} volume unavailable; blocking V69 volume context.` };
+  if (!total) return { ready: false, pass: false, bias: 'UNKNOWN', biasPct: 0, reason: `${label} volume unavailable; blocking V70 volume context.` };
   const biasPct = ((bullVol - bearVol) / total) * 100;
   const minBias = Math.min(Math.max(Number(settings.volumeFlowMinBiasPct || 8), 0), 60);
   const passLong = biasPct >= -minBias;
@@ -1622,7 +1622,7 @@ function buildMtfSrVolumeContext(symbol, direction, execCandles = [], settings =
   const candles15 = getCachedCandles(symbol, '15m');
   const candles1h = getCachedCandles(symbol, '1h');
   const candles1d = getCachedCandles(symbol, '1d');
-  // V69 rule: higher timeframes are context only, never execution triggers.
+  // V70 rule: higher timeframes are context only, never execution triggers.
   // Do not fall back to 5m candles for 15m/1h/1d S/R because that hides missing context.
   const sr15 = supportResistanceFromCandles(symbol, candles15, p, a, settings, '15M');
   const sr1h = supportResistanceFromCandles(symbol, candles1h, p, a, settings, '1H');
@@ -1913,7 +1913,7 @@ function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings
     const requireHtfMacd = settings.institutionalRequireHtfMacd === true;
     const memorySide = long ? (marketMemory.long || {}) : (marketMemory.short || {});
     const memoryPass = settings.marketMemoryEnabled === false || Boolean(memorySide.pass);
-    // V69 corrected execution gate:
+    // V70 balanced execution gate:
     // Hard = transcript MTF EMA50 direction + Market Memory similar-history cloud pullback/rejection + side-correct candle trigger + MACD timing.
     // Advisory only = local EMA50/200 protection, standalone confluence score, VWAP, RSI, CCI, volume, SAR, breakout, two-pole.
     const stackPass = requireEmaStack ? htfStack : true;
@@ -2102,6 +2102,28 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
     return { sl, tp1, tp2, invalidationLevel: sl, divergence, dynamicTargetR: targetR, institutional: institutionalSide, conditions: { ...baseConditions, ...instConditions, [direction === 'LONG' ? 'longTrend' : 'shortTrend']: trendOk, divergenceOk }, detail };
   }
 
+
+  function firstBlockerForSignal(plan, direction) {
+    const c = plan?.conditions || {};
+    const inst = plan?.institutional || plan?.conditions?.institutional || {};
+    const sr = inst?.srVolume || plan?.institutional?.srVolume || {};
+    if (!c[direction === 'LONG' ? 'longTrend' : 'shortTrend']) return '15m EMA50 vs 1h EMA50 direction not aligned';
+    if (c.institutionalPass === false) {
+      if (inst?.marketMemoryPass === false) return 'Market Memory cloud / similar-history gate not passed';
+      if (inst?.priceAction?.pass === false || c.institutionalPriceAction === false) return `No side-correct 5m ${direction === 'LONG' ? 'bullish' : 'bearish'} trigger candle`;
+      if (inst?.srVolumePass === false || c.srVolumePass === false) {
+        if (sr?.previousDayPass === false || c.previousDayPass === false) return 'Previous-day candle context not aligned';
+        if (sr?.srPass === false || c.mtfSupportResistancePass === false) return `S/R votes below rule (${sr?.srVotePassCount ?? '-'}/${sr?.srReadyCount ?? '-'})`;
+        if (sr?.volumePass === false || c.volumeFlowPass === false) return 'Volume flow not aligned';
+        return 'MTF S/R + volume context not passed';
+      }
+      return 'Market Memory / S/R / volume institutional layer not passed';
+    }
+    if (c.momentumOk === false) return '5m MACD timing not aligned';
+    if (c.timingOk === false) return 'No recent MACD cross / histogram timing';
+    return plan?.detail || 'No confirmed 5m entry trigger yet';
+  }
+
   function strictLong() {
     if (lastTwoLows.length < 2) return { pass: false, conditions: { longTrend, zeroOk: false, histColorChange: false, crossover: false, divergenceOk: false }, detail: 'waiting for two confirmed swing lows' };
     const [aLow, bLow] = lastTwoLows;
@@ -2201,9 +2223,13 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
   const short = strictMode ? strictS : practicalShort();
   const entrySide = long.pass ? 'LONG' : short.pass ? 'SHORT' : '';
   const chosen = entrySide === 'LONG' ? long : entrySide === 'SHORT' ? short : (longTrend ? long : shortTrend ? short : long);
+  const signalGrade = entrySide
+    ? ((chosen.conditions?.divergenceOk && chosen.conditions?.zeroOk && chosen.conditions?.histColorChange) ? 'A+' : 'A')
+    : (longTrend || shortTrend ? 'WATCH' : 'WAIT');
+  const blockedBy = entrySide ? '' : firstBlockerForSignal(longTrend ? long : shortTrend ? short : long, shortTrend ? 'SHORT' : 'LONG');
   const reason = entrySide
-    ? `${entryModel} ${entrySide} confirmed on closed 5m Delta OHLC; EMA50(15m)=${roundCoin(symbol, ema15)} EMA50(1h)=${roundCoin(symbol, ema1h)} gap=${pct(emaGapPct)}%; Institutional=${chosen.conditions?.institutionalPass ? 'PASS' : 'WAIT'}; ${chosen.detail}; SL=${chosen.sl} TP=${chosen.tp2}`
-    : `WAIT ${entryModel}; EMA50(15m)=${roundCoin(symbol, ema15)} EMA50(1h)=${roundCoin(symbol, ema1h)} gap=${pct(emaGapPct)}%; Institutional=${institutional.ready ? institutional.reason : 'WARMUP'}; long: ${long.detail}; short: ${short.detail}`;
+    ? `${signalGrade} ${entryModel} ${entrySide} confirmed on closed 5m Delta OHLC; EMA50(15m)=${roundCoin(symbol, ema15)} EMA50(1h)=${roundCoin(symbol, ema1h)} gap=${pct(emaGapPct)}%; Institutional=${chosen.conditions?.institutionalPass ? 'PASS' : 'WAIT'}; divergence=${chosen.conditions?.divergenceOk ? 'BONUS' : 'optional-missing'}; zeroLine=${chosen.conditions?.zeroOk ? 'BONUS' : 'optional-missing'}; ${chosen.detail}; SL=${chosen.sl} TP=${chosen.tp2}`
+    : `${signalGrade} ${entryModel}; ${blockedBy ? `Blocked by: ${blockedBy}; ` : ''}EMA50(15m)=${roundCoin(symbol, ema15)} EMA50(1h)=${roundCoin(symbol, ema1h)} gap=${pct(emaGapPct)}%; Institutional=${institutional.ready ? institutional.reason : 'WARMUP'}; long: ${long.detail}; short: ${short.detail}`;
 
   return {
     ready: true,
@@ -2213,6 +2239,8 @@ function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) 
     strictMode,
     requireDivergenceForEntry,
     zeroLineMode,
+    signalGrade,
+    blockedBy,
     entrySignalWindowCandles: entryWindow,
     histColorLookback: histLookback,
     source: liveCloses.length ? 'DELTA_OHLC_INSTITUTIONAL_EMA_MACD_MTF' : 'LOCAL_FALLBACK_INSTITUTIONAL_EMA_MACD_MTF',
@@ -3630,7 +3658,7 @@ function closedOhlcQualityForExecution(symbol, settings = loadSettings()) {
   return {
     pass: failed.length === 0,
     detail: failed.length
-      ? `Blocked: V69 requires Delta closed OHLC before auto-entry. 5m is the only execution trigger; 15m/1h/1d are context. ${failed.map(x => `${x.res}=${x.count}/${x.min}`).join(', ')}. Do not trade synthetic/ticker-only fallback.`
+      ? `Blocked: V70 requires Delta closed OHLC before auto-entry. 5m is the only execution trigger; 15m/1h/1d are context. ${failed.map(x => `${x.res}=${x.count}/${x.min}`).join(', ')}. Do not trade synthetic/ticker-only fallback.`
       : `OK: Delta closed OHLC warmup ready; execution=5m, context=15m/1h/1d (${checks.map(x => `${x.res}=${x.count}`).join(', ')}).`,
     checks
   };
@@ -3657,12 +3685,12 @@ function passFail(profile, settings, wallet, trades) {
   const sig = profile.macdDivergenceSignal || {};
   const sigModel = String(sig.entryModel || settings.entryModel || 'PRACTICAL_MTF_MACD').toUpperCase();
   const practicalModel = sigModel !== 'STRICT_TRANSCRIPT_DIVERGENCE';
-  hard('V69 5M Scalp Strategy Signal', hasDirection && Boolean(sig.pass) && sig.entrySide === direction, sig.reason || 'No valid 5m closed-candle scalp setup yet: MTF EMA50 context + previous day/SR/volume context + memory cloud + side-correct trigger + MACD timing must pass.');
+  hard('V70 Balanced 5M Scalp Strategy Signal', hasDirection && Boolean(sig.pass) && sig.entrySide === direction, sig.reason || 'No valid 5m closed-candle scalp setup yet: MTF EMA50 context + previous day/SR/volume context + memory cloud + side-correct trigger + MACD timing must pass.');
   const inst = sig.institutionalEma || {};
   const instSide = direction === 'LONG' ? inst.long : direction === 'SHORT' ? inst.short : null;
   const conf = instSide?.confluence || {};
-  soft('Structure Location Context', hasDirection && Boolean(conf.structure?.pass), conf.structure?.reason || 'Context only in V69; Market Memory cloud is the hard pullback/location gate.');
-  soft('Confluence Score Context', hasDirection && Number(conf.score || 0) >= Number(settings.minConfluenceScore || 6) && Number(conf.confirmations || 0) >= Number(settings.minMomentumConfirmations || 2), conf.reason || 'Advisory only in V69; not a hidden hard blocker.');
+  soft('Structure Location Context', hasDirection && Boolean(conf.structure?.pass), conf.structure?.reason || 'Context only in V70; Market Memory cloud is the hard pullback/location gate.');
+  soft('Confluence Score Context', hasDirection && Number(conf.score || 0) >= Number(settings.minConfluenceScore || 6) && Number(conf.confirmations || 0) >= Number(settings.minMomentumConfirmations || 2), conf.reason || 'Advisory only in V70; not a hidden hard blocker.');
   soft('Local EMA50/200 Context', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.execStack || instSide?.htfStack)), instSide?.detail || inst.reason || 'Local EMA50/200 is visual/advisory only.');
   soft('EMA/VWAP/SR Pullback Context', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.pullback?.pass || conf.structure?.pass)), instSide?.pullback ? `touched=${instSide.pullback.touched} reclaimed=${instSide.pullback.reclaimed} extension=${instSide.pullback.extensionAtr}ATR` : 'Advisory only; Market Memory cloud pullback is the hard gate.');
   hard('5M Side-Correct Price-Action Trigger', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.priceAction?.pass)), instSide?.priceAction?.reason || (direction === 'SHORT' ? 'Need bearish engulfing, bearish pin bar, or double-top rejection on closed 5m candle' : direction === 'LONG' ? 'Need bullish engulfing, bullish pin bar, or double-bottom reclaim on closed 5m candle' : 'Need side-correct 5m trigger candle'));
@@ -4821,7 +4849,7 @@ async function sendLiveAddOnOrder(trade, row, settings) {
 }
 
 function liveReady(settings, keys) {
-  // V69 aligned live build: live execution is allowed only after API test, explicit live confirmation, Delta wallet sync, and positions sync.
+  // V70 aligned live build: live execution is allowed only after API test, explicit live confirmation, Delta wallet sync, and positions sync.
   return Boolean(
     !settings.paperTrade &&
     keys.apiKey &&
@@ -5999,8 +6027,8 @@ function validateSettingsPatch(patch) {
   // V56 execution-mode controls. Practical mode matches manual entries: MTF EMA + MACD crossover + histogram change.
   // Strict mode keeps the transcript divergence + zero-line rules as hard blockers. Pullback limit is an execution layer.
   out.entryModel = String(out.entryModel || DEFAULT_SETTINGS.entryModel).toUpperCase() === 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'STRICT_TRANSCRIPT_DIVERGENCE' : 'PRACTICAL_MTF_MACD';
-  out.requireDivergenceForEntry = out.entryModel === 'STRICT_TRANSCRIPT_DIVERGENCE' ? true : Boolean(out.requireDivergenceForEntry);
-  out.zeroLineMode = out.entryModel === 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'hard' : (String(out.zeroLineMode || DEFAULT_SETTINGS.zeroLineMode).toLowerCase() === 'hard' ? 'hard' : 'soft');
+  out.requireDivergenceForEntry = out.entryModel === 'STRICT_TRANSCRIPT_DIVERGENCE' ? true : false;
+  out.zeroLineMode = out.entryModel === 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'hard' : 'soft';
   out.entrySignalWindowCandles = Math.min(Math.max(Math.floor(Number(out.entrySignalWindowCandles || DEFAULT_SETTINGS.entrySignalWindowCandles || 3)), 1), 12);
   out.histColorLookback = Math.min(Math.max(Math.floor(Number(out.histColorLookback || DEFAULT_SETTINGS.histColorLookback || 6)), 2), 30);
   // Hard lock the cleaned build to the requested strategy and 5m execution.
@@ -6026,8 +6054,8 @@ function validateSettingsPatch(patch) {
   out.requirePullbackForExecution = typeof out.requirePullbackForExecution === 'boolean' ? out.requirePullbackForExecution : DEFAULT_SETTINGS.requirePullbackForExecution;
   out.allowMarketWhenNoPullback = typeof out.allowMarketWhenNoPullback === 'boolean' ? out.allowMarketWhenNoPullback : DEFAULT_SETTINGS.allowMarketWhenNoPullback;
   out.entryOrderType = out.entryOrderType === 'market' && out.allowMarketWhenNoPullback ? 'market' : 'limit';
-  out.signalSource = 'ema50_200_macd_memory_cloud';
-  out.strategyMode = 'EMA50_200_MACD_MEMORY_CLOUD';
+  out.signalSource = 'v70_balanced_5m_scalp_mtf_sr_volume_memory_cloud';
+  out.strategyMode = 'V70_BALANCED_5M_SCALP_MTF_SR_VOLUME';
   out.paperTrade = typeof out.paperTrade === 'boolean' ? out.paperTrade : true;
   out.liveAddOnsEnabled = false;
   out.exchange = 'delta_exchange_india';
@@ -6698,7 +6726,7 @@ function createServer() {
 
   return http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v69-5m-scalp-mtf-sr-volume-live-armed', mode: loadSettings().paperTrade ? 'paper' : 'live' });
+    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v70-balanced-5m-scalp-live-armed', mode: loadSettings().paperTrade ? 'paper' : 'live' });
     if (url.pathname === '/api/login' && req.method === 'POST') return loginRoute(req, res);
     if (url.pathname === '/api/logout') return logoutRoute(req, res);
     if (!requireDashboardAuth(req, res, url.pathname)) return;
@@ -6719,7 +6747,7 @@ function startAutoScan() {
 if (require.main === module) {
   const server = createServer();
   server.listen(PORT, () => {
-    console.log(`Trading Journal V69 5m Scalp MTF S/R Volume Live-Armed Bot running at http://localhost:${PORT}`);
+    console.log(`Trading Journal V70 Balanced 5m Scalp MTF S/R Volume Live-Armed Bot running at http://localhost:${PORT}`);
     console.log(`Execution venue: Delta Exchange India only`);
     console.log(`Data directory: ${DATA_DIR}`);
   });

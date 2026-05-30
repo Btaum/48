@@ -1,14 +1,14 @@
 {
-  "name": "trading-journal-confluence-structure-execution-v69",
-  "version": "6.9.0",
-  "description": "Delta Exchange India V69 live-armed 5m scalp bot with 15m/1h/1D context, previous-day candle, MTF support-resistance, 5m+HTF volume flow, Market Memory cloud, MACD timing, structural SL/TP, exact blocker logs, force sync, and stale live trade clear.",
+  "name": "trading-journal-confluence-structure-execution-v70",
+  "version": "7.0.0",
+  "description": "Delta Exchange India V70 balanced live-armed 5m scalp bot with 15m/1h/1D context, previous-day S/R, volume flow, Market Memory cloud, MACD timing, divergence/zero-line as soft confluence, structural SL/TP, blocker reasons, force sync, and stale trade clear.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
     "test": "node scripts/smoke-test.js",
-    "check": "node --check server.js && node --check public/app.js && node scripts/smoke-test.js && node scripts/frontend-render-test.js && node scripts/audit-v69.js"
+    "check": "node --check server.js && node --check public/app.js && node scripts/smoke-test.js && node scripts/frontend-render-test.js && node scripts/audit-v70.js"
   },
   "keywords": [
     "crypto",

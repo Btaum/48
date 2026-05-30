@@ -36,7 +36,7 @@ function validateStaticControls() {
   const js = read('public/app.js');
   const css = read('public/styles.css');
   const requiredHtml = ['Trading Journal', 'data-page="dashboard"', 'data-page="chart"', 'data-page="strategies"', 'data-page="trades"', 'data-page="logs"', 'data-page="settings"', 'id="modeSwitch"', 'id="botSwitch"', 'data-filter="ALL"', 'data-filter="LONG"', 'data-filter="SHORT"', 'data-filter="WAIT"', 'data-filter="STRONG"', 'id="refreshBtn"'];
-  const requiredJs = ['V69 5m scalp + MTF S/R', 'EMA50', 'EMA200', 'Memory Cloud', 'MACD 12/26/9', 'chartCanvas', 'Forecast / Projection', 'data-chart-tab', 'apiKeyForm', 'Market Memory cloud', 'Closed Wins Amount', 'Closed Losses Amount', 'Delta Coin Universe', 'addAssetBtn', 'data-remove-asset', '/api/chart', '/api/delta-symbols', '/api/auto-setup', '/api/emergency-stop', '/api/outbound-ip'];
+  const requiredJs = ['V70 balanced 5m scalp + MTF S/R', 'EMA50', 'EMA200', 'Memory Cloud', 'MACD 12/26/9', 'chartCanvas', 'Forecast / Projection', 'data-chart-tab', 'apiKeyForm', 'Market Memory cloud', 'Closed Wins Amount', 'Closed Losses Amount', 'Delta Coin Universe', 'addAssetBtn', 'data-remove-asset', '/api/chart', '/api/delta-symbols', '/api/auto-setup', '/api/emergency-stop', '/api/outbound-ip'];
   const requiredCss = ['--panel:#ffffff', '--text:#0b0f14', 'chart-layout', 'strategy-grid', 'coin-logo', 'asset-manager'];
   for (const token of requiredHtml) assert.ok(html.includes(token), `Missing HTML control ${token}`);
   for (const token of requiredJs) assert.ok(js.includes(token), `Missing JS content ${token}`);
@@ -67,8 +67,8 @@ function validateStaticControls() {
     assert.ok(Array.isArray(state.data.rows) && state.data.rows.length >= 5, 'Scanner rows missing');
     assert.equal(state.data.settings.exchange, 'delta_exchange_india');
     assert.equal(state.data.settings.executionApi, 'delta_exchange_india');
-    assert.equal(state.data.settings.strategyMode, 'V69_5M_SCALP_MTF_SR_VOLUME');
-    assert.equal(state.data.settings.signalSource, 'v69_5m_scalp_mtf_sr_volume_memory_cloud');
+    assert.equal(state.data.settings.strategyMode, 'V70_BALANCED_5M_SCALP_MTF_SR_VOLUME');
+    assert.equal(state.data.settings.signalSource, 'v70_balanced_5m_scalp_mtf_sr_volume_memory_cloud');
     assert.equal(state.data.settings.primaryTimeframe, '5m');
     assert.equal(state.data.settings.executionTimeframe, '5m');
     assert.deepEqual(state.data.settings.higherTimeframes, ['15m', '1h', '1d']);
@@ -76,6 +76,8 @@ function validateStaticControls() {
     assert.equal(state.data.settings.institutionalEmaEnabled, true);
     assert.equal(state.data.settings.marketMemoryEnabled, true);
     assert.equal(state.data.settings.marketMemoryRequirePullback, true);
+    assert.equal(state.data.settings.requireDivergenceForEntry, false);
+    assert.equal(state.data.settings.zeroLineMode, 'soft');
     assert.ok(state.data.settings.marketMemoryMinSimilarityPct >= 55);
     assert.equal(state.data.settings.institutionalRequirePullback, false);
     assert.equal(state.data.settings.paperTrade, true);
@@ -156,7 +158,7 @@ function validateStaticControls() {
     const tradesFile = path.join(tmp, 'trades.json');
     assert.ok(fs.existsSync(tradesFile), 'trades.json must exist for saved trade ledger');
 
-    console.log('PASS: V69 5m scalp MTF S/R volume Market Memory live-armed bot, chart visuals, settings, trade ledger, API routes and scanner loop validated.');
+    console.log('PASS: V70 balanced 5m scalp MTF S/R volume Market Memory live-armed bot, chart visuals, settings, trade ledger, API routes and scanner loop validated.');
   } finally {
     await new Promise(resolve => server.close(resolve));
     fs.rmSync(tmp, { recursive: true, force: true });

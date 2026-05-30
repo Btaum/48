@@ -1,65 +1,32 @@
-# V69 5m Scalp MTF S/R Volume Market Memory Bot
+# V70 Balanced 5m Scalp MTF S/R Volume Market Memory Bot
 
-This build is live-armed but starts in PAPER mode. It trades Delta Exchange India only.
+V70 keeps the higher-timeframe context but removes the dead-trade problem from V69.
 
-Core rule: 15m / 1h / 1D are context. The 5m closed candle is the only scalp execution trigger.
+Execution rule:
 
-Use Settings → Delta India API to test keys and sync account before switching to live. Use Sync Delta Positions Now after manual Delta actions. Use Clear Stale Local Live Trades only after Delta shows no matching open position.
-
----
-
-# V64 EMA + MACD + Market Memory Paper Bot
-
-Delta Exchange India live-armed live-mimic build.
-
-## Core rule
-
-The bot must not open a paper trade until it has a complete closed-candle plan:
-
-1. Directional bias from 5m execution structure plus 15m/1h EMA context.
-2. Market Memory regime from similar historical candle conditions.
-3. Current price must retest the Market Memory cloud / EMA pullback zone and reject it.
-4. MACD 12/26/9 confirms timing.
-5. Entry, SL, TP1, TP2, margin/lots and estimated full-plan profit must be calculated before order placement.
-6. Default entry is a pullback limit. Market entry remains blocked unless explicitly enabled.
-
-## Paper mode policy
-
-Paper trades are designed to mimic live behavior as closely as possible:
-
-- Closed 5m candles only for signal confirmation.
-- Pending limit orders only fill from a closed candle after the order was placed.
-- No old-candle backfill fills.
-- Paper mode stays forced on in this build.
-- Live API keys may be used for reference/sync, not live order execution.
-
-## Risk policy
-
-SL is structure-first: beyond the pullback cloud/swing/invalidation with ATR buffer. If the correct SL is wide, the bot reduces lots/margin instead of tightening the SL. If R:R or minimum profit is not acceptable, the trade is rejected.
-
-## Trade page
-
-The Trades page shows:
-
-- Closed wins amount.
-- Closed losses amount.
-- Net closed P/L.
-- Open/unrealized P/L.
-- Win/loss counts and win rate.
-
-## Validation
-
-```bash
-npm run check
+```text
+1D / 1H / 15M = context only
+5M closed candle = only scalp entry trigger
 ```
 
-This runs syntax checks, smoke tests, frontend render checks and V64 audit checks.
+Hard gates:
 
-## Start
+1. Delta closed 5m OHLC is available.
+2. 15m EMA50 vs 1h EMA50 direction is aligned.
+3. Previous-day candle context exists and agrees.
+4. 1D / 1H / 15M support-resistance gives at least 2 of 3 directional votes.
+5. 5m volume flow aligns and either 15m or 1h volume also aligns.
+6. Market Memory cloud pullback/rejection and similar-history match pass.
+7. Side-correct 5m candle trigger passes.
+8. MACD 12/26/9 timing passes.
+9. Structural SL and TP1/TP2 exist before any order.
+10. Live mode requires Delta order ID and bracket SL/TP payload.
 
-```bash
-npm install
-npm start
-```
+Soft confluence only:
 
-Set `DASHBOARD_PASSWORD` in `.env` or in your hosting environment before deployment.
+- MACD divergence.
+- MACD zero-line side.
+- Local EMA50/200.
+- VWAP / RSI / CCI / breakout / SAR / two-pole.
+
+Default is PAPER mode. LIVE must be explicitly armed from Settings.
