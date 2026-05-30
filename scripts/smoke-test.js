@@ -67,8 +67,8 @@ function validateStaticControls() {
     assert.ok(Array.isArray(state.data.rows) && state.data.rows.length >= 5, 'Scanner rows missing');
     assert.equal(state.data.settings.exchange, 'delta_exchange_india');
     assert.equal(state.data.settings.executionApi, 'delta_exchange_india');
-    assert.equal(state.data.settings.strategyMode, 'EMA50_200_MACD_MEMORY_CLOUD');
-    assert.equal(state.data.settings.signalSource, 'ema50_200_macd_memory_cloud');
+    assert.equal(state.data.settings.strategyMode, 'V68_MTF_SR_VOLUME_MEMORY_CLOUD');
+    assert.equal(state.data.settings.signalSource, 'v68_mtf_sr_volume_memory_cloud');
     assert.equal(state.data.settings.primaryTimeframe, '5m');
     assert.equal(state.data.settings.executionTimeframe, '5m');
     assert.deepEqual(state.data.settings.higherTimeframes, ['15m', '1h']);
@@ -77,7 +77,7 @@ function validateStaticControls() {
     assert.equal(state.data.settings.marketMemoryEnabled, true);
     assert.equal(state.data.settings.marketMemoryRequirePullback, true);
     assert.ok(state.data.settings.marketMemoryMinSimilarityPct >= 55);
-    assert.equal(state.data.settings.institutionalRequirePullback, true);
+    assert.equal(state.data.settings.institutionalRequirePullback, false);
     assert.equal(state.data.settings.paperTrade, true);
     assert.equal(state.data.settings.liveReady, false);
     assert.equal(state.data.settings.entryEmaFastPeriod, 50);
@@ -98,6 +98,11 @@ function validateStaticControls() {
     assert.equal(state.data.settings.vwapModuleEnabled, false);
     assert.ok(state.data.rows.every(r => Object.prototype.hasOwnProperty.call(r, 'macdDivergenceSignal')), 'Rows need MACD divergence payload');
     assert.ok(state.data.rows.every(r => Object.prototype.hasOwnProperty.call(r, 'confluenceScore')), 'Rows need confluence score');
+    assert.equal(state.data.settings.srVolumeAlignmentEnabled, true);
+    assert.equal(state.data.settings.requirePreviousDayContext, true);
+    assert.equal(state.data.settings.requireMtfSupportResistance, true);
+    assert.equal(state.data.settings.requireVolumeFlowAlignment, true);
+    assert.ok(state.data.rows.every(r => Object.prototype.hasOwnProperty.call(r, 'mtfSrVolume')), 'Rows need MTF S/R volume payload');
 
     const outbound = await request(base, '/api/outbound-ip', { method: 'POST', body: '{}' });
     assert.equal(outbound.data.apiStatus.serverOutboundIp, '127.0.0.1');
@@ -115,6 +120,7 @@ function validateStaticControls() {
     assert.ok(Array.isArray(chart.data.indicators.memoryCloudHigh), 'Chart Memory cloud high payload missing');
     assert.ok(Array.isArray(chart.data.indicators.memoryCloudLow), 'Chart Memory cloud low payload missing');
     assert.ok(chart.data.supportResistance, 'Chart support/resistance missing');
+    assert.ok(chart.data.mtfSrVolume, 'Chart MTF S/R volume context missing');
 
     const scan = await request(base, '/api/scan', { method: 'POST', body: '{}' });
     assert.ok(scan.data.metrics, 'Scan metrics missing');

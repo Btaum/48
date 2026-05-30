@@ -1,7 +1,7 @@
 {
-  "name": "trading-journal-ema50-200-macd-memory-cloud-v66-live-armed",
-  "version": "6.6.0",
-  "description": "Delta Exchange India V66 live-armed bot with EMA50/200, MACD divergence timing, Market Memory green/red cloud, closed-candle-only execution, pullback-limit entries, structural SL/TP, live-readiness gates, and editable margin sizing.",
+  "name": "trading-journal-confluence-structure-execution-v68",
+  "version": "6.8.0",
+  "description": "Delta Exchange India live-armed bot V68 with EMA50 MTF, MACD divergence/timing, Market Memory cloud, previous-day candle context, 1D/1H/15M support-resistance, directional volume flow, structural SL/TP, and explicit blocker logs.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {

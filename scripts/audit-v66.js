@@ -13,18 +13,20 @@ const pkg = json('package.json');
 
 const serverTokens = [
   'calculateMarketMemoryAverage',
+  'buildMtfSrVolumeContext',
+  'previousDayContext',
+  'directionalVolumeFlow',
   'structureLocationForSide',
   'confluenceForSide',
   'MarketMemory=',
-  'Structure Location Gate',
+  'Structure Location Context',
   'Coin Tier Filter',
   'return Boolean(',
-  'V66 live-armed build',
   'pendingCreatedCandleTime',
   'Paper limit filled only from a closed 5m candle after the order was placed.',
   'lotsPurchased',
   'confluenceScore',
-  'v66-ema50-200-memory-cloud-live-armed'
+  'MTF_SR_VOLUME'
 ];
 for (const token of serverTokens) assert.ok(server.includes(token), `server.js missing ${token}`);
 
@@ -51,7 +53,7 @@ for (const token of appTokens) assert.ok(app.includes(token), `public/app.js mis
 const cssTokens = ['.memory-cloud', '.memory-line', '.ema50', '.ema200', '.level.support', '.level.resistance'];
 for (const token of cssTokens) assert.ok(css.includes(token), `public/styles.css missing ${token}`);
 
-assert.equal(pkg.version, '6.6.0', 'package version must be 6.6.0');
+assert.equal(pkg.version, '6.8.0', 'package version must be 6.8.0');
 assert.equal(settings.paperTrade, true, 'settings must default to paper mode but live must be armable');
 assert.equal(settings.liveAddOnsEnabled, false, 'live add-ons must be off');
 assert.equal(settings.entryEmaFastPeriod, 50, 'legacy fast EMA must be locked to EMA50');
@@ -68,4 +70,4 @@ assert.ok(settings.aPlusConfluenceScore >= settings.minConfluenceScore, 'A+ scor
 assert.ok(Array.isArray(settings.assets) && settings.assets.includes('BTCUSD') && settings.assets.includes('ETHUSD'), 'Tier 1 assets missing');
 assert.ok(!settings.assets.includes('AVAXUSD') || settings.tier3MinConfluenceScore >= settings.aPlusConfluenceScore, 'Tier 3 must require A+ style gate');
 
-console.log('PASS: V66 audit confirmed EMA50/200-only chart, Market Memory cloud, MACD divergence/timing, live armed, closed-candle limit fills, structure SL-first sizing, trade totals, UI fields, and defaults.');
+console.log('PASS: V68 audit confirmed EMA50/200-only chart, Market Memory cloud, MACD divergence/timing, MTF S/R volume alignment, live armed, closed-candle limit fills, structure SL-first sizing, trade totals, UI fields, and defaults.');
