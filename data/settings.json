@@ -3,8 +3,8 @@
   "paperTrade": true,
   "exchange": "delta_exchange_india",
   "executionApi": "delta_exchange_india",
-  "signalSource": "v68_mtf_sr_volume_memory_cloud",
-  "strategyMode": "V68_MTF_SR_VOLUME_MEMORY_CLOUD",
+  "signalSource": "v69_5m_scalp_mtf_sr_volume_memory_cloud",
+  "strategyMode": "V69_5M_SCALP_MTF_SR_VOLUME",
   "deltaBaseUrl": "https://api.india.delta.exchange",
   "assets": [
     "BTCUSD",
@@ -21,7 +21,8 @@
   "emaSlowTimeframe": "1h",
   "higherTimeframes": [
     "15m",
-    "1h"
+    "1h",
+    "1d"
   ],
   "emaPeriod": 50,
   "mtfEmaPeriod": 50,
@@ -137,7 +138,7 @@
   "marketMemorySensitivity": 1.5,
   "marketMemoryMinSimilarityPct": 80,
   "marketMemoryCloudAtrMult": 0.75,
-  "marketMemoryNearCloudAtrMult": 0.25,
+  "marketMemoryNearCloudAtrMult": 0.5,
   "marketMemoryMaxExtensionAtr": 1.6,
   "marketMemoryMinForwardMoveAtr": 0.25,
   "twoPoleModuleEnabled": false,
@@ -156,5 +157,8 @@
   "srProximityAtrMult": 1.15,
   "srBreakoutRetestAtrMult": 0.65,
   "volumeFlowLookback": 24,
-  "volumeFlowMinBiasPct": 8
+  "volumeFlowMinBiasPct": 8,
+  "requireClosedDailyContext": true,
+  "minDailyCandlesForContext": 9,
+  "require5mVolumeFlow": true
 }

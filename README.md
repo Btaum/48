@@ -1,3 +1,13 @@
+# V69 5m Scalp MTF S/R Volume Market Memory Bot
+
+This build is live-armed but starts in PAPER mode. It trades Delta Exchange India only.
+
+Core rule: 15m / 1h / 1D are context. The 5m closed candle is the only scalp execution trigger.
+
+Use Settings → Delta India API to test keys and sync account before switching to live. Use Sync Delta Positions Now after manual Delta actions. Use Clear Stale Local Live Trades only after Delta shows no matching open position.
+
+---
+
 # V64 EMA + MACD + Market Memory Paper Bot
 
 Delta Exchange India live-armed live-mimic build.

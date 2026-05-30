@@ -11,7 +11,7 @@ const ROOT = __dirname;
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 8080);
-const USER_AGENT = 'TradingNorth-Confluence-Structure-Execution/68.0-MTF-SR-VOLUME-LIVE';
+const USER_AGENT = 'TradingNorth-Confluence-Structure-Execution/69.0-MTF-SR-VOLUME-LIVE';
 
 const DASHBOARD_PASSWORD = String(process.env.DASHBOARD_PASSWORD || '').trim();
 const DASHBOARD_SESSION_SECRET = String(process.env.DASHBOARD_SESSION_SECRET || process.env.DASHBOARD_PASSWORD || crypto.randomBytes(32).toString('hex'));
@@ -49,8 +49,8 @@ const DEFAULT_SETTINGS = {
   paperTrade: true,
   exchange: 'delta_exchange_india',
   executionApi: 'delta_exchange_india',
-  signalSource: 'v68_mtf_sr_volume_memory_cloud',
-  strategyMode: 'V68_MTF_SR_VOLUME_MEMORY_CLOUD',
+  signalSource: 'v69_5m_scalp_mtf_sr_volume_memory_cloud',
+  strategyMode: 'V69_5M_SCALP_MTF_SR_VOLUME',
   deltaBaseUrl: 'https://api.india.delta.exchange',
   assets: Object.keys(BASE_PRICE),
   primaryTimeframe: '5m',
@@ -58,7 +58,7 @@ const DEFAULT_SETTINGS = {
   macdTrendTimeframe: '1h',
   emaFastTimeframe: '15m',
   emaSlowTimeframe: '1h',
-  higherTimeframes: ['15m', '1h'],
+  higherTimeframes: ['15m', '1h', '1d'],
   entryEmaFastPeriod: 50, // legacy compatibility only; not used as a fast EMA gate
   entryEmaSlowPeriod: 200, // legacy compatibility only; not used as a fast EMA gate
   trendEmaPeriod: 50,
@@ -83,7 +83,7 @@ const DEFAULT_SETTINGS = {
   entryModel: 'PRACTICAL_MTF_MACD',
   institutionalEmaEnabled: true,
   institutionalRequireEmaStack: true,
-  institutionalRequirePullback: false, // V68: EMA50 pullback is advisory; Market Memory cloud pullback is the hard gate
+  institutionalRequirePullback: false, // V69: EMA50 pullback is advisory; Market Memory cloud pullback is the hard gate
   institutionalRequirePriceAction: true,
   institutionalRequireHtfMacd: false,
   institutionalEmaFastPeriod: 50, // legacy compatibility only; EMA fast/mid stack removed
@@ -103,10 +103,12 @@ const DEFAULT_SETTINGS = {
   marketMemorySensitivity: 1.5,
   marketMemoryMinSimilarityPct: 80,
   marketMemoryCloudAtrMult: 0.75,
-  marketMemoryNearCloudAtrMult: 0.25,
+  marketMemoryNearCloudAtrMult: 0.50,
   marketMemoryMaxExtensionAtr: 2.2,
   marketMemoryMinForwardMoveAtr: 0.25,
   srVolumeAlignmentEnabled: true,
+  requireClosedDailyContext: true,
+  minDailyCandlesForContext: 9,
   requirePreviousDayContext: true,
   requireMtfSupportResistance: true,
   requireVolumeFlowAlignment: true,
@@ -115,6 +117,7 @@ const DEFAULT_SETTINGS = {
   srBreakoutRetestAtrMult: 0.65,
   volumeFlowLookback: 24,
   volumeFlowMinBiasPct: 8,
+  require5mVolumeFlow: true,
   dynamicTpEnabled: true,
   dynamicTpStrongR: 3.5,
   dynamicTpMaxR: 6,
@@ -123,7 +126,7 @@ const DEFAULT_SETTINGS = {
   trailingStopEmaPeriod: 50,
   trailingStopAtrBuffer: 0.20,
   requireDivergenceForEntry: true,
-  zeroLineMode: 'soft', // V68 practical mode: zero-line side is context; divergence/timing/memory cloud are the hard gates
+  zeroLineMode: 'soft', // V69 practical mode: zero-line side is context; divergence/timing/memory cloud are the hard gates
   entrySignalWindowCandles: 3,
   histColorLookback: 8,
   emaSlopeThresholdPct: 0.05,
@@ -384,11 +387,11 @@ function enforceTimeframePolicy(settings = {}) {
     emaFastTimeframe: '15m',
     emaSlowTimeframe: '1h',
     macdTrendTimeframe: '1h',
-    higherTimeframes: ['15m', '1h'],
+    higherTimeframes: ['15m', '1h', '1d'],
     htfMinimumAligned: 1,
     paperTrade: typeof settings.paperTrade === 'boolean' ? settings.paperTrade : true,
-    signalSource: 'v68_mtf_sr_volume_memory_cloud',
-    strategyMode: 'V68_MTF_SR_VOLUME_MEMORY_CLOUD',
+    signalSource: 'v69_5m_scalp_mtf_sr_volume_memory_cloud',
+    strategyMode: 'V69_5M_SCALP_MTF_SR_VOLUME',
     emaPeriod,
     mtfEmaPeriod: emaPeriod,
     macdFastLength: 12,
@@ -431,6 +434,13 @@ function enforceTimeframePolicy(settings = {}) {
     marketMemoryNearCloudAtrMult: Math.min(Math.max(Number(settings.marketMemoryNearCloudAtrMult || 0.25), 0), 2),
     marketMemoryMaxExtensionAtr: Math.min(Math.max(Number(settings.marketMemoryMaxExtensionAtr || 1.6), 0.5), 5),
     marketMemoryMinForwardMoveAtr: Math.min(Math.max(Number(settings.marketMemoryMinForwardMoveAtr || 0.25), 0), 3),
+    srVolumeAlignmentEnabled: settings.srVolumeAlignmentEnabled !== false,
+    requireClosedDailyContext: settings.requireClosedDailyContext !== false,
+    minDailyCandlesForContext: Math.min(Math.max(Math.floor(Number(settings.minDailyCandlesForContext || 9)), 2), 60),
+    requirePreviousDayContext: settings.requirePreviousDayContext !== false,
+    requireMtfSupportResistance: settings.requireMtfSupportResistance !== false,
+    requireVolumeFlowAlignment: settings.requireVolumeFlowAlignment !== false,
+    require5mVolumeFlow: settings.require5mVolumeFlow !== false,
     exchange: 'delta_exchange_india',
     executionApi: 'delta_exchange_india'
   };
@@ -1500,7 +1510,7 @@ function supportResistanceFromCandles(symbol, candles = [], price = 0, atr = 0, 
   const a = Math.max(Number(atr || atrFromCandles(rows, Number(settings.atrPeriod || 14)) || 0), p * 0.001, 0.00000001);
   const lookback = label === '1D' ? Math.min(rows.length, 30) : label === '1H' ? Math.min(rows.length, 72) : Math.min(rows.length, 96);
   const prior = rows.slice(Math.max(0, rows.length - lookback - 1), Math.max(0, rows.length - 1));
-  if (!p || prior.length < Math.min(8, Math.max(1, lookback))) return { ready: false, label, support: null, resistance: null, mid: null, passLong: true, passShort: true, reason: `${label} S/R warmup; not blocking.` };
+  if (!p || prior.length < Math.min(8, Math.max(1, lookback))) return { ready: false, label, support: null, resistance: null, mid: null, passLong: false, passShort: false, reason: `${label} S/R warmup; blocking V69 context until enough closed ${label} candles exist.` };
   const support = Math.min(...prior.map(c => Number(c.low)).filter(Number.isFinite));
   const resistance = Math.max(...prior.map(c => Number(c.high)).filter(Number.isFinite));
   const mid = (support + resistance) / 2;
@@ -1541,7 +1551,7 @@ function previousDayContext(symbol, candles1d = [], price = 0, settings = loadSe
   const rows = (candles1d || []).filter(c => c && Number.isFinite(c.open) && Number.isFinite(c.high) && Number.isFinite(c.low) && Number.isFinite(c.close));
   const p = Number(price || rows.at(-1)?.close || 0);
   const prev = rows.length >= 2 ? rows[rows.length - 2] : rows[0];
-  if (!prev || !p) return { ready: false, passLong: true, passShort: true, reason: 'Previous-day candle warmup; not blocking.' };
+  if (!prev || !p) return { ready: false, passLong: false, passShort: false, reason: 'Previous-day candle warmup; blocking V69 context until previous daily candle exists.' };
   const open = Number(prev.open), high = Number(prev.high), low = Number(prev.low), close = Number(prev.close);
   const range = Math.max(high - low, p * 0.001, 0.00000001);
   const mid = (high + low) / 2;
@@ -1576,7 +1586,7 @@ function directionalVolumeFlow(candles = [], direction = 'LONG', settings = load
   const rows = (candles || []).filter(c => c && Number.isFinite(c.open) && Number.isFinite(c.close));
   const lookback = Math.min(Math.max(Math.floor(Number(settings.volumeFlowLookback || 24)), 8), 96);
   const slice = rows.slice(-lookback);
-  if (slice.length < Math.min(8, lookback)) return { ready: false, pass: true, bias: 'UNKNOWN', biasPct: 0, reason: `${label} volume flow warmup; not blocking.` };
+  if (slice.length < Math.min(8, lookback)) return { ready: false, pass: false, bias: 'UNKNOWN', biasPct: 0, reason: `${label} volume flow warmup; blocking V69 volume context.` };
   let bullVol = 0, bearVol = 0, neutralVol = 0;
   for (const c of slice) {
     const vol = Math.max(0, Number(c.volume || 0));
@@ -1586,7 +1596,7 @@ function directionalVolumeFlow(candles = [], direction = 'LONG', settings = load
     else neutralVol += weight;
   }
   const total = bullVol + bearVol + neutralVol;
-  if (!total) return { ready: false, pass: true, bias: 'UNKNOWN', biasPct: 0, reason: `${label} volume unavailable; not blocking.` };
+  if (!total) return { ready: false, pass: false, bias: 'UNKNOWN', biasPct: 0, reason: `${label} volume unavailable; blocking V69 volume context.` };
   const biasPct = ((bullVol - bearVol) / total) * 100;
   const minBias = Math.min(Math.max(Number(settings.volumeFlowMinBiasPct || 8), 0), 60);
   const passLong = biasPct >= -minBias;
@@ -1612,20 +1622,29 @@ function buildMtfSrVolumeContext(symbol, direction, execCandles = [], settings =
   const candles15 = getCachedCandles(symbol, '15m');
   const candles1h = getCachedCandles(symbol, '1h');
   const candles1d = getCachedCandles(symbol, '1d');
-  const sr15 = supportResistanceFromCandles(symbol, candles15.length ? candles15 : rows5, p, a, settings, '15M');
-  const sr1h = supportResistanceFromCandles(symbol, candles1h.length ? candles1h : rows5, p, a, settings, '1H');
-  const sr1d = supportResistanceFromCandles(symbol, candles1d.length ? candles1d : rows5, p, a, settings, '1D');
+  // V69 rule: higher timeframes are context only, never execution triggers.
+  // Do not fall back to 5m candles for 15m/1h/1d S/R because that hides missing context.
+  const sr15 = supportResistanceFromCandles(symbol, candles15, p, a, settings, '15M');
+  const sr1h = supportResistanceFromCandles(symbol, candles1h, p, a, settings, '1H');
+  const sr1d = supportResistanceFromCandles(symbol, candles1d, p, a, settings, '1D');
   const prevDay = previousDayContext(symbol, candles1d, p, settings);
   const vol5 = directionalVolumeFlow(rows5, direction, settings, '5M');
-  const vol15 = directionalVolumeFlow(candles15.length ? candles15 : rows5, direction, settings, '15M');
-  const vol1h = directionalVolumeFlow(candles1h.length ? candles1h : rows5, direction, settings, '1H');
+  const vol15 = directionalVolumeFlow(candles15, direction, settings, '15M');
+  const vol1h = directionalVolumeFlow(candles1h, direction, settings, '1H');
   const long = direction === 'LONG';
-  const srVotes = [sr15, sr1h, sr1d].filter(x => x.ready).map(x => long ? x.passLong : x.passShort);
-  const srPass = srVotes.length ? srVotes.filter(Boolean).length >= Math.min(2, srVotes.length) : true;
-  const prevPass = long ? prevDay.passLong : prevDay.passShort;
-  const volReady = [vol5, vol15, vol1h].filter(x => x.ready);
-  const volVotes = volReady.map(x => x.pass);
-  const volPass = volVotes.length ? volVotes.filter(Boolean).length >= Math.min(2, volVotes.length) : true;
+  const srContexts = [sr15, sr1h, sr1d];
+  const srReadyCount = srContexts.filter(x => x.ready).length;
+  const srVotes = srContexts.filter(x => x.ready).map(x => long ? x.passLong : x.passShort);
+  const srVotePassCount = srVotes.filter(Boolean).length;
+  // Require valid 15m + 1h + 1D context, but only 2/3 S/R directional votes.
+  const srPass = srReadyCount >= 3 && srVotePassCount >= 2;
+  const prevPass = prevDay.ready && (long ? prevDay.passLong : prevDay.passShort);
+  // Volume must agree on 5m execution flow plus either 15m or 1h context.
+  const vol5Pass = vol5.ready && vol5.pass;
+  const vol15Pass = vol15.ready && vol15.pass;
+  const vol1hPass = vol1h.ready && vol1h.pass;
+  const volVotes = [vol5, vol15, vol1h].filter(x => x.ready).map(x => x.pass);
+  const volPass = Boolean(vol5Pass && (vol15Pass || vol1hPass));
   const pass = Boolean(
     (settings.requirePreviousDayContext === false || prevPass) &&
     (settings.requireMtfSupportResistance === false || srPass) &&
@@ -1644,9 +1663,14 @@ function buildMtfSrVolumeContext(symbol, direction, execCandles = [], settings =
     volume15m: vol15,
     volume1h: vol1h,
     srPass,
+    srReadyCount,
+    srVotePassCount,
     previousDayPass: Boolean(prevPass),
     volumePass: Boolean(volPass),
-    reason: `MTF_SR_VOLUME ${direction}: prevDay=${prevPass}; S/R votes=${srVotes.filter(Boolean).length}/${srVotes.length || 0}; volume votes=${volVotes.filter(Boolean).length}/${volVotes.length || 0}; ${prevDay.reason}; ${sr15.reason}; ${sr1h.reason}; ${sr1d.reason}; ${vol5.reason}; ${vol15.reason}; ${vol1h.reason}`
+    volume5mPass: Boolean(vol5Pass),
+    volume15mPass: Boolean(vol15Pass),
+    volume1hPass: Boolean(vol1hPass),
+    reason: `MTF_SR_VOLUME ${direction}: prevDay=${prevPass}; S/R votes=${srVotePassCount}/${srReadyCount}; volume rule=5M ${vol5Pass} + (15M ${vol15Pass} OR 1H ${vol1hPass}); ${prevDay.reason}; ${sr15.reason}; ${sr1h.reason}; ${sr1d.reason}; ${vol5.reason}; ${vol15.reason}; ${vol1h.reason}`
   };
 }
 
@@ -1889,7 +1913,7 @@ function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings
     const requireHtfMacd = settings.institutionalRequireHtfMacd === true;
     const memorySide = long ? (marketMemory.long || {}) : (marketMemory.short || {});
     const memoryPass = settings.marketMemoryEnabled === false || Boolean(memorySide.pass);
-    // V68 corrected execution gate:
+    // V69 corrected execution gate:
     // Hard = transcript MTF EMA50 direction + Market Memory similar-history cloud pullback/rejection + side-correct candle trigger + MACD timing.
     // Advisory only = local EMA50/200 protection, standalone confluence score, VWAP, RSI, CCI, volume, SAR, breakout, two-pole.
     const stackPass = requireEmaStack ? htfStack : true;
@@ -3589,10 +3613,12 @@ function closedOhlcQualityForExecution(symbol, settings = loadSettings()) {
   const macdSignal = Math.max(9, Math.floor(Number(settings.macdSignalLength || 9)));
   const minExec = Math.max(slowLen + macdSlow + macdSignal + 10, 245);
   const minHtf = Math.max(slowLen + 10, 210);
+  const minDaily = Math.min(Math.max(Math.floor(Number(settings.minDailyCandlesForContext || 9)), 2), 60);
   const checks = [
-    { res: '5m', min: minExec },
-    { res: '15m', min: minHtf },
-    { res: '1h', min: minHtf }
+    { res: '5m', min: minExec, role: 'ENTRY_TRIGGER' },
+    { res: '15m', min: minHtf, role: 'CONTEXT_SR_TREND' },
+    { res: '1h', min: minHtf, role: 'CONTEXT_SR_TREND' },
+    { res: '1d', min: minDaily, role: 'PREVIOUS_DAY_CONTEXT' }
   ].map(x => {
     const candles = getCachedCandles(sym, x.res);
     const count = Array.isArray(candles) ? candles.length : 0;
@@ -3604,8 +3630,8 @@ function closedOhlcQualityForExecution(symbol, settings = loadSettings()) {
   return {
     pass: failed.length === 0,
     detail: failed.length
-      ? `Blocked: live Delta closed OHLC required before auto-entry. ${failed.map(x => `${x.res}=${x.count}/${x.min}`).join(', ')}. Do not trade synthetic/ticker-only fallback.`
-      : `OK: Delta closed OHLC warmup ready (${checks.map(x => `${x.res}=${x.count}`).join(', ')}).`,
+      ? `Blocked: V69 requires Delta closed OHLC before auto-entry. 5m is the only execution trigger; 15m/1h/1d are context. ${failed.map(x => `${x.res}=${x.count}/${x.min}`).join(', ')}. Do not trade synthetic/ticker-only fallback.`
+      : `OK: Delta closed OHLC warmup ready; execution=5m, context=15m/1h/1d (${checks.map(x => `${x.res}=${x.count}`).join(', ')}).`,
     checks
   };
 }
@@ -3631,19 +3657,19 @@ function passFail(profile, settings, wallet, trades) {
   const sig = profile.macdDivergenceSignal || {};
   const sigModel = String(sig.entryModel || settings.entryModel || 'PRACTICAL_MTF_MACD').toUpperCase();
   const practicalModel = sigModel !== 'STRICT_TRANSCRIPT_DIVERGENCE';
-  hard('V68 Aligned Strategy Signal', hasDirection && Boolean(sig.pass) && sig.entrySide === direction, sig.reason || 'No valid closed-candle aligned setup yet: MTF EMA50 + memory cloud + side-correct trigger + MACD timing must pass.');
+  hard('V69 5M Scalp Strategy Signal', hasDirection && Boolean(sig.pass) && sig.entrySide === direction, sig.reason || 'No valid 5m closed-candle scalp setup yet: MTF EMA50 context + previous day/SR/volume context + memory cloud + side-correct trigger + MACD timing must pass.');
   const inst = sig.institutionalEma || {};
   const instSide = direction === 'LONG' ? inst.long : direction === 'SHORT' ? inst.short : null;
   const conf = instSide?.confluence || {};
-  soft('Structure Location Context', hasDirection && Boolean(conf.structure?.pass), conf.structure?.reason || 'Context only in V68; Market Memory cloud is the hard pullback/location gate.');
-  soft('Confluence Score Context', hasDirection && Number(conf.score || 0) >= Number(settings.minConfluenceScore || 6) && Number(conf.confirmations || 0) >= Number(settings.minMomentumConfirmations || 2), conf.reason || 'Advisory only in V68; not a hidden hard blocker.');
+  soft('Structure Location Context', hasDirection && Boolean(conf.structure?.pass), conf.structure?.reason || 'Context only in V69; Market Memory cloud is the hard pullback/location gate.');
+  soft('Confluence Score Context', hasDirection && Number(conf.score || 0) >= Number(settings.minConfluenceScore || 6) && Number(conf.confirmations || 0) >= Number(settings.minMomentumConfirmations || 2), conf.reason || 'Advisory only in V69; not a hidden hard blocker.');
   soft('Local EMA50/200 Context', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.execStack || instSide?.htfStack)), instSide?.detail || inst.reason || 'Local EMA50/200 is visual/advisory only.');
   soft('EMA/VWAP/SR Pullback Context', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.pullback?.pass || conf.structure?.pass)), instSide?.pullback ? `touched=${instSide.pullback.touched} reclaimed=${instSide.pullback.reclaimed} extension=${instSide.pullback.extensionAtr}ATR` : 'Advisory only; Market Memory cloud pullback is the hard gate.');
-  hard('Price-Action Trigger', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.priceAction?.pass)), instSide?.priceAction?.reason || 'Need engulfing, pin bar, double top/bottom confirmation');
+  hard('5M Side-Correct Price-Action Trigger', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.priceAction?.pass)), instSide?.priceAction?.reason || (direction === 'SHORT' ? 'Need bearish engulfing, bearish pin bar, or double-top rejection on closed 5m candle' : direction === 'LONG' ? 'Need bullish engulfing, bullish pin bar, or double-bottom reclaim on closed 5m candle' : 'Need side-correct 5m trigger candle'));
   soft('HTF MACD Strength', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.htfMacd || instSide?.macd5Ok)), `5m=${instSide?.macd5Ok || false} 15m=${instSide?.macd15Ok || false} 1h=${instSide?.macd1hOk || false}`);
   hard('EMA50 15m vs 1h Trend Filter', hasDirection && Boolean(sig.conditions?.longTrend || sig.conditions?.shortTrend), `EMA15=${sig.ema15 || '-'} EMA1H=${sig.ema1h || '-'} gap=${sig.emaGapPct || '-'}%`);
   hard('Market Memory Cloud Match', settings.marketMemoryEnabled === false || (hasDirection && Boolean(instSide?.marketMemoryPass || instSide?.marketMemory?.pass)), instSide?.marketMemory?.detail || 'Need same-side Market Memory regime, cloud pullback/rejection, similarity threshold and #1 historical match outcome.');
-  hard('Previous Day + 1D/1H/15M S/R + Volume Flow', settings.srVolumeAlignmentEnabled === false || (hasDirection && Boolean(instSide?.srVolumePass || instSide?.srVolume?.pass)), instSide?.srVolume?.reason || 'Need previous-day candle context, 1D/1H/15M support-resistance location, and directional volume flow alignment.');
+  hard('Previous Day + 1D/1H/15M S/R + 5M Volume Flow', settings.srVolumeAlignmentEnabled === false || (hasDirection && Boolean(instSide?.srVolumePass || instSide?.srVolume?.pass)), instSide?.srVolume?.reason || 'Need previous-day candle, 1D/1H/15M S/R votes >=2/3, and volume rule: 5m + either 15m or 1h.');
   const divOk = direction === 'LONG'
     ? Boolean(sig.conditions?.priceLowerLow && sig.conditions?.macdHigherLow)
     : direction === 'SHORT'
@@ -3656,7 +3682,7 @@ function passFail(profile, settings, wallet, trades) {
   soft('Histogram Color Change', hasDirection && Boolean(sig.conditions?.histColorChange), `Preferred within ${sig.histColorLookback || settings.histColorLookback || 6} closed 5m candles; high confluence can still pass.`);
   soft('Confirmed MACD Crossover', hasDirection && Boolean(sig.conditions?.crossover), `Preferred within ${sig.entrySignalWindowCandles || settings.entrySignalWindowCandles || 3} candle(s); not standalone.`);
   if (settings.entryOrderType !== 'market' && settings.requirePullbackForExecution !== false) {
-    soft('Limit Pullback Entry', Boolean(profile.decision === 'LONG' || profile.decision === 'SHORT'), 'Execution uses pullback limit order near support/resistance/MTF EMA. It is not a transcript filter; it improves entry price and avoids market chasing.');
+    soft('Limit Pullback Entry', Boolean(profile.decision === 'LONG' || profile.decision === 'SHORT'), 'Execution uses pullback limit order near support/resistance/Market Memory cloud/MTF EMA. Higher TFs are context only; 5m closed candle is the trigger.');
   }
 
   soft('Support / Resistance Context', true, profile.supportResistance?.reason || 'Context only; not an entry engine');
@@ -4050,7 +4076,7 @@ function evaluateSymbol(symbol, settings, wallet, trades) {
       result.blockedBy = `Sizing: ${candidate.marginPlan.blockedReason}`;
     }
   }
-  const q = result.allPass ? 'STRONG' : (profile.hasStrategySignal && profile.kdeScore >= Math.max(45, Number(settings.kdeThreshold || 55) - 10) ? 'WATCH' : 'WEAK');
+  const q = result.allPass ? (Number(profile.kdeScore || 0) >= Number(settings.aPlusConfluenceScore || 8) * 10 ? 'A+' : 'A') : (profile.decision === 'LONG' || profile.decision === 'SHORT' ? 'B / BLOCKED' : 'WAIT');
 
   return {
     coin: symbol,
@@ -4795,7 +4821,7 @@ async function sendLiveAddOnOrder(trade, row, settings) {
 }
 
 function liveReady(settings, keys) {
-  // V68 aligned live build: live execution is allowed only after API test, explicit live confirmation, Delta wallet sync, and positions sync.
+  // V69 aligned live build: live execution is allowed only after API test, explicit live confirmation, Delta wallet sync, and positions sync.
   return Boolean(
     !settings.paperTrade &&
     keys.apiKey &&
@@ -4825,6 +4851,40 @@ function liveReadinessFailures(settings = loadSettings(), keys = loadKeys(), { i
 function liveBlockReason(settings = loadSettings(), keys = loadKeys(), opts = {}) {
   const failures = liveReadinessFailures(settings, keys, opts);
   return failures.length ? failures.join('; ') : '';
+}
+
+function clearStaleLocalLiveTradesFromDelta() {
+  if (state.deltaPositions.status !== 'LIVE_POSITIONS') {
+    throw new Error('Delta positions are not synced; run Sync Delta Positions Now first.');
+  }
+  const trades = loadTrades();
+  const deltaSymbols = new Set((state.deltaPositions.openTrades || []).map(t => String(t.coin || t.symbol || '').toUpperCase()).filter(Boolean));
+  const before = trades.openTrades || [];
+  const kept = [];
+  const removed = [];
+  for (const t of before) {
+    const sym = String(t.coin || '').toUpperCase();
+    const liveLike = String(t.mode || '').toLowerCase() === 'live' || Boolean(t.exchangeOrderId || t.clientOrderId);
+    if (liveLike && sym && !deltaSymbols.has(sym)) removed.push(t);
+    else kept.push(t);
+  }
+  trades.openTrades = kept;
+  saveTrades(trades);
+  if (removed.length) {
+    for (const t of removed) appendTradeJournalEvent('STALE_CLEAR', t, { reason: 'Removed local live trade because Delta position sync shows no matching open position.' });
+    log('SAFE', `Cleared ${removed.length} stale local live trade(s) after Delta position sync.`, { removed: removed.map(t => ({ coin: t.coin, side: t.side, status: t.status, exchangeOrderId: t.exchangeOrderId || null })) });
+  } else {
+    log('SAFE', 'No stale local live trades found after Delta position sync.');
+  }
+  return { removedCount: removed.length, removed };
+}
+
+async function forceSyncLivePositionsNow(settings = loadSettings()) {
+  const keys = loadKeys();
+  await refreshDeltaPublicData(settings, true);
+  await refreshDeltaCandlesForAssets(settings, true);
+  await syncLiveAccountIfReady(settings, keys, { force: true });
+  return state.deltaPositions;
 }
 
 function buildTradeRecord(row, settings, mode) {
@@ -5249,16 +5309,29 @@ async function openLiveTrade(row, settings, trades, wallet) {
   };
   if (orderType === 'limit_order') order.limit_price = String(row.candidate.entry);
   const response = await deltaSignedRequest(settings, keys, 'POST', '/v2/orders', order);
+  const exchangeOrderId = response?.result?.id || response?.result?.order_id || response?.result?.order?.id || response?.id || response?.order_id || null;
+  if (!exchangeOrderId) {
+    log('CRITICAL', `Delta accepted/returned a response for ${row.coin} but no exchange order id was found. Trade is NOT counted as live-managed. Check Delta manually before any further trade.`, { response });
+    throw new Error('Delta response did not include an exchange order id; refusing to count this as a managed live trade.');
+  }
+  const bracketFieldsPresent = Boolean(order.bracket_stop_loss_price && order.bracket_take_profit_price);
+  if (!bracketFieldsPresent) {
+    log('CRITICAL', `LIVE order payload for ${row.coin} does not contain verified SL/TP bracket prices. Refusing live order tracking.`, { order });
+    throw new Error('LIVE order payload missing SL/TP bracket prices.');
+  }
   trade.status = orderType === 'limit_order' ? 'PENDING_LIMIT' : 'OPEN';
-  trade.exchangeOrderId = response?.result?.id || response?.result?.order_id || null;
+  trade.exchangeOrderId = exchangeOrderId;
   trade.exchangeResponse = response?.result || response;
   trade.liveOrderSize = order.size;
   trade.clientOrderId = clientOrderId;
+  trade.liveBracketRequested = true;
+  trade.bracketStopLossPrice = order.bracket_stop_loss_price;
+  trade.bracketTakeProfitPrice = order.bracket_take_profit_price;
   trades.openTrades.push(trade);
   appendTradeJournalEvent(trade.status === 'PENDING_LIMIT' ? 'PENDING_LIMIT' : 'OPEN', trade, { entryReason: trade.entryReason, sl: trade.sl, tp1: trade.tp1, tp2: trade.tp2, tp3: trade.tp3, orderType: trade.orderType, entryType: trade.entryType });
   try {
     await syncLiveAccountIfReady(settings, keys, { force: true });
-    log('VERIFY', `Post-order sync completed for ${row.coin}. Check Delta UI for bracket SL/TP before leaving trade unattended.`, { clientOrderId });
+    log('VERIFY', `Post-order sync completed for ${row.coin}. LIVE trade has Delta order id ${exchangeOrderId}; confirm bracket SL/TP is visible on Delta before leaving trade unattended.`, { clientOrderId, exchangeOrderId, sl: order.bracket_stop_loss_price, tp: order.bracket_take_profit_price });
   } catch (error) {
     log('ERROR', `Post-order verification failed for ${row.coin}: ${error.message}`);
   }
@@ -5886,6 +5959,13 @@ function validateSettingsPatch(patch) {
   out.marketMemoryNearCloudAtrMult = Math.min(Math.max(Number(out.marketMemoryNearCloudAtrMult ?? DEFAULT_SETTINGS.marketMemoryNearCloudAtrMult), 0), 2);
   out.marketMemoryMaxExtensionAtr = Math.min(Math.max(Number(out.marketMemoryMaxExtensionAtr ?? DEFAULT_SETTINGS.marketMemoryMaxExtensionAtr), 0.5), 5);
   out.marketMemoryMinForwardMoveAtr = Math.min(Math.max(Number(out.marketMemoryMinForwardMoveAtr ?? DEFAULT_SETTINGS.marketMemoryMinForwardMoveAtr), 0), 3);
+  out.srVolumeAlignmentEnabled = typeof out.srVolumeAlignmentEnabled === 'boolean' ? out.srVolumeAlignmentEnabled : DEFAULT_SETTINGS.srVolumeAlignmentEnabled;
+  out.requireClosedDailyContext = typeof out.requireClosedDailyContext === 'boolean' ? out.requireClosedDailyContext : DEFAULT_SETTINGS.requireClosedDailyContext;
+  out.minDailyCandlesForContext = Math.min(Math.max(Math.floor(Number(out.minDailyCandlesForContext ?? DEFAULT_SETTINGS.minDailyCandlesForContext ?? 9)), 2), 60);
+  out.requirePreviousDayContext = typeof out.requirePreviousDayContext === 'boolean' ? out.requirePreviousDayContext : DEFAULT_SETTINGS.requirePreviousDayContext;
+  out.requireMtfSupportResistance = typeof out.requireMtfSupportResistance === 'boolean' ? out.requireMtfSupportResistance : DEFAULT_SETTINGS.requireMtfSupportResistance;
+  out.requireVolumeFlowAlignment = typeof out.requireVolumeFlowAlignment === 'boolean' ? out.requireVolumeFlowAlignment : DEFAULT_SETTINGS.requireVolumeFlowAlignment;
+  out.require5mVolumeFlow = typeof out.require5mVolumeFlow === 'boolean' ? out.require5mVolumeFlow : DEFAULT_SETTINGS.require5mVolumeFlow;
   out.sarMacdModuleEnabled = typeof out.sarMacdModuleEnabled === 'boolean' ? out.sarMacdModuleEnabled : DEFAULT_SETTINGS.sarMacdModuleEnabled;
   out.sarMacdAllowLocalEntry = typeof out.sarMacdAllowLocalEntry === 'boolean' ? out.sarMacdAllowLocalEntry : DEFAULT_SETTINGS.sarMacdAllowLocalEntry;
   out.sarMacdBlockLateMomentum = typeof out.sarMacdBlockLateMomentum === 'boolean' ? out.sarMacdBlockLateMomentum : DEFAULT_SETTINGS.sarMacdBlockLateMomentum;
@@ -5929,7 +6009,7 @@ function validateSettingsPatch(patch) {
   out.emaFastTimeframe = '15m';
   out.emaSlowTimeframe = '1h';
   out.macdTrendTimeframe = '5m';
-  out.higherTimeframes = ['15m', '1h'];
+  out.higherTimeframes = ['15m', '1h', '1d'];
   out.htfMinimumAligned = 1;
   out.twoPoleModuleEnabled = false;
   out.twoPoleAllowLocalEntry = false;
@@ -6297,6 +6377,20 @@ async function apiRoute(req, res, pathname) {
       return send(res, 200, { ok: true, data: getStatePayload(settings) });
     }
 
+    if (req.method === 'POST' && pathname === '/api/force-sync-positions') {
+      const settings = loadSettings();
+      await forceSyncLivePositionsNow(settings);
+      log('SYNC', 'Manual force sync completed for Delta public data, OHLC candles, wallet and positions.');
+      return send(res, 200, { ok: true, data: getStatePayload(loadSettings()) });
+    }
+
+    if (req.method === 'POST' && pathname === '/api/clear-stale-local-trades') {
+      const settings = loadSettings();
+      await forceSyncLivePositionsNow(settings);
+      const cleared = clearStaleLocalLiveTradesFromDelta();
+      return send(res, 200, { ok: true, data: { cleared, state: getStatePayload(loadSettings()) } });
+    }
+
 
     if (req.method === 'GET' && pathname === '/api/delta-symbols') {
       const settings = loadSettings();
@@ -6604,7 +6698,7 @@ function createServer() {
 
   return http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v66-ema50-200-memory-cloud-live-armed', mode: loadSettings().paperTrade ? 'paper' : 'live' });
+    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v69-5m-scalp-mtf-sr-volume-live-armed', mode: loadSettings().paperTrade ? 'paper' : 'live' });
     if (url.pathname === '/api/login' && req.method === 'POST') return loginRoute(req, res);
     if (url.pathname === '/api/logout') return logoutRoute(req, res);
     if (!requireDashboardAuth(req, res, url.pathname)) return;
@@ -6625,7 +6719,7 @@ function startAutoScan() {
 if (require.main === module) {
   const server = createServer();
   server.listen(PORT, () => {
-    console.log(`Trading Journal EMA + MACD + Market Memory Paper Bot V65 running at http://localhost:${PORT}`);
+    console.log(`Trading Journal V69 5m Scalp MTF S/R Volume Live-Armed Bot running at http://localhost:${PORT}`);
     console.log(`Execution venue: Delta Exchange India only`);
     console.log(`Data directory: ${DATA_DIR}`);
   });

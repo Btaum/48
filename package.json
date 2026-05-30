@@ -1,21 +1,22 @@
 {
-  "name": "trading-journal-confluence-structure-execution-v68",
-  "version": "6.8.0",
-  "description": "Delta Exchange India live-armed bot V68 with EMA50 MTF, MACD divergence/timing, Market Memory cloud, previous-day candle context, 1D/1H/15M support-resistance, directional volume flow, structural SL/TP, and explicit blocker logs.",
+  "name": "trading-journal-confluence-structure-execution-v69",
+  "version": "6.9.0",
+  "description": "Delta Exchange India V69 live-armed 5m scalp bot with 15m/1h/1D context, previous-day candle, MTF support-resistance, 5m+HTF volume flow, Market Memory cloud, MACD timing, structural SL/TP, exact blocker logs, force sync, and stale live trade clear.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
     "test": "node scripts/smoke-test.js",
-    "check": "node --check server.js && node --check public/app.js && node scripts/smoke-test.js && node scripts/frontend-render-test.js && node scripts/audit-v66.js"
+    "check": "node --check server.js && node --check public/app.js && node scripts/smoke-test.js && node scripts/frontend-render-test.js && node scripts/audit-v69.js"
   },
   "keywords": [
     "crypto",
     "futures",
     "scanner",
     "trading",
-    "dashboard"
+    "dashboard",
+    "delta-exchange-india"
   ],
   "author": "Trading North",
   "license": "UNLICENSED"
