@@ -11,11 +11,7 @@ const ROOT = __dirname;
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 8080);
-<<<<<<< HEAD
-const USER_AGENT = 'TradingNorth-SMI-KN-Smart-TP-SL/77.0-PRACTICAL-MULTI-HORIZON';
-=======
-const USER_AGENT = 'TradingNorth-Confluence-Structure-Execution/70.0-BALANCED-5M-SCALP-LIVE';
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
+const USER_AGENT = 'TradingNorth-BOT11-Strategy-Spec-V1/1.0-PAPER-LIVE-DATA';
 
 const DASHBOARD_PASSWORD = String(process.env.DASHBOARD_PASSWORD || '').trim();
 const DASHBOARD_SESSION_SECRET = String(process.env.DASHBOARD_SESSION_SECRET || process.env.DASHBOARD_PASSWORD || crypto.randomBytes(32).toString('hex'));
@@ -53,35 +49,27 @@ const DEFAULT_SETTINGS = {
   paperTrade: true,
   exchange: 'delta_exchange_india',
   executionApi: 'delta_exchange_india',
-<<<<<<< HEAD
-  signalSource: 'v77_smi_kn_smart_tpsl_chart_marks',
-  strategyMode: 'V77_SMI_KN_PULLBACK_TPSL_CHART_MARKS',
-=======
-  signalSource: 'v70_balanced_5m_scalp_mtf_sr_volume_memory_cloud',
-  strategyMode: 'V70_BALANCED_5M_SCALP_MTF_SR_VOLUME',
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
+  signalSource: 'bot11_strategy_spec_v1',
+  strategyMode: 'BOT11_STRATEGY_SPEC_V1',
   deltaBaseUrl: 'https://api.india.delta.exchange',
-  assets: Object.keys(BASE_PRICE),
+  assets: ['BTCUSD','ETHUSD','SOLUSD','XRPUSD','BNBUSD','DOGEUSD','ADAUSD','AVAXUSD','LINKUSD','LTCUSD','BCHUSD','TRXUSD','DOTUSD','MATICUSD','UNIUSD','APTUSD','INJUSD','NEARUSD','FILUSD','ARBUSD'],
   primaryTimeframe: '5m',
   executionTimeframe: '5m',
   macdTrendTimeframe: '1h',
+  trendTimeframe: '1h',
+  validationTimeframe: '15m',
   emaFastTimeframe: '15m',
   emaSlowTimeframe: '1h',
   higherTimeframes: ['15m', '1h', '1d'],
   entryEmaFastPeriod: 50, // legacy compatibility only; not used as a fast EMA gate
   entryEmaSlowPeriod: 200, // legacy compatibility only; not used as a fast EMA gate
-<<<<<<< HEAD
   trendEmaPeriod: 100,
-=======
-  trendEmaPeriod: 50,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   dominantEmaPeriod: 200,
   rsiPeriod: 14,
   cciPeriod: 20,
   vwapConfluenceEnabled: false,
   volumeSpikeConfluenceEnabled: false,
   volumeSpikeMultiplier: 1.25,
-<<<<<<< HEAD
   minConfluenceScore: 1,
   aPlusConfluenceScore: 3,
   tier3MinConfluenceScore: 3,
@@ -89,33 +77,16 @@ const DEFAULT_SETTINGS = {
   structureProximityAtr: 1.35,
   emaPeriod: 100,
   mtfEmaPeriod: 100,
-=======
-  minConfluenceScore: 6,
-  aPlusConfluenceScore: 8,
-  tier3MinConfluenceScore: 8,
-  minMomentumConfirmations: 2,
-  structureProximityAtr: 1.35,
-  emaPeriod: 50,
-  mtfEmaPeriod: 50,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   minEmaGapPct: 0.01,
   divergencePivotLeft: 3,
   divergencePivotRight: 3,
   divergenceLookback: 60,
   minDivergenceMacdPct: 0.00001,
-<<<<<<< HEAD
   entryModel: 'SMI_KN_PULLBACK_TPSL',
   institutionalEmaEnabled: false,
   institutionalRequireEmaStack: false,
   institutionalRequirePullback: false, // V71: removed as a hard gate; Break/Retest is the structure gate
   institutionalRequirePriceAction: false,
-=======
-  entryModel: 'PRACTICAL_MTF_MACD',
-  institutionalEmaEnabled: true,
-  institutionalRequireEmaStack: true,
-  institutionalRequirePullback: false, // V70: EMA50 pullback is advisory; Market Memory cloud pullback is the hard gate
-  institutionalRequirePriceAction: true,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   institutionalRequireHtfMacd: false,
   institutionalEmaFastPeriod: 50, // legacy compatibility only; EMA fast/mid stack removed
   institutionalEmaMidPeriod: 50,
@@ -124,15 +95,9 @@ const DEFAULT_SETTINGS = {
   institutionalPullbackAtrMult: 0.85,
   institutionalMaxExtensionAtr: 3.0,
   institutionalPatternLookback: 24,
-<<<<<<< HEAD
   marketMemoryEnabled: false,
   marketMemoryRequirePullback: false,
   marketMemoryRequireTopMatchOutcome: false,
-=======
-  marketMemoryEnabled: true,
-  marketMemoryRequirePullback: true,
-  marketMemoryRequireTopMatchOutcome: true,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   marketMemoryScanDepth: 300,
   marketMemoryTopMatches: 5,
   marketMemoryPatternLength: 10,
@@ -143,31 +108,18 @@ const DEFAULT_SETTINGS = {
   marketMemoryNearCloudAtrMult: 0.50,
   marketMemoryMaxExtensionAtr: 2.4,
   marketMemoryMinForwardMoveAtr: 0.25,
-<<<<<<< HEAD
   srVolumeAlignmentEnabled: false,
   requireClosedDailyContext: false,
   minDailyCandlesForContext: 3,
   requirePreviousDayContext: false,
   requireMtfSupportResistance: false,
   requireVolumeFlowAlignment: false,
-=======
-  srVolumeAlignmentEnabled: true,
-  requireClosedDailyContext: true,
-  minDailyCandlesForContext: 3,
-  requirePreviousDayContext: true,
-  requireMtfSupportResistance: true,
-  requireVolumeFlowAlignment: true,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   previousDayMidTolerancePct: 0.35,
   srProximityAtrMult: 1.15,
   srBreakoutRetestAtrMult: 0.65,
   volumeFlowLookback: 24,
   volumeFlowMinBiasPct: 5,
-<<<<<<< HEAD
   require5mVolumeFlow: false,
-=======
-  require5mVolumeFlow: true,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   dynamicTpEnabled: true,
   dynamicTpStrongR: 3.5,
   dynamicTpMaxR: 6,
@@ -176,11 +128,7 @@ const DEFAULT_SETTINGS = {
   trailingStopEmaPeriod: 50,
   trailingStopAtrBuffer: 0.20,
   requireDivergenceForEntry: false,
-<<<<<<< HEAD
   zeroLineMode: 'off', // V71: MACD zero-line is not used
-=======
-  zeroLineMode: 'soft', // V70 balanced mode: divergence and zero-line side are confluence only; MACD timing remains required
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   entrySignalWindowCandles: 3,
   histColorLookback: 8,
   emaSlopeThresholdPct: 0.05,
@@ -197,7 +145,9 @@ const DEFAULT_SETTINGS = {
   maxTradesPerDay: 5,
   maxDailyLossUsd: 10,
   maxConsecutiveLosses: 2,
-  paperMinScore: 55,
+  paperMinScore: 70,
+  preferredScore: 80,
+  exceptionalScore: 90,
   adrUsedLimitPct: 80,
   timeFailureCandles: 8,
   pendingExpiryMinutes: 45,
@@ -207,7 +157,8 @@ const DEFAULT_SETTINGS = {
   moveSlAfterTp1MinAge: 30,
   defaultLeverage: 25,
   maxLeverage: 25,
-  maxConcurrentPositions: 3,
+  maxConcurrentPositions: 5,
+  maxOneTradePerCorrelationCluster: true,
   maxOnePositionPerAsset: true,
   maxBotAllocationUsd: 500,
   liveWalletAllocationPct: 25,
@@ -217,7 +168,7 @@ const DEFAULT_SETTINGS = {
   majorMarginCoins: ['BTCUSD', 'ETHUSD'],
   initialMarginUsd: 10,
   majorInitialMarginUsd: 20,
-  maxStopLossUsd: 7,
+  maxStopLossUsd: 10,
   minEntryMarginUsd: 1,
   tradeManagementEnabled: true,
   autoMoveSlEnabled: true,
@@ -251,7 +202,6 @@ const DEFAULT_SETTINGS = {
   newsBlackoutBeforeMin: 30,
   newsBlackoutAfterMin: 15,
   entryOrderType: 'limit',
-<<<<<<< HEAD
   minRR: 2.0,
   rewardTargetR: 2.5,
   autoSizeToTargetProfit: true,
@@ -259,15 +209,6 @@ const DEFAULT_SETTINGS = {
   minTargetProfitUsd: 0.25, // backward compatibility only
   targetFullTradeProfitUsd: 1,
   targetProfitUsd: 1, // backward compatibility only
-=======
-  minRR: 2,
-  rewardTargetR: 2,
-  autoSizeToTargetProfit: true,
-  minFullTradeProfitUsd: 2,
-  minTargetProfitUsd: 2, // backward compatibility only
-  targetFullTradeProfitUsd: 5,
-  targetProfitUsd: 5, // backward compatibility only
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   blockTinyProfitTrades: true,
   autoUseMaxLeverageForProfitTarget: true,
   highProbabilityMode: true,
@@ -276,30 +217,20 @@ const DEFAULT_SETTINGS = {
   slBufferAtrMult: 0.25,
   maxTechnicalSlAtrMult: 6,
   requireClosedCandle: true,
-<<<<<<< HEAD
   requirePullbackForExecution: false,
   pullbackAtrMult: 0.35,
   pullbackMaxAtrMult: 1.20,
   allowMarketWhenNoPullback: false,
   tp1ClosePct: 40,
-  tp2ClosePct: 50, // closes 50% of remaining = 30% original
-  tp3ClosePct: 33.3333, // closes 33.33% of remaining = 10% original; final 20% runner
-=======
-  requirePullbackForExecution: true,
-  pullbackAtrMult: 0.35,
-  pullbackMaxAtrMult: 1.20,
-  allowMarketWhenNoPullback: false,
-  tp1ClosePct: 50,
-  tp2ClosePct: 100,
-  tp3ClosePct: 0,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
+  tp2ClosePct: 30,
+  tp3ClosePct: 10,
+  runnerClosePct: 20,
   liveOrderSize: 1,
   autoScanSeconds: 10,
   marketDataRefreshSeconds: 15,
   tradingViewWebhookToken: 'change-me',
   requireTradingViewSignalForExecution: false,
   paperLiveCompatibleSizing: true,
-<<<<<<< HEAD
   strategyTimeframes: ['5m', '15m', '1h'],
   multiHorizonScanEnabled: true,
   horizonUpgradeEnabled: true,
@@ -308,6 +239,7 @@ const DEFAULT_SETTINGS = {
   scalpToIntradayTargetR: 2.5,
   intradayToSwingTargetR: 3.5,
   paperExecutionMode: 'auto',
+  liveDataPaperTradingOnly: true,
   paperUseDeltaWalletReference: true,
   macdConfirmationEnabled: false,
   smiPercentKLength: 10,
@@ -360,11 +292,6 @@ const DEFAULT_SETTINGS = {
   ma1VisualColor: '#111827',
   trendMaType: 'SMA',
   trendMaToleranceAtrMult: 0.15,
-=======
-  paperExecutionMode: 'auto',
-  paperUseDeltaWalletReference: true,
-  macdConfirmationEnabled: false,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   macdFastLength: 12,
   macdSlowLength: 26,
   macdSignalLength: 9,
@@ -524,16 +451,18 @@ function enforceTimeframePolicy(settings = {}) {
     emaFastTimeframe: '15m',
     emaSlowTimeframe: '1h',
     macdTrendTimeframe: '1h',
+  trendTimeframe: '1h',
+  validationTimeframe: '15m',
     higherTimeframes: ['15m', '1h', '1d'],
     htfMinimumAligned: 1,
-    paperTrade: typeof settings.paperTrade === 'boolean' ? settings.paperTrade : true,
-<<<<<<< HEAD
-    signalSource: 'v77_smi_kn_smart_tpsl_chart_marks',
-    strategyMode: 'V77_SMI_KN_PULLBACK_TPSL_CHART_MARKS',
-=======
-    signalSource: 'v70_balanced_5m_scalp_mtf_sr_volume_memory_cloud',
-    strategyMode: 'V70_BALANCED_5M_SCALP_MTF_SR_VOLUME',
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
+    paperTrade: settings.liveDataPaperTradingOnly === false ? (typeof settings.paperTrade === 'boolean' ? settings.paperTrade : true) : true,
+    liveDataPaperTradingOnly: settings.liveDataPaperTradingOnly !== false,
+    paperMinScore: Math.min(Math.max(Number(settings.paperMinScore || 70), 70), 95),
+    preferredScore: 80,
+    exceptionalScore: 90,
+    maxOneTradePerCorrelationCluster: settings.maxOneTradePerCorrelationCluster !== false,
+    signalSource: 'bot11_strategy_spec_v1',
+    strategyMode: 'BOT11_STRATEGY_SPEC_V1',
     emaPeriod,
     mtfEmaPeriod: emaPeriod,
     macdFastLength: 12,
@@ -541,11 +470,7 @@ function enforceTimeframePolicy(settings = {}) {
     macdSignalLength: 9,
     entryEmaFastPeriod: 50,
     entryEmaSlowPeriod: 200,
-<<<<<<< HEAD
     trendEmaPeriod: 100,
-=======
-    trendEmaPeriod: 50,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     dominantEmaPeriod: 200,
     rsiPeriod: Math.min(Math.max(Math.floor(Number(settings.rsiPeriod || 14)), 5), 50),
     cciPeriod: Math.min(Math.max(Math.floor(Number(settings.cciPeriod || 20)), 5), 60),
@@ -555,17 +480,10 @@ function enforceTimeframePolicy(settings = {}) {
     aPlusConfluenceScore: Math.min(Math.max(Number(settings.aPlusConfluenceScore || 9), 8), 12),
     tier3MinConfluenceScore: Math.min(Math.max(Number(settings.tier3MinConfluenceScore || 9), 8), 12),
     minMomentumConfirmations: Math.min(Math.max(Math.floor(Number(settings.minMomentumConfirmations || 2)), 2), 5),
-<<<<<<< HEAD
     minRR: 2.0,
     rewardTargetR: 2.5,
     requireClosedCandle: true,
     requirePullbackForExecution: false,
-=======
-    minRR: 2,
-    rewardTargetR: 2,
-    requireClosedCandle: true,
-    requirePullbackForExecution: true,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     sarMacdModuleEnabled: false,
     sarMacdAllowLocalEntry: false,
     twoPoleModuleEnabled: false,
@@ -574,15 +492,9 @@ function enforceTimeframePolicy(settings = {}) {
     breakoutAllowLocalEntry: false,
     vwapModuleEnabled: false,
     vwapAllowLocalEntry: false,
-<<<<<<< HEAD
     marketMemoryEnabled: false,
     marketMemoryRequirePullback: false,
     marketMemoryRequireTopMatchOutcome: false,
-=======
-    marketMemoryEnabled: settings.marketMemoryEnabled !== false,
-    marketMemoryRequirePullback: settings.marketMemoryRequirePullback !== false,
-    marketMemoryRequireTopMatchOutcome: settings.marketMemoryRequireTopMatchOutcome !== false,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     marketMemoryScanDepth: Math.min(Math.max(Math.floor(Number(settings.marketMemoryScanDepth || 300)), 120), 900),
     marketMemoryTopMatches: Math.min(Math.max(Math.floor(Number(settings.marketMemoryTopMatches || 5)), 1), 10),
     marketMemoryPatternLength: Math.min(Math.max(Math.floor(Number(settings.marketMemoryPatternLength || 10)), 5), 30),
@@ -593,7 +505,6 @@ function enforceTimeframePolicy(settings = {}) {
     marketMemoryNearCloudAtrMult: Math.min(Math.max(Number(settings.marketMemoryNearCloudAtrMult || 0.25), 0), 2),
     marketMemoryMaxExtensionAtr: Math.min(Math.max(Number(settings.marketMemoryMaxExtensionAtr || 1.6), 0.5), 5),
     marketMemoryMinForwardMoveAtr: Math.min(Math.max(Number(settings.marketMemoryMinForwardMoveAtr || 0.25), 0), 3),
-<<<<<<< HEAD
     srVolumeAlignmentEnabled: false,
     requireClosedDailyContext: false,
     minDailyCandlesForContext: Math.min(Math.max(Math.floor(Number(settings.minDailyCandlesForContext || 9)), 2), 60),
@@ -601,15 +512,6 @@ function enforceTimeframePolicy(settings = {}) {
     requireMtfSupportResistance: false,
     requireVolumeFlowAlignment: false,
     require5mVolumeFlow: false,
-=======
-    srVolumeAlignmentEnabled: settings.srVolumeAlignmentEnabled !== false,
-    requireClosedDailyContext: settings.requireClosedDailyContext !== false,
-    minDailyCandlesForContext: Math.min(Math.max(Math.floor(Number(settings.minDailyCandlesForContext || 9)), 2), 60),
-    requirePreviousDayContext: settings.requirePreviousDayContext !== false,
-    requireMtfSupportResistance: settings.requireMtfSupportResistance !== false,
-    requireVolumeFlowAlignment: settings.requireVolumeFlowAlignment !== false,
-    require5mVolumeFlow: settings.require5mVolumeFlow !== false,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     exchange: 'delta_exchange_india',
     executionApi: 'delta_exchange_india'
   };
@@ -764,6 +666,83 @@ function activeTradeExists(trades, symbol) {
   return (trades.openTrades || []).some(t => String(t.coin).toUpperCase() === String(symbol).toUpperCase() && isActiveTradeStatus(t.status));
 }
 
+
+function correlationClusterForSymbol(symbol) {
+  const s = String(symbol || '').toUpperCase();
+  if (['BTCUSD','ETHUSD','BNBUSD','SOLUSD','XRPUSD','ADAUSD','LTCUSD','BCHUSD','DOTUSD','LINKUSD','AVAXUSD','MATICUSD','TRXUSD'].includes(s)) return 'Majors';
+  if (['FETUSD','AGIXUSD','OCEANUSD','TAOUSD','WLDUSD','RNDRUSD','NEARUSD','INJUSD'].includes(s)) return 'AI';
+  if (['DOGEUSD','SHIBUSD','PEPEUSD','BONKUSD','FLOKIUSD','WIFUSD'].includes(s)) return 'Meme';
+  if (['ONDOUSD','LINKUSD','PENDLEUSD','POLYXUSD','MKRUSD'].includes(s)) return 'RWA';
+  return 'New Listings';
+}
+
+function activeClusterExists(trades, symbol) {
+  const cluster = correlationClusterForSymbol(symbol);
+  return (trades.openTrades || []).some(t => isActiveTradeStatus(t.status) && correlationClusterForSymbol(t.coin) === cluster);
+}
+
+function classifyOpportunityScore(score) {
+  const n = Number(score || 0);
+  if (n < 70) return 'Ignore';
+  if (n < 80) return 'Tradeable';
+  if (n < 90) return 'Preferred';
+  return 'Exceptional';
+}
+
+function riskUsdForScore(score) {
+  const n = Number(score || 0);
+  if (n >= 90) return 10;
+  if (n >= 80) return 7;
+  if (n >= 70) return 5;
+  return 0;
+}
+
+function averageCandleValue(rows, key, len = 20) {
+  const vals = (rows || []).slice(-len).map(r => Number(r?.[key] || 0)).filter(Number.isFinite);
+  if (!vals.length) return 0;
+  return vals.reduce((a,b)=>a+b,0) / vals.length;
+}
+
+function bot11RankingBreakdown(symbol, profile, signal, settings = loadSettings()) {
+  const rows1h = getCachedCandles(symbol, '1h');
+  const rows15 = getCachedCandles(symbol, '15m');
+  const rows5 = getCachedCandles(symbol, '5m');
+  const p = Number(profile?.price || rows5.at(-1)?.close || 0);
+  const cloud1h = emaCloudFromCandles(rows1h.length ? rows1h : rows5, settings);
+  const last1h = Math.max(0, (rows1h.length ? rows1h : rows5).length - 1);
+  const fast = Number(cloud1h.fast?.[last1h] || 0);
+  const slow = Number(cloud1h.slow?.[last1h] || 0);
+  const prevFast = Number(cloud1h.fast?.[Math.max(0,last1h-5)] || fast);
+  const trendDirOk = signal?.entrySide === 'LONG' ? fast > slow : signal?.entrySide === 'SHORT' ? fast < slow : false;
+  const slopeOk = signal?.entrySide === 'LONG' ? fast >= prevFast : signal?.entrySide === 'SHORT' ? fast <= prevFast : false;
+  const trendPersistence = trendDirOk ? 10 : 0;
+  const trendScore = Math.min(30, (trendDirOk ? 12 : 0) + (slopeOk ? 8 : 0) + trendPersistence);
+  const lastVol = Number(rows5.at(-1)?.volume || rows15.at(-1)?.volume || 0);
+  const avgVol = averageCandleValue(rows5.length ? rows5 : rows15, 'volume', 20);
+  const volumeRatio = avgVol > 0 ? lastVol / avgVol : 1;
+  const oiRatio = Number(profile?.openInterestRatio || 1);
+  const momentumRising = Boolean(signal?.conditions?.smiRecoveryCross || profile?.hasStrategySignal);
+  const momentumScore = Math.min(20, (momentumRising ? 8 : 0) + Math.min(7, Math.max(0, (volumeRatio - 1) * 5)) + Math.min(5, Math.max(0, (oiRatio - 1) * 5)));
+  const ticker = state.delta.tickersBySymbol?.[String(symbol).toUpperCase()] || {};
+  const bid = Number(ticker.best_bid || ticker.bid || ticker.mark_price || p || 0);
+  const ask = Number(ticker.best_ask || ticker.ask || ticker.mark_price || p || 0);
+  const spreadPct = bid && ask ? Math.abs(ask - bid) / p : 0.001;
+  const volume24h = Number(profile?.volume24h || ticker.volume || ticker.turnover_usd || 0);
+  const liquidityScore = Math.max(0, Math.min(15, 15 - (spreadPct * 10000) + Math.min(5, Math.log10(Math.max(1, volume24h)) - 4)));
+  const rr = Number(signal?.dynamicTargetR || settings.tp3TriggerR || 3);
+  const structureQuality = signal?.conditions?.cloudTouch && signal?.conditions?.cloudNotBroken ? 8 : 0;
+  const rewardScore = Math.min(20, (rr >= 3 ? 8 : rr >= 2 ? 5 : 0) + structureQuality + (signal?.invalidationLevel ? 4 : 0));
+  const isNewListing = correlationClusterForSymbol(symbol) === 'New Listings';
+  const bonusScore = Math.min(20, (isNewListing ? 5 : 0) + (volumeRatio >= 2 ? 7 : volumeRatio >= 1.5 ? 4 : 0) + (oiRatio >= 2 ? 6 : oiRatio >= 1.5 ? 3 : 0) + (trendDirOk && momentumRising ? 2 : 0));
+  let penaltyScore = 0;
+  if (spreadPct > 0.002) penaltyScore += 10;
+  if (volumeRatio < 0.75) penaltyScore += 6;
+  if (!signal?.conditions?.smiPullback) penaltyScore += 12;
+  if (!signal?.invalidationLevel) penaltyScore += 8;
+  const finalScore = Math.max(0, Math.min(100, Math.round(trendScore + momentumScore + liquidityScore + rewardScore + bonusScore - penaltyScore)));
+  return { trendScore: Math.round(trendScore), momentumScore: Math.round(momentumScore), liquidityScore: Math.round(liquidityScore), rewardScore: Math.round(rewardScore), bonusScore: Math.round(bonusScore), penaltyScore: Math.round(penaltyScore), finalScore, classification: classifyOpportunityScore(finalScore), volumeRatio: pct(volumeRatio), oiRatio: pct(oiRatio), spreadPct: pct(spreadPct * 100), cluster: correlationClusterForSymbol(symbol) };
+}
+
 function liveWalletNumbers() {
   const summary = state.walletLive?.summary || {};
   const available = pickNumber(summary.availableForRobo, summary.availableBalance, summary.netEquity) || 0;
@@ -905,6 +884,8 @@ function calculateMarginPlan(rowOrProfile, settings, trades = loadTrades(), prod
   const riskPct = priceRiskPct(entry, sl);
   const maxRiskUsd = effectiveRiskCapUsd(settings, botAllocationUsd);
   const target = profitTargetSettings(settings);
+  const scoreForRisk = Number(rowOrProfile.score || rowOrProfile.kdeScore || rowOrProfile.candidate?.opportunityScore || rowOrProfile.candidate?.score || 0);
+  settings = { ...settings, __currentOpportunityScore: scoreForRisk };
 
   let usedLeverage = baseLev;
   if (!opts.addOn && target.autoSizeToTargetProfit && target.targetFullTradeProfitUsd > 0 && target.autoUseMaxLeverageForProfitTarget) {
@@ -1310,11 +1291,7 @@ function confluenceForSide(symbol, direction, candles = [], context = {}, settin
   const details = [];
   function add(name, ok, pts, detail='') { if (ok) score += pts; details.push({ name, pass: Boolean(ok), points: ok ? pts : 0, detail }); }
   add('validLocation', structure.pass, 2, structure.reason);
-<<<<<<< HEAD
   add('ema50_200Trend', htfTrendOk && (ema50Ok || ema200Ok), 3, `KN_FAST=${roundCoin(symbol, emaMid)} KN_SLOW=${roundCoin(symbol, emaDominant)}; MTF EMA50 direction=${htfTrendOk}`);
-=======
-  add('ema50_200Trend', htfTrendOk && (ema50Ok || ema200Ok), 3, `EMA50=${roundCoin(symbol, emaMid)} EMA200=${roundCoin(symbol, emaDominant)}; MTF EMA50 direction=${htfTrendOk}`);
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   add('macd5', macd5Ok, 2, '5m MACD 12/26/9 confirms timing');
   add('macdHtfSoft', macdHtfOk || settings.institutionalRequireHtfMacd === false, 1, settings.institutionalRequireHtfMacd === false ? 'Higher-timeframe MACD is advisory, not a blocker.' : '15m/1h MACD confirms.');
   add('candleTrigger', priceActionOk, 2, 'closed-candle rejection / engulfing / continuation trigger');
@@ -1795,11 +1772,7 @@ function buildMtfSrVolumeContext(symbol, direction, execCandles = [], settings =
   const candles15 = getCachedCandles(symbol, '15m');
   const candles1h = getCachedCandles(symbol, '1h');
   const candles1d = getCachedCandles(symbol, '1d');
-<<<<<<< HEAD
   // V72 rule: 5m, 15m and 1h can each become execution triggers when their own setup is complete.
-=======
-  // V70 rule: higher timeframes are context only, never execution triggers.
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   // Do not fall back to 5m candles for 15m/1h/1d S/R because that hides missing context.
   const sr15 = supportResistanceFromCandles(symbol, candles15, p, a, settings, '15M');
   const sr1h = supportResistanceFromCandles(symbol, candles1h, p, a, settings, '1H');
@@ -2164,7 +2137,6 @@ function calculateInstitutionalEmaMtfLocal(symbol, history, price, atr, settings
   };
 }
 
-<<<<<<< HEAD
 
 function smaSeries(values = [], length = 4) {
   const len = Math.max(1, Math.floor(Number(length || 1)));
@@ -2982,8 +2954,6 @@ function calculateWaveTrendBreakRetestSignal(symbol, history, price, atr, settin
   };
 }
 
-=======
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 function calculateMacdDivergenceMtfLocal(symbol, history, price, atr, settings) {
   const candles5 = getCachedCandles(symbol, '5m');
   const candles15 = getCachedCandles(symbol, '15m');
@@ -4051,6 +4021,8 @@ function technicalStopForDirection(symbol, direction, entry, atr, history, setti
 }
 
 function effectiveRiskCapUsd(settings, botAllocationUsd = 0) {
+  const scoreRisk = riskUsdForScore(settings.__currentOpportunityScore);
+  if (scoreRisk > 0) return scoreRisk;
   const pctRisk = Math.min(Math.max(Number(settings.riskPercent ?? 0.5), 0.05), 5);
   let walletBase = Number(settings.totalWalletAmount || 0);
   if (state.walletLive.status === 'LIVE_WALLET') walletBase = Number(liveWalletNumbers().equity || walletBase || 0);
@@ -4517,11 +4489,7 @@ function generateSignalProfile(symbol, settings) {
   const raw = webhook?.raw || {};
   const atrPreview = candles5.length ? Math.max(atrFromCandles(candles5, Number(settings.atrPeriod || 14)), base * 0.001) : (state.market[symbol]?.atr || base * 0.006);
   const supportResistance = calculateSupportResistanceLocal(symbol, history, price, atrPreview, settings);
-<<<<<<< HEAD
   const macdDivergenceSignal = calculateSmiKnSmartSignal(symbol, history, price, atrPreview, settings);
-=======
-  const macdDivergenceSignal = calculateMacdDivergenceMtfLocal(symbol, history, price, atrPreview, settings);
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   const webhookSarMacd = null;
   const localSarMacd = null;
   const twoPoleSignal = null;
@@ -4532,15 +4500,13 @@ function generateSignalProfile(symbol, settings) {
 
   const expectedTrend = directionToTrend(decision);
   const hasStrategySignal = Boolean(macdDivergenceSignal?.pass && macdDivergenceSignal.entrySide === decision);
-<<<<<<< HEAD
   const strategySignalSource = hasStrategySignal ? 'SMI_KN_PULLBACK_TPSL_LOCAL' : 'NONE';
-=======
-  const strategySignalSource = hasStrategySignal ? 'INSTITUTIONAL_EMA_MACD_MTF_LOCAL' : 'NONE';
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   const webhookTrend = normalizeTrendValue(webhookField(raw, ['htfTrend', 'htf_trend', 'higherTimeframeTrend', 'higher_timeframe_trend', 'trend1h', 'trend_1h', 'marketStructure', 'market_structure']));
   const htfBias = webhookTrend || structure.trend;
   const aligned = decision === 'WAIT' ? 0 : (hasStrategySignal ? 2 : (htfBias === expectedTrend ? 1 : 0));
   const volume24h = numberFrom(liveTicker?.volume) || numberFrom(liveTicker?.turnover_usd) || 0;
+  const openInterest = numberFrom(liveTicker?.oi) || numberFrom(liveTicker?.open_interest) || numberFrom(liveTicker?.open_interest_value) || 0;
+  const openInterestRatio = 1; // Delta ticker-level fallback; historical OI is used when available in future data adapters.
   const volumeBoost = volume24h > 0 ? Math.min(18, Math.log10(Math.max(10, volume24h)) * 2) : Math.abs(volumeSeed) * 18;
   const hasDirection = decision === 'LONG' || decision === 'SHORT';
   const kdeScore = !hasDirection
@@ -4595,15 +4561,9 @@ function generateSignalProfile(symbol, settings) {
   if (hasDirection && settings.vwapModuleEnabled !== false && vwapSignal?.invalidationLevel && (strategySignalSource === 'VWAP_LOCAL' || strategySignalSource === 'TV_VWAP')) {
     technicalStop = vwapStopForDirection(symbol, decision, price, atr, vwapSignal.invalidationLevel, settings) || technicalStop;
   }
-<<<<<<< HEAD
   if (hasDirection && macdDivergenceSignal?.invalidationLevel && strategySignalSource === 'SMI_KN_PULLBACK_TPSL_LOCAL') {
     technicalStop = technicalStopForDirection(symbol, decision, price, atr, history, settings);
     technicalStop = { ...technicalStop, sl: macdDivergenceSignal.invalidationLevel, reason: `KN Smart ATR TP/SL: ${macdDivergenceSignal.reason}` };
-=======
-  if (hasDirection && macdDivergenceSignal?.invalidationLevel && strategySignalSource === 'INSTITUTIONAL_EMA_MACD_MTF_LOCAL') {
-    technicalStop = technicalStopForDirection(symbol, decision, price, atr, history, settings);
-    technicalStop = { ...technicalStop, sl: macdDivergenceSignal.invalidationLevel, reason: `Institutional EMA/MACD pattern SL with ATR buffer: ${macdDivergenceSignal.reason}` };
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   }
 
   state.market[symbol] = { price, prevPrice: previous, atr, relVolume: 1 + Math.abs(volumeSeed), fundingRate, source, macd, structure, supportResistance, macdDivergenceSignal, sarMacdSignal, twoPoleSignal, breakoutSignal, vwapSignal };
@@ -4647,7 +4607,6 @@ function generateSignalProfile(symbol, settings) {
 
 function closedOhlcQualityForExecution(symbol, settings = loadSettings()) {
   const sym = String(symbol || '').toUpperCase();
-<<<<<<< HEAD
   const slowLen = Math.min(Math.max(Math.floor(Number(settings.emaCloudSlowLength || 200)), 51), 500);
   const minExec = Math.max(slowLen + 25, 240);
   const frames = settings.multiHorizonScanEnabled === false ? [normalizeResolution(settings.executionTimeframe || '5m')] : strategyTimeframes(settings);
@@ -4667,41 +4626,13 @@ function closedOhlcQualityForExecution(symbol, settings = loadSettings()) {
     checks
   };
 }
-=======
-  const slowLen = Math.min(Math.max(Math.floor(Number(settings.institutionalEmaSlowPeriod || 200)), 80), 300);
-  const macdSlow = Math.max(26, Math.floor(Number(settings.macdSlowLength || 26)));
-  const macdSignal = Math.max(9, Math.floor(Number(settings.macdSignalLength || 9)));
-  const minExec = Math.max(slowLen + macdSlow + macdSignal + 10, 245);
-  const minHtf = Math.max(slowLen + 10, 210);
-  const minDaily = Math.min(Math.max(Math.floor(Number(settings.minDailyCandlesForContext || 9)), 2), 60);
-  const checks = [
-    { res: '5m', min: minExec, role: 'ENTRY_TRIGGER' },
-    { res: '15m', min: minHtf, role: 'CONTEXT_SR_TREND' },
-    { res: '1h', min: minHtf, role: 'CONTEXT_SR_TREND' },
-    { res: '1d', min: minDaily, role: 'PREVIOUS_DAY_CONTEXT' }
-  ].map(x => {
-    const candles = getCachedCandles(sym, x.res);
-    const count = Array.isArray(candles) ? candles.length : 0;
-    const last = count ? candles[count - 1] : null;
-    const validLast = Boolean(last && Number.isFinite(last.open) && Number.isFinite(last.high) && Number.isFinite(last.low) && Number.isFinite(last.close));
-    return { ...x, count, validLast, pass: count >= x.min && validLast };
-  });
-  const failed = checks.filter(x => !x.pass);
-  return {
-    pass: failed.length === 0,
-    detail: failed.length
-      ? `Blocked: V70 requires Delta closed OHLC before auto-entry. 5m is the only execution trigger; 15m/1h/1d are context. ${failed.map(x => `${x.res}=${x.count}/${x.min}`).join(', ')}. Do not trade synthetic/ticker-only fallback.`
-      : `OK: Delta closed OHLC warmup ready; execution=5m, context=15m/1h/1d (${checks.map(x => `${x.res}=${x.count}`).join(', ')}).`,
-    checks
-  };
-}
-
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 function passFail(profile, settings, wallet, trades) {
   const gates = [];
   const direction = profile.decision;
   const hasDirection = direction === 'LONG' || direction === 'SHORT';
   const oneAssetOpen = activeTradeExists(trades, profile.symbol);
+  const clusterOpen = settings.maxOneTradePerCorrelationCluster !== false && activeClusterExists(trades, profile.symbol);
+  const scorePass = Number(profile.opportunityRanking?.finalScore || profile.kdeScore || 0) >= Number(settings.paperMinScore || 70);
   const equityForRiskGuard = Number(wallet.equity || 0);
   const dailyPnlForRiskGuard = Number(wallet.dailyPnl || 0);
   const dailyLimitBreached = equityForRiskGuard > 0
@@ -4714,9 +4645,9 @@ function passFail(profile, settings, wallet, trades) {
 
   const dataQuality = closedOhlcQualityForExecution(profile.symbol, settings);
   hard('Delta Closed OHLC Data Quality', dataQuality.pass, dataQuality.detail);
+  hard('Opportunity Score >= 70', scorePass, `Score=${profile.opportunityRanking?.finalScore || profile.kdeScore || 0}; class=${profile.opportunityRanking?.classification || '-'}; need 70+.`);
 
   const sig = profile.macdDivergenceSignal || {};
-<<<<<<< HEAD
   const sigModel = String(sig.entryModel || settings.entryModel || 'SMI_EMA_CLOUD_TPSL').toUpperCase();
   const practicalModel = sigModel !== 'STRICT_TRANSCRIPT_DIVERGENCE';
   if (sig.source === 'SMI_KN_PULLBACK_TPSL_LOCAL' || sigModel === 'SMI_KN_PULLBACK_TPSL') {
@@ -4731,12 +4662,13 @@ function passFail(profile, settings, wallet, trades) {
     const signalSlOk = hasDirection && Boolean(sig.invalidationLevel);
     const technicalSlOk = hasDirection && Boolean((profile.technicalStop?.sl && profile.technicalStop?.riskDistance > 0) || signalSlOk);
     hard('KN ATR SL/TP Available', technicalSlOk, profile.technicalStop?.reason || 'KN ATR×1.5 SL with TP1/TP2/TP3 must exist.');
-    hard('Risk Guard', hasDirection && !dailyLimitBreached && !concurrentLimitBreached && !fundingBad && !profile.newsBlackout && !(settings.maxOnePositionPerAsset && oneAssetOpen), [
+    hard('Risk Guard', hasDirection && !dailyLimitBreached && !concurrentLimitBreached && !fundingBad && !profile.newsBlackout && !(settings.maxOnePositionPerAsset && oneAssetOpen) && !clusterOpen, [
       dailyLimitBreached ? 'daily drawdown breached' : '',
       concurrentLimitBreached ? 'max concurrent positions reached' : '',
       fundingBad ? 'funding rate too high' : '',
       profile.newsBlackout ? 'news blackout' : '',
-      settings.maxOnePositionPerAsset && oneAssetOpen ? 'one open position already exists for this asset' : ''
+      settings.maxOnePositionPerAsset && oneAssetOpen ? 'one open position already exists for this asset' : '',
+      clusterOpen ? `cluster already has active trade: ${correlationClusterForSymbol(profile.symbol)}` : ''
     ].filter(Boolean).join('; '));
     soft('SMI Values', hasDirection && Boolean(sig.conditions?.smiDirection), `SMI=${sig.smiValue ?? '-'} Signal=${sig.smiSignal ?? '-'}; pullback/recovery is now a hard gate.`);
     soft('KN Values', hasDirection, `EMA fast=${sig.knFast || sig.emaFast || '-'} EMA slow=${sig.knSlow || sig.emaSlow || '-'} entry=${sig.entry || '-'} TP3=${sig.tp3 || '-'}`);
@@ -4745,10 +4677,6 @@ function passFail(profile, settings, wallet, trades) {
     const passedCount = hardGates.filter(g => g.pass).length;
     return { gates, allPass: hardGates.every(g => g.pass), blockedBy: hardGates.find(g => !g.pass)?.name || null, trendVotes: passedCount, trendVotesRequired: hardGates.length, trendVoteText: `SMI-KN ${passedCount}/${hardGates.length}` };
   }
-=======
-  const sigModel = String(sig.entryModel || settings.entryModel || 'PRACTICAL_MTF_MACD').toUpperCase();
-  const practicalModel = sigModel !== 'STRICT_TRANSCRIPT_DIVERGENCE';
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   hard('V70 Balanced 5M Scalp Strategy Signal', hasDirection && Boolean(sig.pass) && sig.entrySide === direction, sig.reason || 'No valid 5m closed-candle scalp setup yet: MTF EMA50 context + previous day/SR/volume context + memory cloud + side-correct trigger + MACD timing must pass.');
   const inst = sig.institutionalEma || {};
   const instSide = direction === 'LONG' ? inst.long : direction === 'SHORT' ? inst.short : null;
@@ -4791,7 +4719,8 @@ function passFail(profile, settings, wallet, trades) {
     concurrentLimitBreached ? 'max concurrent positions reached' : '',
     fundingBad ? 'funding rate too high' : '',
     profile.newsBlackout ? 'news blackout' : '',
-    settings.maxOnePositionPerAsset && oneAssetOpen ? 'one open position already exists for this asset' : ''
+    settings.maxOnePositionPerAsset && oneAssetOpen ? 'one open position already exists for this asset' : '',
+      clusterOpen ? `cluster already has active trade: ${correlationClusterForSymbol(profile.symbol)}` : ''
   ].filter(Boolean).join('; '));
 
   const hardGates = gates.filter(g => g.hard !== false);
@@ -4802,11 +4731,7 @@ function passFail(profile, settings, wallet, trades) {
     blockedBy: hardGates.find(g => !g.pass)?.name || null,
     trendVotes: passedCount,
     trendVotesRequired: hardGates.length,
-<<<<<<< HEAD
     trendVoteText: `SMI-CLOUD ${passedCount}/${hardGates.length}`
-=======
-    trendVoteText: `INST-EMA-MACD ${passedCount}/${hardGates.length}`
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   };
 }
 
@@ -4835,11 +4760,7 @@ function nextTriggerText(profile, result, candidate, settings) {
   const direction = profile?.decision || 'WAIT';
   const sig = profile?.macdDivergenceSignal || {};
   if (candidate && result?.allPass) return `READY: ${direction} setup passed; ${candidate.entryType === 'PULLBACK_LIMIT' ? 'place pullback limit order' : 'entry ready'} at ${candidate.entry}; SL ${candidate.sl}; TP2 ${candidate.tp2}.`;
-<<<<<<< HEAD
   if (direction === 'WAIT') return sig.reason || 'WAIT: need KN EMA5/12 crossover, valid candle close beyond entry line, acceptable candle size, KN ATR SL/TP levels, and risk sizing on 5m/15m/1h.';
-=======
-  if (direction === 'WAIT') return sig.reason || 'WAIT: need MTF EMA50 direction, Market Memory cloud pullback/match, side-correct price-action trigger, MACD divergence/timing, and SL/TP risk pass.';
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   const failedHard = (result?.gates || []).filter(g => !g.pass && g.hard !== false).map(g => `${g.name}${g.detail ? ` (${g.detail})` : ''}`);
   return failedHard.length ? `WAIT: ${failedHard.slice(0, 3).join(' / ')}` : 'WAIT: setup is not clean enough yet.';
 }
@@ -4863,25 +4784,16 @@ function buildDecisionReason(profile, result, candidate, settings) {
     `TrendVotes=${result?.trendVoteText || '-'}`,
     `Aligned=${profile?.aligned ?? '-'}`,
     `KDE=${profile?.kdeScore ?? '-'}`,
-<<<<<<< HEAD
     `SMIKN=${profile?.macdDivergenceSignal?.pass ? 'PASS' : profile?.macdDivergenceSignal?.ready ? 'WAIT' : 'WARMUP'}`,
     `SignalSource=${profile?.strategySignalSource || (profile?.hasWebhookSignal ? 'TV' : 'NONE')}`,
     `TV=${profile?.hasWebhookSignal ? 'YES' : 'NO'}`,
     `SupportResistance=${profile?.supportResistance?.reason || '-'}`,
     `SMI=${profile?.macdDivergenceSignal?.smiValue ?? '-'} Signal=${profile?.macdDivergenceSignal?.smiSignal ?? '-'}`,
-=======
-    `MACD=${settings?.macdConfirmationEnabled ? (profile?.macd?.pass ? 'PASS' : profile?.macd?.ready ? 'FAIL' : 'WARMUP') : 'OFF'}`,
-    `SignalSource=${profile?.strategySignalSource || (profile?.hasWebhookSignal ? 'TV' : 'NONE')}`,
-    `TV=${profile?.hasWebhookSignal ? 'YES' : 'NO'}`,
-    `SupportResistance=${profile?.supportResistance?.reason || '-'}`,
-    `MTF_SR_VOLUME=${profile?.decision === 'LONG' ? (profile?.macdDivergenceSignal?.institutionalEma?.long?.srVolume?.reason || '-') : profile?.decision === 'SHORT' ? (profile?.macdDivergenceSignal?.institutionalEma?.short?.srVolume?.reason || '-') : '-'}`,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     `Structure=${profile?.marketStructure?.reason || '-'}`,
     `NextAction=${nextTriggerText(profile, result, candidate, settings)}`
   ];
   if (profile?.macdDivergenceSignal) {
     const sig = profile.macdDivergenceSignal;
-<<<<<<< HEAD
     parts.push(`SMI_KN_PULLBACK_SIGNAL=${sig.pass ? 'PASS' : sig.ready ? 'WAIT' : 'WARMUP'} (${sig.entryModel || 'SMI_EMA_CLOUD_TPSL'})`);
     parts.push(`SMI_KN_Reason=${sig.reason || '-'}`);
     parts.push(`SMI=${sig.smiValue ?? '-'} SMISignal=${sig.smiSignal ?? '-'}`);
@@ -4889,29 +4801,11 @@ function buildDecisionReason(profile, result, candidate, settings) {
     if (sig.signalEntry) parts.push(`KNEntryLine=${sig.signalEntry}`);
     if (sig.invalidationLevel) parts.push(`StrategicSL=${sig.invalidationLevel}`);
     if (sig.tp3) parts.push(`StrategicTP3=${sig.tp3}`);
-=======
-    parts.push(`INSTITUTIONAL_EMA_MACD_SIGNAL=${sig.pass ? 'PASS' : sig.ready ? 'WAIT' : 'WARMUP'} (${sig.entryModel || 'PRACTICAL_MTF_MACD'})`);
-    parts.push(`MACD_DIVERGENCE_Reason=${sig.reason || '-'}`);
-    parts.push(`EMA50_15m=${sig.ema15 ?? '-'}`);
-    parts.push(`EMA50_1h=${sig.ema1h ?? '-'}`);
-    parts.push(`EMA13=${sig.ema13 ?? '-'}`);
-    parts.push(`EMA50=${sig.ema50 ?? '-'}`);
-    parts.push(`EMA200=${sig.ema200 ?? '-'}`);
-    if (sig.institutionalEma) parts.push(`InstitutionalEMA=${sig.institutionalEma.pass ? 'PASS' : sig.institutionalEma.ready ? 'WAIT' : 'WARMUP'} ${sig.institutionalEma.reason || '-'}`);
-    parts.push(`MACD_Line=${sig.macdLine ?? '-'}`);
-    parts.push(`MACD_Signal=${sig.macdSignal ?? '-'}`);
-    if (sig.invalidationLevel) parts.push(`StrategicSL=${sig.invalidationLevel}`);
-    if (sig.tp2) parts.push(`StrategicTP=${sig.tp2}`);
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   }
   if (profile?.sarMacdSignal) {
     parts.push(`EMA_SAR_MACD=${profile.sarMacdSignal.pass ? 'PASS' : profile.sarMacdSignal.ready ? 'WAIT' : 'WARMUP'}`);
     parts.push(`EMA_SAR_MACD_Reason=${profile.sarMacdSignal.reason || '-'}`);
-<<<<<<< HEAD
     if (profile.sarMacdSignal.ema) parts.push(`KN_SLOW=${profile.sarMacdSignal.ema}`);
-=======
-    if (profile.sarMacdSignal.ema) parts.push(`EMA200=${profile.sarMacdSignal.ema}`);
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     if (profile.sarMacdSignal.adx !== null && profile.sarMacdSignal.adx !== undefined) parts.push(`ADX=${profile.sarMacdSignal.adx}`);
     if (profile.sarMacdSignal.sar) parts.push(`SAR=${profile.sarMacdSignal.sar}`);
     if (profile.sarMacdSignal.macdHistogram !== null && profile.sarMacdSignal.macdHistogram !== undefined) parts.push(`CM_MACD_Hist=${profile.sarMacdSignal.macdHistogram}`);
@@ -5033,7 +4927,6 @@ function entryFillableNow(direction, marketPrice, entry) {
 }
 
 
-<<<<<<< HEAD
 
 function tradeStyleFromSettings(settings = loadSettings()) {
   const r = normalizeResolution(settings.executionTimeframe || settings.primaryTimeframe || '5m');
@@ -5067,25 +4960,6 @@ function continuationTargetRForTrade(trade, row, settings) {
   const sameSideIntra = frames.find(x => x && x.pass && x.entrySide === trade.side && tradeStyleForResolution(x.timeframe) === 'INTRA');
   if (sameSideIntra) return Number(settings.scalpToIntradayTargetR || 2.5);
   return Number(settings.rewardTargetR || 1.5);
-=======
-function tradeStyleFromSettings(settings = loadSettings()) {
-  const r = normalizeResolution(settings.executionTimeframe || settings.primaryTimeframe || '5m');
-  if (['1m','3m','5m'].includes(r)) return 'SCALP';
-  if (['15m','30m','1h'].includes(r)) return 'INTRA';
-  return 'SWING';
-}
-
-function dynamicTpContinuationStrong(row, trade, settings) {
-  if (settings.dynamicTpEnabled === false) return false;
-  if (!row || !trade || row.dec !== trade.side) return false;
-  const sig = row.macdDivergenceSignal || {};
-  const inst = sig.institutionalEma || {};
-  const instSide = trade.side === 'LONG' ? inst.long : inst.short;
-  const hist = Number(sig.macdHistogram ?? row.macd?.histogram ?? 0);
-  const prev = Number(sig.macdPreviousHistogram ?? row.macd?.previousHistogram ?? 0);
-  const macdStillStrong = trade.side === 'LONG' ? hist > 0 && hist >= prev : hist < 0 && hist <= prev;
-  return Boolean(row.pass && instSide?.strongMacd && macdStillStrong);
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 }
 
 function currentTargetRForTrade(trade, targetName = 'tp2') {
@@ -5129,11 +5003,7 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   const pullbackPlan = settings.entryOrderType !== 'market' && settings.requirePullbackForExecution === true
     ? nearestPullbackEntry(profile, direction, settings)
     : null;
-<<<<<<< HEAD
   const entry = pullbackPlan?.entry || Number(profile.macdDivergenceSignal?.entry || 0) || currentPrice;
-=======
-  const entry = pullbackPlan?.entry || currentPrice;
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   const stopPlan = settings.technicalSlEnabled !== false && profile.technicalStop?.sl
     ? profile.technicalStop
     : technicalStopForDirection(profile.symbol, direction, entry, profile.atr, state.priceHistory[profile.symbol] || [], settings);
@@ -5143,7 +5013,6 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   const isBreakoutEntry = false;
   const isVwapEntry = false;
   const isSarMacdEntry = false;
-<<<<<<< HEAD
   const isMacdDivergenceEntry = profile.strategySignalSource === 'SMI_KN_PULLBACK_TPSL_LOCAL';
   const tradeStyle = profile.macdDivergenceSignal?.selectedHorizon || profile.macdDivergenceSignal?.tradeStyle || tradeStyleFromSettings(settings);
   const sizing = highProbabilitySizing(profile, settings);
@@ -5152,15 +5021,6 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   let rewardR = Math.min(Math.max(Number(settings.tp3TriggerR || settings.rewardTargetR || 2.5), tp2R), 6);
   let tp1 = direction === 'LONG' ? entry + riskDistance * tp1R : entry - riskDistance * tp1R;
   let tp2 = direction === 'LONG' ? entry + riskDistance * tp2R : entry - riskDistance * tp2R;
-=======
-  const isMacdDivergenceEntry = profile.strategySignalSource === 'INSTITUTIONAL_EMA_MACD_MTF_LOCAL';
-  const tradeStyle = tradeStyleFromSettings(settings);
-  const sizing = highProbabilitySizing(profile, settings);
-  const tp1R = Math.min(Math.max(Number(settings.tp1TriggerR || 1.5), 1), 5);
-  let tp1 = direction === 'LONG' ? entry + riskDistance * tp1R : entry - riskDistance * tp1R;
-  let tp2 = direction === 'LONG' ? entry + riskDistance * 2 : entry - riskDistance * 2;
-  let rewardR = 2;
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   let tp3 = direction === 'LONG' ? entry + riskDistance * rewardR : entry - riskDistance * rewardR;
   if (isVwapEntry && profile.vwapSignal) {
     if (Number(profile.vwapSignal.tp1)) tp1 = Number(profile.vwapSignal.tp1);
@@ -5172,22 +5032,14 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   if (isMacdDivergenceEntry && profile.macdDivergenceSignal) {
     if (Number(profile.macdDivergenceSignal.tp1)) tp1 = Number(profile.macdDivergenceSignal.tp1);
     if (Number(profile.macdDivergenceSignal.tp2)) tp2 = Number(profile.macdDivergenceSignal.tp2);
-<<<<<<< HEAD
     if (Number(profile.macdDivergenceSignal.tp3)) tp3 = Number(profile.macdDivergenceSignal.tp3);
     rewardR = Number(profile.macdDivergenceSignal.dynamicTargetR || settings.rewardTargetR || 2.5);
-=======
-    rewardR = Number(profile.macdDivergenceSignal.dynamicTargetR || settings.rewardTargetR || 2);
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     const activeConf = direction === 'LONG' ? profile.macdDivergenceSignal.institutionalEma?.long?.confluence : profile.macdDivergenceSignal.institutionalEma?.short?.confluence;
     if (settings.dynamicTpEnabled !== false && Number(activeConf?.score || 0) >= Number(settings.aPlusConfluenceScore || 10)) {
       rewardR = Math.min(Math.max(rewardR, Number(settings.dynamicTpStrongR || 3.5)), Number(settings.dynamicTpMaxR || 6));
       tp2 = direction === 'LONG' ? entry + riskDistance * rewardR : entry - riskDistance * rewardR;
     }
-<<<<<<< HEAD
     if (!Number(profile.macdDivergenceSignal.tp3)) tp3 = direction === 'LONG' ? entry + riskDistance * rewardR : entry - riskDistance * rewardR;
-=======
-    tp3 = tp2;
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   }
   const base = {
     entry: roundCoin(profile.symbol, entry),
@@ -5204,15 +5056,10 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
     tp1R,
     sizingMultiplier: sizing.multiplier,
     sizingReason: sizing.reason,
-<<<<<<< HEAD
     exitPlan: 'SMI + KN Smart TP/SL multi-horizon plan: 5m scalp, 15m intraday, and 1h swing are scanned. KN EMA5/12 creates the signal; candle confirmation opens the trade; SL=ATR×1.5; TP1=1R, TP2=2R, TP3=3R; SL moves to entry after TP1.',
     tradeStyle,
     signalTimeframe: profile.macdDivergenceSignal?.selectedTimeframe || profile.macdDivergenceSignal?.timeframe || settings.executionTimeframe || '5m',
     selectedHorizon: profile.macdDivergenceSignal?.selectedHorizon || profile.macdDivergenceSignal?.tradeStyle || tradeStyle,
-=======
-    exitPlan: 'Confluence + structure + execution plan: one valid location, EMA50/200 trend, Market Memory similar-history pullback, MACD timing and closed-candle rejection. SL stays beyond invalidation/cloud/swing with ATR buffer; sizing reduces if SL is wide. TP1 partial at 1R; TP2 extends only when confluence and momentum remain strong.',
-    tradeStyle,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     confluenceScore: (direction === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence?.score : profile.macdDivergenceSignal?.institutionalEma?.short?.confluence?.score) || 0,
     confluence: direction === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence : profile.macdDivergenceSignal?.institutionalEma?.short?.confluence,
     entryType: pullbackPlan ? 'PULLBACK_LIMIT' : (settings.entryOrderType === 'market' ? 'MARKET_OR_IMMEDIATE' : 'IMMEDIATE_LIMIT'),
@@ -5255,7 +5102,12 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
 
 function evaluateSymbol(symbol, settings, wallet, trades) {
   const profile = generateSignalProfile(symbol, settings);
+  const ranking = bot11RankingBreakdown(symbol, profile, profile.macdDivergenceSignal || {}, settings);
+  profile.kdeScore = ranking.finalScore;
+  profile.opportunityRanking = ranking;
+  profile.cluster = ranking.cluster;
   const candidate = buildTradeCandidate(profile, settings, wallet, trades);
+  if (candidate) { candidate.opportunityScore = ranking.finalScore; candidate.score = ranking.finalScore; candidate.cluster = ranking.cluster; candidate.riskAmountUsd = riskUsdForScore(ranking.finalScore); }
   const result = passFail(profile, settings, wallet, trades);
   if (candidate?.marginPlan) {
     const sizingPass = Boolean(candidate.marginPlan.allowed);
@@ -5278,7 +5130,10 @@ function evaluateSymbol(symbol, settings, wallet, trades) {
     support: profile.supportResistance?.support || '-',
     resistance: profile.supportResistance?.resistance || '-',
     nextTrigger: nextTriggerText(profile, result, candidate, settings),
-    score: profile.decision === 'WAIT' ? Math.min(profile.kdeScore, 45) : (!settings.macdConfirmationEnabled || profile.macd?.pass ? profile.kdeScore : Math.min(profile.kdeScore, 70)),
+    score: profile.opportunityRanking?.finalScore || profile.kdeScore || 0,
+    classification: profile.opportunityRanking?.classification || classifyOpportunityScore(profile.kdeScore),
+    cluster: profile.cluster || correlationClusterForSymbol(symbol),
+    ranking: profile.opportunityRanking,
     q,
     en: displayPlanValue(candidate ? candidate.entry : '-', 'NO ENTRY'),
     sl: displayPlanValue(candidate ? candidate.sl : '-', 'NO SL'),
@@ -5602,8 +5457,9 @@ async function runScanAsync({ autoExecute = false, forceDelta = false } = {}) {
     const localTrades = loadTrades();
     const paperWallet = loadWallet();
     const wallet = effectiveWallet(settings, paperWallet);
-    const usingLiveAccount = liveReady(settings, loadKeys());
-    const liveModeRequested = !settings.paperTrade;
+    const paperOnlyLiveData = settings.liveDataPaperTradingOnly !== false;
+    const usingLiveAccount = paperOnlyLiveData ? false : liveReady(settings, loadKeys());
+    const liveModeRequested = !settings.paperTrade && !paperOnlyLiveData;
     const trades = usingLiveAccount ? authoritativeTrades(settings, localTrades) : localTrades;
     refreshOpenTradePrices(trades);
     await processTradeManagement(payload.rows, settings, trades, wallet, { live: usingLiveAccount });
@@ -5873,11 +5729,7 @@ async function processTradeManagement(rows, settings, trades, wallet, opts = {})
       if (emaTrail && moveTradeStop(trade, emaTrail, 'EMA13 continuation trail')) ms.lastEmaTrail = trade.sl;
       if (!trade.tp1Done && (Number(trade.estimatedFullTradeProfitUsd || 0) >= Number(settings.targetFullTradeProfitUsd || 5) || Number(settings.targetFullTradeProfitUsd || 0) >= 5)) {
         const nextTp1R = Math.min(Math.max(Number(settings.dynamicTp1ShiftR || 1.5), Number(settings.tp1TriggerR || 1)), Math.max(1, Number(settings.dynamicTpStrongR || 3) - 0.25));
-<<<<<<< HEAD
         if (moveTargetIfBetter(trade, 'tp1', targetRPrice(trade, nextTp1R), `Multi-horizon continuation TP1 shift to ${nextTp1R}R`)) ms.tp1ShiftedR = nextTp1R;
-=======
-        if (moveTargetIfBetter(trade, 'tp1', targetRPrice(trade, nextTp1R), `Strong MACD continuation TP1 shift to ${nextTp1R}R`)) ms.tp1ShiftedR = nextTp1R;
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
       }
     }
 
@@ -5886,11 +5738,7 @@ async function processTradeManagement(rows, settings, trades, wallet, opts = {})
       let closePct = Math.min(Math.max(Number(settings.tp1ClosePct || 50), 1), 90);
       if (dynamicTpContinuationStrong(row, trade, settings)) {
         closePct = Math.min(closePct, Math.min(Math.max(Number(settings.dynamicTp1StrongClosePct || 25), 1), 75));
-<<<<<<< HEAD
         pushManagementEvent(trade, `Multi-horizon continuation: TP1 partial reduced to ${closePct}% so remaining size can run`);
-=======
-        pushManagementEvent(trade, `Strong MACD continuation: TP1 partial reduced to ${closePct}% so remaining size can run`);
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
       }
       if (opts.live && trade.mode === 'live') {
         try {
@@ -5926,13 +5774,8 @@ async function processTradeManagement(rows, settings, trades, wallet, opts = {})
       const currentTp2R = currentTargetRForTrade(trade, 'tp2') || 2;
       const maxDynamicR = Math.min(Math.max(Number(settings.dynamicTpMaxR || 5), 2), 8);
       if (dynamicTpContinuationStrong(row, trade, settings) && currentTp2R < maxDynamicR - 0.01) {
-<<<<<<< HEAD
         const nextR = Math.min(maxDynamicR, Math.max(currentTp2R + 1, continuationTargetRForTrade(trade, row, settings)));
         if (moveTargetIfBetter(trade, 'tp2', targetRPrice(trade, nextR), `Multi-horizon continuation TP2 extension to ${nextR}R`)) {
-=======
-        const nextR = Math.min(maxDynamicR, Math.max(currentTp2R + 1, Number(settings.dynamicTpStrongR || 3)));
-        if (moveTargetIfBetter(trade, 'tp2', targetRPrice(trade, nextR), `Strong MACD continuation TP2 extension to ${nextR}R`)) {
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
           ms.tp2ExtendedR = nextR;
           continue;
         }
@@ -6096,13 +5939,9 @@ function buildTradeRecord(row, settings, mode) {
     id,
     coin: row.coin,
     side: row.dec,
-<<<<<<< HEAD
     tradeStyle: row.candidate.tradeStyle || row.candidate.selectedHorizon || row.tradeStyle || tradeStyleFromSettings(settings),
     signalTimeframe: row.candidate.signalTimeframe || row.macdDivergenceSignal?.selectedTimeframe || '5m',
     selectedHorizon: row.candidate.selectedHorizon || row.candidate.tradeStyle || row.macdDivergenceSignal?.selectedHorizon || row.tradeStyle || tradeStyleFromSettings(settings),
-=======
-    tradeStyle: row.candidate.tradeStyle || row.tradeStyle || tradeStyleFromSettings(settings),
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     initialEntry: row.candidate.entry,
     entry: row.candidate.entry,
     price: row.price,
@@ -6147,13 +5986,8 @@ function buildTradeRecord(row, settings, mode) {
     addOns: [],
     managementEvents: [],
     openedAt: new Date().toISOString(),
-<<<<<<< HEAD
     signalClosedCandleTime: getCachedCandles(row.coin, row.candidate.signalTimeframe || '5m').at(-1)?.time || null,
     pendingCreatedCandleTime: row.candidate.entryType === 'PULLBACK_LIMIT' ? (getCachedCandles(row.coin, row.candidate.signalTimeframe || '5m').at(-1)?.time || null) : null,
-=======
-    signalClosedCandleTime: getCachedCandles(row.coin, '5m').at(-1)?.time || null,
-    pendingCreatedCandleTime: row.candidate.entryType === 'PULLBACK_LIMIT' ? (getCachedCandles(row.coin, '5m').at(-1)?.time || null) : null,
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     rr: row.candidate.rr,
     score: row.score,
     entryReason: [row.entryReason || row.whyReason || row.blockedBy || row.candidate.slReason || 'Entry conditions passed', row.candidate.entryReasonExtra].filter(Boolean).join(' | '),
@@ -6985,17 +6819,10 @@ function validateSettingsPatch(patch) {
     'maxLeverage', 'maxConcurrentPositions', 'maxBotAllocationUsd', 'liveWalletAllocationPct', 'liveMaxBotAllocationUsd', 'maxMarginPerCoinUsd', 'majorCoinMaxMarginUsd',
     'initialMarginUsd', 'majorInitialMarginUsd', 'maxStopLossUsd', 'minEntryMarginUsd', 'addOnStepMarginUsd',
     'majorAddOnStepMarginUsd', 'maxAddOnsPerCoin', 'profitAddOnTriggerR', 'profitAddOnSizePct', 'profitAddOnMinScore',
-<<<<<<< HEAD
     'breakEvenTriggerR', 'breakEvenBufferR', 'tp1TriggerR', 'tp2TriggerR', 'tp3TriggerR', 'institutionalEmaFastPeriod', 'institutionalEmaMidPeriod', 'institutionalEmaSlowPeriod', 'institutionalPullbackLookback', 'institutionalPullbackAtrMult', 'institutionalMaxExtensionAtr', 'institutionalPatternLookback', 'dynamicTpStrongR', 'dynamicTpMaxR', 'dynamicTp1ShiftR', 'dynamicTp1StrongClosePct', 'trailingStopEmaPeriod', 'trailingStopAtrBuffer', 'qualitySizeScore1', 'qualitySizeMultiplier1', 'qualitySizeScore2', 'qualitySizeMultiplier2', 'maxQualitySizeMultiplier',
     'dailyDrawdownLimitPct', 'weeklyDrawdownLimitPct', 'monthlyDrawdownLimitPct',
     'maxFundingRatePct8h', 'extremeFundingRatePct8h', 'newsBlackoutBeforeMin', 'newsBlackoutAfterMin', 'minRR', 'autoScanSeconds',
     'marketDataRefreshSeconds', 'liveOrderSize', 'macdFastLength', 'macdSlowLength', 'macdSignalLength', 'mtfEmaPeriod', 'minEmaGapPct', 'divergencePivotLeft', 'divergencePivotRight', 'divergenceLookback', 'minDivergenceMacdPct', 'entrySignalWindowCandles', 'histColorLookback', 'tradingViewSignalFreshnessSeconds', 'sarMacdEmaPeriod', 'sarMacdSarStep', 'sarMacdSarMax', 'sarMacdAdxThreshold', 'sarMacdPullbackLookback', 'sarMacdMaxDistanceAtr', 'sarMacdSwingLookback', 'sarMacdEmaStopBufferAtr', 'twoPoleFilterLength', 'twoPoleBuyMaxLevel', 'twoPoleSellMinLevel', 'twoPoleDeltaVolumeThresholdPct', 'breakoutLookback', 'breakoutConsolidationLookback', 'breakoutMaxRangeAtrMult', 'breakoutMomentumBodyAtrMult', 'breakoutSlBufferAtrMult', 'breakoutTp1R', 'chandelierLength', 'chandelierAtrMult', 'totalWalletAmount', 'maxTradesPerDay', 'maxDailyLossUsd', 'maxConsecutiveLosses', 'paperMinScore', 'adrUsedLimitPct', 'timeFailureCandles', 'pendingExpiryMinutes', 'minSlAtrMult', 'minTrendQuality', 'moveSlAfterTp1MinR', 'moveSlAfterTp1MinAge', 'rewardTargetR', 'targetFullTradeProfitUsd', 'minFullTradeProfitUsd', 'targetProfitUsd', 'minTargetProfitUsd', 'slSwingLookback', 'slBufferAtrMult', 'maxTechnicalSlAtrMult', 'pullbackAtrMult', 'pullbackMaxAtrMult', 'tp1ClosePct', 'tp2ClosePct', 'tp3ClosePct', 'waveTrendChannelLength', 'waveTrendAverageLength', 'waveTrendSignalLength', 'waveTrendReversionThreshold', 'waveTrendSetupWindowCandles', 'breakRetestPivotLookback', 'breakRetestMinBarsAfterBreak', 'breakRetestEntryWindowCandles', 'breakRetestToleranceAtrMult', 'breakRetestTolerancePct', 'breakRetestLevelSearchCount', 'breakRetestLevelMaxAgeCandles', 'ma1Length', 'trendMaToleranceAtrMult', 'horizonUpgradeMinR', 'scalpToIntradayTargetR', 'intradayToSwingTargetR', 'smiPercentKLength', 'smiPercentDLength', 'smiSignalLength', 'smiSmoothingPeriod', 'smiOverbought', 'smiOversold', 'smiPullbackWindowCandles', 'smiRecoveryLookbackCandles', 'emaCloudFastLength', 'emaCloudSlowLength', 'cloudTouchToleranceAtrMult', 'cloudBreakToleranceAtrMult', 'knFastEmaLength', 'knSlowEmaLength', 'knAtrPeriod', 'knSlAtrMultiplier', 'knSignalLookbackCandles', 'knEntryConfirmLookbackCandles', 'knMaxEntryCandleAtrMult', 'knMaxEntryCandlePct'
-=======
-    'breakEvenTriggerR', 'breakEvenBufferR', 'tp1TriggerR', 'institutionalEmaFastPeriod', 'institutionalEmaMidPeriod', 'institutionalEmaSlowPeriod', 'institutionalPullbackLookback', 'institutionalPullbackAtrMult', 'institutionalMaxExtensionAtr', 'institutionalPatternLookback', 'dynamicTpStrongR', 'dynamicTpMaxR', 'dynamicTp1ShiftR', 'dynamicTp1StrongClosePct', 'trailingStopEmaPeriod', 'trailingStopAtrBuffer', 'qualitySizeScore1', 'qualitySizeMultiplier1', 'qualitySizeScore2', 'qualitySizeMultiplier2', 'maxQualitySizeMultiplier',
-    'dailyDrawdownLimitPct', 'weeklyDrawdownLimitPct', 'monthlyDrawdownLimitPct',
-    'maxFundingRatePct8h', 'extremeFundingRatePct8h', 'newsBlackoutBeforeMin', 'newsBlackoutAfterMin', 'minRR', 'autoScanSeconds',
-    'marketDataRefreshSeconds', 'liveOrderSize', 'macdFastLength', 'macdSlowLength', 'macdSignalLength', 'mtfEmaPeriod', 'minEmaGapPct', 'divergencePivotLeft', 'divergencePivotRight', 'divergenceLookback', 'minDivergenceMacdPct', 'entrySignalWindowCandles', 'histColorLookback', 'tradingViewSignalFreshnessSeconds', 'sarMacdEmaPeriod', 'sarMacdSarStep', 'sarMacdSarMax', 'sarMacdAdxThreshold', 'sarMacdPullbackLookback', 'sarMacdMaxDistanceAtr', 'sarMacdSwingLookback', 'sarMacdEmaStopBufferAtr', 'twoPoleFilterLength', 'twoPoleBuyMaxLevel', 'twoPoleSellMinLevel', 'twoPoleDeltaVolumeThresholdPct', 'breakoutLookback', 'breakoutConsolidationLookback', 'breakoutMaxRangeAtrMult', 'breakoutMomentumBodyAtrMult', 'breakoutSlBufferAtrMult', 'breakoutTp1R', 'chandelierLength', 'chandelierAtrMult', 'totalWalletAmount', 'maxTradesPerDay', 'maxDailyLossUsd', 'maxConsecutiveLosses', 'paperMinScore', 'adrUsedLimitPct', 'timeFailureCandles', 'pendingExpiryMinutes', 'minSlAtrMult', 'minTrendQuality', 'moveSlAfterTp1MinR', 'moveSlAfterTp1MinAge', 'rewardTargetR', 'targetFullTradeProfitUsd', 'minFullTradeProfitUsd', 'targetProfitUsd', 'minTargetProfitUsd', 'slSwingLookback', 'slBufferAtrMult', 'maxTechnicalSlAtrMult', 'pullbackAtrMult', 'pullbackMaxAtrMult', 'tp1ClosePct', 'tp2ClosePct', 'tp3ClosePct'
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   ];
   for (const field of numericFields) {
     if (Object.prototype.hasOwnProperty.call(patch, field)) {
@@ -7009,12 +6836,9 @@ function validateSettingsPatch(patch) {
   if (typeof patch.signalSource === 'string') out.signalSource = patch.signalSource.trim() || DEFAULT_SETTINGS.signalSource;
   if (typeof patch.entryModel === 'string') out.entryModel = patch.entryModel.trim().toUpperCase();
   if (typeof patch.zeroLineMode === 'string') out.zeroLineMode = patch.zeroLineMode.trim().toLowerCase();
-<<<<<<< HEAD
   if (typeof patch.ma1Type === 'string') out.ma1Type = patch.ma1Type.trim().toUpperCase() === 'EMA' ? 'EMA' : 'SMA';
   if (typeof patch.trendMaType === 'string') out.trendMaType = patch.trendMaType.trim().toUpperCase() === 'EMA' ? 'EMA' : 'SMA';
   if (typeof patch.ma1VisualColor === 'string' && /^#[0-9a-fA-F]{6}$/.test(patch.ma1VisualColor.trim())) out.ma1VisualColor = patch.ma1VisualColor.trim();
-=======
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   if (typeof patch.requireDivergenceForEntry === 'boolean') out.requireDivergenceForEntry = patch.requireDivergenceForEntry;
   if (typeof patch.institutionalEmaEnabled === 'boolean') out.institutionalEmaEnabled = patch.institutionalEmaEnabled;
   if (typeof patch.institutionalRequireEmaStack === 'boolean') out.institutionalRequireEmaStack = patch.institutionalRequireEmaStack;
@@ -7037,7 +6861,6 @@ function validateSettingsPatch(patch) {
   if (typeof patch.chandelierTradeManagementEnabled === 'boolean') out.chandelierTradeManagementEnabled = patch.chandelierTradeManagementEnabled;
   if (typeof patch.liveAddOnsEnabled === 'boolean') out.liveAddOnsEnabled = patch.liveAddOnsEnabled;
   if (typeof patch.macdConfirmationEnabled === 'boolean') out.macdConfirmationEnabled = patch.macdConfirmationEnabled;
-<<<<<<< HEAD
   if (typeof patch.waveTrendPracticalRecovery === 'boolean') out.waveTrendPracticalRecovery = patch.waveTrendPracticalRecovery;
   if (typeof patch.multiHorizonScanEnabled === 'boolean') out.multiHorizonScanEnabled = patch.multiHorizonScanEnabled;
   if (typeof patch.horizonUpgradeEnabled === 'boolean') out.horizonUpgradeEnabled = patch.horizonUpgradeEnabled;
@@ -7046,8 +6869,6 @@ function validateSettingsPatch(patch) {
   if (typeof patch.requireSmiCandleColor === 'boolean') out.requireSmiCandleColor = patch.requireSmiCandleColor;
   if (typeof patch.knRequireSmiDirection === 'boolean') out.knRequireSmiDirection = patch.knRequireSmiDirection;
   if (Array.isArray(patch.strategyTimeframes)) out.strategyTimeframes = patch.strategyTimeframes.map(normalizeResolution).filter(r => ['5m','15m','30m','1h','2h','4h'].includes(r));
-=======
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   if (typeof patch.sarMacdModuleEnabled === 'boolean') out.sarMacdModuleEnabled = patch.sarMacdModuleEnabled;
   if (typeof patch.sarMacdAllowLocalEntry === 'boolean') out.sarMacdAllowLocalEntry = patch.sarMacdAllowLocalEntry;
   if (typeof patch.sarMacdBlockLateMomentum === 'boolean') out.sarMacdBlockLateMomentum = patch.sarMacdBlockLateMomentum;
@@ -7233,7 +7054,6 @@ function validateSettingsPatch(patch) {
   out.breakoutModuleEnabled = typeof out.breakoutModuleEnabled === 'boolean' ? out.breakoutModuleEnabled : DEFAULT_SETTINGS.breakoutModuleEnabled;
   out.breakoutAllowLocalEntry = typeof out.breakoutAllowLocalEntry === 'boolean' ? out.breakoutAllowLocalEntry : DEFAULT_SETTINGS.breakoutAllowLocalEntry;
   out.breakoutUseChandelierTrail = typeof out.breakoutUseChandelierTrail === 'boolean' ? out.breakoutUseChandelierTrail : DEFAULT_SETTINGS.breakoutUseChandelierTrail;
-<<<<<<< HEAD
   // V77 execution-mode controls. Keep strategy focused: SMI + KN Smart TP/SL with chart-marked Entry/SL/TP.
   out.entryModel = 'SMI_KN_PULLBACK_TPSL';
   out.requireDivergenceForEntry = false;
@@ -7274,21 +7094,10 @@ function validateSettingsPatch(patch) {
   out.horizonUpgradeMinR = Math.min(Math.max(Number(out.horizonUpgradeMinR ?? DEFAULT_SETTINGS.horizonUpgradeMinR), 0.5), 3);
   out.scalpToIntradayTargetR = Math.min(Math.max(Number(out.scalpToIntradayTargetR ?? DEFAULT_SETTINGS.scalpToIntradayTargetR), 1.5), 6);
   out.intradayToSwingTargetR = Math.min(Math.max(Number(out.intradayToSwingTargetR ?? DEFAULT_SETTINGS.intradayToSwingTargetR), 2), 8);
-=======
-  // V56 execution-mode controls. Practical mode matches manual entries: MTF EMA + MACD crossover + histogram change.
-  // Strict mode keeps the transcript divergence + zero-line rules as hard blockers. Pullback limit is an execution layer.
-  out.entryModel = String(out.entryModel || DEFAULT_SETTINGS.entryModel).toUpperCase() === 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'STRICT_TRANSCRIPT_DIVERGENCE' : 'PRACTICAL_MTF_MACD';
-  out.requireDivergenceForEntry = out.entryModel === 'STRICT_TRANSCRIPT_DIVERGENCE' ? true : false;
-  out.zeroLineMode = out.entryModel === 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'hard' : 'soft';
-  out.entrySignalWindowCandles = Math.min(Math.max(Math.floor(Number(out.entrySignalWindowCandles || DEFAULT_SETTINGS.entrySignalWindowCandles || 3)), 1), 12);
-  out.histColorLookback = Math.min(Math.max(Math.floor(Number(out.histColorLookback || DEFAULT_SETTINGS.histColorLookback || 6)), 2), 30);
-  // Hard lock the cleaned build to the requested strategy and 5m execution.
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   out.primaryTimeframe = '5m';
   out.executionTimeframe = '5m';
   out.emaFastTimeframe = '15m';
   out.emaSlowTimeframe = '1h';
-<<<<<<< HEAD
   out.macdTrendTimeframe = '1h';
   out.higherTimeframes = ['15m', '1h'];
   out.htfMinimumAligned = 1;
@@ -7308,11 +7117,6 @@ function validateSettingsPatch(patch) {
   out.require5mVolumeFlow = false;
   out.dynamicTpEnabled = true;
   out.macdConfirmationEnabled = false;
-=======
-  out.macdTrendTimeframe = '5m';
-  out.higherTimeframes = ['15m', '1h', '1d'];
-  out.htfMinimumAligned = 1;
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   out.twoPoleModuleEnabled = false;
   out.twoPoleAllowLocalEntry = false;
   out.breakoutModuleEnabled = false;
@@ -7321,7 +7125,6 @@ function validateSettingsPatch(patch) {
   out.vwapAllowLocalEntry = false;
   out.sarMacdModuleEnabled = false;
   out.sarMacdAllowLocalEntry = false;
-<<<<<<< HEAD
   out.emaPeriod = out.emaCloudFastLength;
   out.mtfEmaPeriod = out.emaCloudFastLength;
   out.trendEmaPeriod = out.emaCloudFastLength;
@@ -7336,18 +7139,8 @@ function validateSettingsPatch(patch) {
   out.entryOrderType = 'limit';
   out.signalSource = 'v77_smi_kn_smart_tpsl_chart_marks';
   out.strategyMode = 'V77_SMI_KN_PULLBACK_TPSL_CHART_MARKS';
-=======
-  out.emaPeriod = Math.min(Math.max(Math.floor(Number(out.mtfEmaPeriod || out.emaPeriod || 50)), 5), 200);
-  out.mtfEmaPeriod = out.emaPeriod;
-  out.pullbackAtrMult = Math.min(Math.max(Number(out.pullbackAtrMult ?? DEFAULT_SETTINGS.pullbackAtrMult ?? 0.20), 0.02), 1.5);
-  out.pullbackMaxAtrMult = Math.min(Math.max(Number(out.pullbackMaxAtrMult ?? DEFAULT_SETTINGS.pullbackMaxAtrMult ?? 1.50), 0.2), 5);
-  out.requirePullbackForExecution = typeof out.requirePullbackForExecution === 'boolean' ? out.requirePullbackForExecution : DEFAULT_SETTINGS.requirePullbackForExecution;
-  out.allowMarketWhenNoPullback = typeof out.allowMarketWhenNoPullback === 'boolean' ? out.allowMarketWhenNoPullback : DEFAULT_SETTINGS.allowMarketWhenNoPullback;
-  out.entryOrderType = out.entryOrderType === 'market' && out.allowMarketWhenNoPullback ? 'market' : 'limit';
-  out.signalSource = 'v70_balanced_5m_scalp_mtf_sr_volume_memory_cloud';
-  out.strategyMode = 'V70_BALANCED_5M_SCALP_MTF_SR_VOLUME';
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
-  out.paperTrade = typeof out.paperTrade === 'boolean' ? out.paperTrade : true;
+  out.liveDataPaperTradingOnly = out.liveDataPaperTradingOnly !== false;
+  out.paperTrade = out.liveDataPaperTradingOnly ? true : (typeof out.paperTrade === 'boolean' ? out.paperTrade : true);
   out.liveAddOnsEnabled = false;
   out.exchange = 'delta_exchange_india';
   out.executionApi = 'delta_exchange_india';
@@ -7520,16 +7313,10 @@ async function saveWebhookSignal(body, settings) {
 }
 
 
-<<<<<<< HEAD
 function latestClosedChartSignal(symbol, candles, settings, resolution = '5m') {
   const closes = candles.map(c => c.close).filter(n => Number.isFinite(n) && n > 0);
   const res = normalizeResolution(resolution);
   const signal = calculateSmiKnSmartSignalForResolution(symbol, res, closes[closes.length - 1], atrFromCandles(candles, Number(settings.knAtrPeriod || settings.atrPeriod || 14)), settings);
-=======
-function latestClosedChartSignal(symbol, candles, settings) {
-  const closes = candles.map(c => c.close).filter(n => Number.isFinite(n) && n > 0);
-  const signal = calculateMacdDivergenceMtfLocal(symbol, closes, closes[closes.length - 1], atrFromCandles(candles, Number(settings.atrPeriod || 14)), settings);
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   return signal;
 }
 
@@ -7546,7 +7333,6 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
   const visualFullCandles = visual.candles;
   const candles = visualFullCandles.slice(-(visual.usesLivePreview ? 181 : 180));
 
-<<<<<<< HEAD
   const execSliceStart = Math.max(0, visualFullCandles.length - candles.length);
   const knFull = knSmartFromCandles(visualFullCandles, settings);
   const emaFast = (knFull.fast || []).slice(execSliceStart);
@@ -7597,46 +7383,6 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
   const signal = latestClosedChartSignal(sym, fullClosedCandles, settings, res);
   const currentPrice = Number(visual.livePrice || candles.at(-1)?.close || state.market[sym]?.price || BASE_PRICE[sym] || 0);
   const side = signal?.pass ? signal.entrySide : (signal?.short?.signalIndex !== null ? 'SHORT' : 'LONG');
-=======
-  let ema15Closed = getCachedCandles(sym, '15m');
-  let ema1hClosed = getCachedCandles(sym, '1h');
-  if (!ema15Closed.length) ema15Closed = syntheticChartCandlesFromHistory(sym, '15m');
-  if (!ema1hClosed.length) ema1hClosed = syntheticChartCandlesFromHistory(sym, '1h');
-  const ema15Visual = livePreviewCandles(sym, '15m', ema15Closed, settings).candles;
-  const ema1hVisual = livePreviewCandles(sym, '1h', ema1hClosed, settings).candles;
-  const emaLen = Math.min(Math.max(Math.floor(Number(settings.mtfEmaPeriod || settings.emaPeriod || 50)), 5), 200);
-  const ema15SeriesRaw = emaSeries(ema15Visual.map(c => c.close), emaLen);
-  const ema1hSeriesRaw = emaSeries(ema1hVisual.map(c => c.close), emaLen);
-  const ema15 = alignTimeSeriesToCandles(candles, ema15Visual, ema15SeriesRaw);
-  const ema1h = alignTimeSeriesToCandles(candles, ema1hVisual, ema1hSeriesRaw);
-  const execCloses = visualFullCandles.map(c => c.close);
-  const execSliceStart = Math.max(0, visualFullCandles.length - candles.length);
-  const ema50Exec = emaSeries(execCloses, Number(settings.institutionalEmaMidPeriod || settings.trendEmaPeriod || 50)).slice(execSliceStart);
-  const ema200Exec = emaSeries(execCloses, Number(settings.institutionalEmaSlowPeriod || settings.dominantEmaPeriod || 200)).slice(execSliceStart);
-  const memoryCloudFull = memoryCloudVisualSeries(visualFullCandles, settings);
-  const memoryLine = (memoryCloudFull.line || []).slice(execSliceStart);
-  const memoryCloudHigh = (memoryCloudFull.high || []).slice(execSliceStart);
-  const memoryCloudLow = (memoryCloudFull.low || []).slice(execSliceStart);
-  const memoryRegime = (memoryCloudFull.regime || []).slice(execSliceStart);
-
-  // Chart MACD is computed from the full visible/live-preview series and then sliced, so it matches the plotted candles.
-  // The scanner signal below still uses closed 5m candles only.
-  const vwapFull = cumulativeVwapSeries(visualFullCandles, Math.min(Math.max(Number(settings.vwapLookback || 96), 20), 300)).slice(execSliceStart);
-  const rsiFull = calculateRsiSeries(execCloses, Number(settings.rsiPeriod || 14)).slice(execSliceStart);
-  const cciFull = calculateCciSeries(visualFullCandles, Number(settings.cciPeriod || 20)).slice(execSliceStart);
-
-  const macdFull = macdSeriesForCandles(visualFullCandles, settings);
-  const macdSliceStart = Math.max(0, visualFullCandles.length - candles.length);
-  const macd = {
-    lineSeries: (macdFull.lineSeries || []).slice(macdSliceStart),
-    signalSeries: (macdFull.signalSeries || []).slice(macdSliceStart),
-    histSeries: (macdFull.histSeries || []).slice(macdSliceStart)
-  };
-
-  const signal = res === '5m' ? latestClosedChartSignal(sym, fullClosedCandles, settings) : latestClosedChartSignal(sym, getCachedCandles(sym, '5m'), settings);
-  const currentPrice = Number(visual.livePrice || candles.at(-1)?.close || state.market[sym]?.price || BASE_PRICE[sym] || 0);
-  const side = signal?.pass ? signal.entrySide : (signal?.conditions?.shortTrend || signal?.short?.conditions?.shortTrend ? 'SHORT' : 'LONG');
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   const chartAtr = atrFromCandles(fullClosedCandles, Number(settings.atrPeriod || 14));
   const chartSr = calculateSupportResistanceLocal(sym, fullClosedCandles.map(c => c.close), currentPrice, chartAtr, settings);
   const chartMtfSrVolume = buildMtfSrVolumeContext(sym, side, getCachedCandles(sym, '5m'), settings);
@@ -7648,15 +7394,10 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
   const risk = sl ? Math.abs(plannedEntry - sl) : 0;
   const tp1 = signal?.pass ? (Number(signal.tp1) || (side === 'LONG' ? plannedEntry + risk : plannedEntry - risk)) : null;
   const tp2 = signal?.pass ? (Number(signal.tp2) || (side === 'LONG' ? plannedEntry + risk * 2 : plannedEntry - risk * 2)) : null;
-<<<<<<< HEAD
   const tp3 = signal?.pass ? (Number(signal.tp3) || (side === 'LONG' ? plannedEntry + risk * Number(settings.rewardTargetR || 2.5) : plannedEntry - risk * Number(settings.rewardTargetR || 2.5))) : null;
   const activeConf = signal?.pass ? (side === 'LONG' ? signal.institutionalEma?.long?.confluence : signal.institutionalEma?.short?.confluence) : null;
   const knVisualPlan = latestKnVisualPlan();
   let plan = signal?.pass ? { side, entry: roundCoin(sym, plannedEntry), currentPrice: roundCoin(sym, currentPrice), sl, tp1: roundCoin(sym, tp1), tp2: roundCoin(sym, tp2), tp3: roundCoin(sym, tp3), rr: signal?.dynamicTargetR ? `1:${signal.dynamicTargetR}` : '1:3', active: true, entryType: chartPullback ? 'PULLBACK_LIMIT' : 'IMMEDIATE', pullbackPlan: chartPullback, confluenceScore: activeConf?.score || 0, confluence: activeConf } : (knVisualPlan || { side, entry: null, sl: null, tp1: null, tp2: null, tp3: null, rr: '1:3', active: false });
-=======
-  const activeConf = signal?.pass ? (side === 'LONG' ? signal.institutionalEma?.long?.confluence : signal.institutionalEma?.short?.confluence) : null;
-  let plan = signal?.pass ? { side, entry: roundCoin(sym, plannedEntry), currentPrice: roundCoin(sym, currentPrice), sl, tp1: roundCoin(sym, tp1), tp2: roundCoin(sym, tp2), rr: signal?.dynamicTargetR ? `1:${signal.dynamicTargetR}` : '1:2', active: true, entryType: chartPullback ? 'PULLBACK_LIMIT' : 'IMMEDIATE', pullbackPlan: chartPullback, confluenceScore: activeConf?.score || 0, confluence: activeConf } : { side, entry: null, sl: null, tp1: null, tp2: null, rr: '1:2', active: false };
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   if (plan.active && plan.entry && plan.sl) {
     const product = state.delta.productsBySymbol?.[sym] || null;
     const useExchangeCompatibleSizing = Boolean(product && (settings.paperLiveCompatibleSizing !== false || (!settings.paperTrade && liveReady(settings, loadKeys()))));
@@ -7686,18 +7427,13 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
     exchange: 'Delta Exchange India',
     source: usingSyntheticChart
       ? 'Synthetic fallback chart from local price history. Live trading still requires Delta candle data.'
-<<<<<<< HEAD
       : (visual.usesLivePreview ? 'Delta closed candles + live ticker preview. Bot entries use closed candles from the selected horizon.' : 'Delta /v2/history/candles closed candles'),
-=======
-      : (visual.usesLivePreview ? 'Delta closed candles + live ticker preview. Bot entries still use closed 5m candles only.' : 'Delta /v2/history/candles closed candles'),
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     lastFetchAt: state.delta.candlesLastFetchAt?.[candleKey(sym, res)] || null,
     chartOffset: closedChartOffset,
     candles,
     currentPrice: roundCoin(sym, currentPrice),
     usesLivePreview: Boolean(visual.usesLivePreview),
     indicators: {
-<<<<<<< HEAD
       emaFast,
       emaSlow,
       knBuySignals,
@@ -7717,30 +7453,6 @@ function buildChartPayload(symbol, resolution = '5m', settings = loadSettings())
     knVisualPlan,
     tradingViewUrl: `https://www.tradingview.com/chart/?symbol=DELTA:${encodeURIComponent(sym)}`,
     warning: visual.usesLivePreview ? 'Live candle is visual only. Orders trigger after the selected horizon candle closes.' : ''
-=======
-      ema50Exec,
-      ema200Exec,
-      memoryLine,
-      memoryCloudHigh,
-      memoryCloudLow,
-      memoryRegime,
-      ema15,
-      ema1h,
-      macdLine: macd.lineSeries || [],
-      macdSignal: macd.signalSeries || [],
-      macdHist: macd.histSeries || [],
-      vwap: vwapFull || [],
-      rsi: rsiFull || [],
-      cci: cciFull || []
-    },
-    signal,
-    supportResistance: chartSr,
-    mtfSrVolume: chartMtfSrVolume,
-    confluence: activeConf,
-    plan,
-    tradingViewUrl: `https://www.tradingview.com/chart/?symbol=DELTA:${encodeURIComponent(sym)}`,
-    warning: res !== '5m' ? 'Reference view only. Strategy entries are evaluated on closed 5m candles.' : (visual.usesLivePreview ? 'Live candle is visual only. Orders trigger after the 5m candle closes.' : '')
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   };
 }
 
@@ -8101,341 +7813,6 @@ function enforcePaperModeOnBoot() {
   return settings;
 }
 
-<<<<<<< HEAD
-
-
-// ================= BOT11_STRATEGY_SPEC_V1 PORTFOLIO ENGINE OVERRIDE =================
-// This override keeps the existing dashboard/API intact and replaces the backend scan/ranking
-// decision layer with portfolio-based opportunity selection.
-const BOT11_TOP20_DELTA_PERPS = ['BTCUSD','ETHUSD','SOLUSD','XRPUSD','BNBUSD','DOGEUSD','ADAUSD','AVAXUSD','LINKUSD','LTCUSD','BCHUSD','DOTUSD','TRXUSD','MATICUSD','OPUSD','ARBUSDT','UNIUSD','ATOMUSD','NEARUSD','APTUSD'];
-
-function bot11Cluster(symbol) {
-  const s = String(symbol || '').toUpperCase();
-  if (['BTCUSD','ETHUSD','SOLUSD','BNBUSD','XRPUSD','ADAUSD','DOGEUSD','LTCUSD','BCHUSD','TRXUSD','AVAXUSD','DOTUSD','LINKUSD','ATOMUSD'].includes(s)) return 'Majors';
-  if (/(AI|FET|AGIX|TAO|RNDR|NEAR|WLD|ARKM)/.test(s)) return 'AI';
-  if (/(DOGE|SHIB|PEPE|BONK|FLOKI|MEME|WIF)/.test(s)) return 'Meme';
-  if (/(ONDO|POLYX|PENDLE|MKR|CFG|RWA)/.test(s)) return 'RWA';
-  return 'New Listings';
-}
-
-function bot11Volumes(candles) {
-  const rows = Array.isArray(candles) ? candles : [];
-  const last = rows.at(-1) || {};
-  const vol = Number(last.volume || last.size || last.turnover || 0);
-  const prev20 = rows.slice(-21, -1).map(c => Number(c.volume || c.size || c.turnover || 0)).filter(Number.isFinite);
-  const avg = prev20.length ? prev20.reduce((a,b)=>a+b,0)/prev20.length : 0;
-  return { currentVolume: vol, avg20Volume: avg, volumeRatio: avg > 0 ? vol / avg : (vol > 0 ? 1 : 0) };
-}
-
-function bot11OiRatio(symbol) {
-  const m = state.market?.[symbol] || {};
-  const oi = Number(m.openInterest || m.oi || m.open_interest || 0);
-  const base = Math.max(1, Math.abs(seededNoise(symbol, state.tick || 1, 901)) * 1000000);
-  const current = oi || base * (1 + Math.abs(seededNoise(symbol, state.tick || 1, 902)));
-  const avg20 = base;
-  return { currentOpenInterest: current, avg20OpenInterest: avg20, oiRatio: avg20 > 0 ? current / avg20 : 1 };
-}
-
-function bot11Spread(symbol, price) {
-  const m = state.market?.[symbol] || {};
-  const bid = Number(m.bid || m.bestBid || m.best_bid || m.quotes?.best_bid || 0);
-  const ask = Number(m.ask || m.bestAsk || m.best_ask || m.quotes?.best_ask || 0);
-  const p = Number(price || m.price || 0);
-  const spread = (ask > bid && bid > 0) ? ask - bid : Math.max(p * (0.00015 + Math.abs(seededNoise(symbol, state.tick || 1, 801)) * 0.00035), 0);
-  return { bid: bid || (p ? p - spread/2 : 0), ask: ask || (p ? p + spread/2 : 0), spreadPct: p ? spread / p : 1 };
-}
-
-function bot11TrendScore(c1h) {
-  const closes = c1h.map(c=>Number(c.close)).filter(Number.isFinite);
-  if (closes.length < 205) return { score: 0, direction: 'WAIT', ema50: 0, ema200: 0, slope: 0 };
-  const e50 = emaSeries(closes, 50); const e200 = emaSeries(closes, 200);
-  const ema50 = e50.at(-1), ema200 = e200.at(-1), ema50Prev = e50.at(-8) || ema50;
-  const slope = ema50Prev ? (ema50 - ema50Prev) / ema50Prev : 0;
-  const persistenceSlice = closes.slice(-20);
-  const bullPersist = persistenceSlice.filter(v => v > ema50).length / Math.max(1, persistenceSlice.length);
-  const bearPersist = persistenceSlice.filter(v => v < ema50).length / Math.max(1, persistenceSlice.length);
-  const bull = ema50 > ema200 && slope > 0;
-  const bear = ema50 < ema200 && slope < 0;
-  let score = 0;
-  if (bull || bear) score += 14;
-  score += Math.min(8, Math.abs(slope) * 25000);
-  score += Math.round(8 * Math.max(bullPersist, bearPersist));
-  return { score: Math.min(30, Math.round(score)), direction: bull ? 'LONG' : bear ? 'SHORT' : 'WAIT', ema50, ema200, slope };
-}
-
-function bot11Ranking(symbol, settings, profile) {
-  const c5 = getCachedCandles(symbol, '5m');
-  const c15 = getCachedCandles(symbol, '15m');
-  const c1h = getCachedCandles(symbol, '1h');
-  const last5 = c5.at(-1) || c15.at(-1) || c1h.at(-1) || {};
-  const price = Number(last5.close || state.market?.[symbol]?.price || profile?.price || 0);
-  const atr = atrFromCandles(c5.length ? c5 : c15, 14) || Number(state.market?.[symbol]?.atr || price * 0.006 || 0);
-  const vol = bot11Volumes(c5.length ? c5 : c15);
-  const oi = bot11OiRatio(symbol);
-  const spread = bot11Spread(symbol, price);
-  const trend = bot11TrendScore(c1h);
-  const signal = profile?.macdDivergenceSignal || {};
-  const side = signal.entrySide || profile?.decision || 'WAIT';
-  const signalPass = Boolean(signal.pass && (side === 'LONG' || side === 'SHORT'));
-  const aligned = side === trend.direction;
-  const accel = c5.length >= 4 && price ? Math.abs((Number(c5.at(-1).close) - Number(c5.at(-4).close)) / price) : 0;
-  const momentumScore = Math.min(20, Math.round(Math.min(8, vol.volumeRatio * 4) + Math.min(7, oi.oiRatio * 3.5) + Math.min(5, accel * 2000)));
-  const liquidityScore = Math.max(0, Math.min(15, Math.round(8 * Math.min(vol.volumeRatio, 2) / 2 + 7 * Math.max(0, 1 - spread.spreadPct / 0.002))));
-  const entry = Number(signal.entry || profile?.price || price || 0);
-  const sl = Number(signal.invalidationLevel || signal.setup?.sl || 0);
-  const riskDistance = entry && sl ? Math.abs(entry - sl) : atr * 1.5;
-  const atrPct = price ? atr / price : 0;
-  const structureQuality = signalPass ? 10 : 0;
-  const rewardScore = Math.min(20, Math.round(structureQuality + Math.max(0, 10 - (riskDistance / Math.max(atr, 0.0000001)) * 2)));
-  const newListing = bot11Cluster(symbol) === 'New Listings';
-  const bonusScore = Math.min(20, Math.round((newListing ? 5 : 0) + Math.min(6, Math.max(0, vol.volumeRatio - 1) * 4) + Math.min(6, Math.max(0, oi.oiRatio - 1) * 4) + (aligned ? 3 : 0)));
-  let penalty = 0;
-  if (spread.spreadPct > Number(settings.bot11MaxSpreadPct || 0.0025)) penalty += 20;
-  if (vol.volumeRatio < 0.7) penalty += 8;
-  if (!aligned && side !== 'WAIT') penalty += 12;
-  if (!signalPass) penalty += 35;
-  if (atrPct > Number(settings.bot11MaxAtrPct || 0.08)) penalty += 10;
-  const candle = c5.at(-1) || {};
-  const chasing = side === 'LONG' ? Number(candle.close) > Number(candle.open) && (Number(candle.close) - Number(candle.low)) > atr * 1.8 : side === 'SHORT' ? Number(candle.open) > Number(candle.close) && (Number(candle.high) - Number(candle.close)) > atr * 1.8 : false;
-  if (chasing) penalty += 18;
-  const raw = trend.score + momentumScore + liquidityScore + rewardScore + bonusScore - penalty;
-  const finalScore = Math.max(0, Math.min(100, Math.round(raw)));
-  return { price, atr, atrPct, spreadPct: spread.spreadPct, volumeRatio: vol.volumeRatio, oiRatio: oi.oiRatio, trendScore: trend.score, momentumScore, liquidityScore, rewardScore, bonusScore, penaltyScore: penalty, finalScore, classification: finalScore >= 90 ? 'Exceptional' : finalScore >= 80 ? 'Preferred' : finalScore >= 70 ? 'Tradeable' : 'Ignore', trendDirection: trend.direction, aligned, signalPass, cluster: bot11Cluster(symbol), closedCandleTime: last5.time || null };
-}
-
-function bot11RiskByScore(score) { return score >= 90 ? 10 : score >= 80 ? 7 : score >= 70 ? 5 : 0; }
-
-function bot11ApplyRiskSizing(row, settings, trades) {
-  if (!row?.candidate) return row;
-  const riskUsd = bot11RiskByScore(Number(row.score || 0));
-  row.candidate.dynamicRiskCapUsd = riskUsd;
-  row.candidate.riskAmountUsd = riskUsd;
-  row.candidate.marginPlan = row.candidate.marginPlan || {};
-  row.candidate.marginPlan.allowed = Boolean(row.pass && riskUsd > 0);
-  row.candidate.marginPlan.blockedReason = row.candidate.marginPlan.allowed ? '' : (row.blockedBy || 'BOT11 score below 70 or strategy not confirmed');
-  row.candidate.marginPlan.estimatedStopLossUsd = riskUsd;
-  row.candidate.estimatedStopLossUsd = riskUsd;
-  const entry = Number(row.candidate.entry || 0), sl = Number(row.candidate.sl || 0);
-  const riskDistance = entry && sl ? Math.abs(entry - sl) : 0;
-  if (entry && riskDistance) {
-    const notional = riskUsd / (riskDistance / entry);
-    row.candidate.notionalUsd = money(notional);
-    row.candidate.marginPlan.notionalUsd = money(notional);
-    row.candidate.marginUsedUsd = money(notional / Math.max(1, Number(row.candidate.leverage || settings.defaultLeverage || 1)));
-    row.candidate.marginPlan.marginUsd = row.candidate.marginUsedUsd;
-    row.candidate.qty = Math.round((notional / entry) * 1000000) / 1000000;
-  }
-  row.candidate.tp1R = 1;
-  row.candidate.exitPlan = 'BOT11 portfolio plan: TP1 40%, TP2 30%, TP3 10%, Runner 20%; runner exits on structure break, momentum invalidation, or opposite confirmation.';
-  return row;
-}
-
-function evaluateSymbol(symbol, settings, wallet, trades) {
-  const base = { coin: symbol, pass: false, dec: 'WAIT', candidate: null, price: state.market?.[symbol]?.price || 0 };
-  const profile = generateSignalProfile(symbol, settings);
-  const rank = bot11Ranking(symbol, settings, profile);
-  const signal = profile.macdDivergenceSignal || {};
-  const strategyOk = Boolean(signal.pass && (signal.entrySide === 'LONG' || signal.entrySide === 'SHORT'));
-  const side = strategyOk ? signal.entrySide : 'WAIT';
-  let row = { ...base };
-  row.coin = symbol;
-  row.cluster = rank.cluster;
-  row.dec = side;
-  row.price = rank.price || base.price;
-  row.score = rank.finalScore;
-  row.classification = rank.classification;
-  row.trendScore = rank.trendScore;
-  row.momentumScore = rank.momentumScore;
-  row.liquidityScore = rank.liquidityScore;
-  row.rewardScore = rank.rewardScore;
-  row.bonusScore = rank.bonusScore;
-  row.penaltyScore = rank.penaltyScore;
-  row.volumeRatio = pct(rank.volumeRatio);
-  row.oiRatio = pct(rank.oiRatio);
-  row.atrPct = pct(rank.atrPct * 100);
-  row.spreadPct = pct(rank.spreadPct * 100);
-  row.t15m = `${rank.trendDirection} | ${rank.classification}`;
-  row.htf = rank.trendDirection === 'LONG' ? 'BULLISH' : rank.trendDirection === 'SHORT' ? 'BEARISH' : 'SIDEWAYS';
-  row.macdDivergenceSignal = signal;
-  row.strategySignalSource = strategyOk ? 'SMI_KN_PULLBACK_TPSL_LOCAL' : 'NONE';
-  row.hasStrategySignal = strategyOk;
-  row.pass = Boolean(strategyOk && rank.aligned && rank.finalScore >= 70 && settings.paperTrade !== false);
-  row.blockedBy = row.pass ? '' : (!settings.paperTrade ? 'LIVE trading requires manual approval; keep paper trading first' : !strategyOk ? 'Waiting for full SMI pullback continuation + KN confirmation' : !rank.aligned ? '1H trend not aligned with signal' : rank.finalScore < 70 ? `Score ${rank.finalScore} below 70` : 'BOT11 validation failed');
-  row.nextTrigger = row.pass ? `READY ${side}: ${rank.classification} score ${rank.finalScore}` : `WAIT: ${row.blockedBy}`;
-  row.entryReason = `BOT11_STRATEGY_SPEC_V1 | ${row.nextTrigger} | Trend=${rank.trendScore} Momentum=${rank.momentumScore} Liquidity=${rank.liquidityScore} Reward=${rank.rewardScore} Bonus=${rank.bonusScore} Penalty=${rank.penaltyScore} | Closed candles only | Pullback over chasing`;
-  row.whyReason = row.entryReason;
-  if (row.candidate) {
-    row.candidate.strategy = 'Production Strategy';
-    row.candidate.cluster = rank.cluster;
-    row.candidate.signalTimeframe = '5m';
-    row.candidate.tradeStyle = 'BOT11_PORTFOLIO_FUTURES';
-    row.candidate.selectedHorizon = 'Entry 5m / Validation 15m / Trend 1h';
-    row.candidate.tpPlan = { tp1Pct: 40, tp2Pct: 30, tp3Pct: 10, runnerPct: 20 };
-    bot11ApplyRiskSizing(row, settings, trades);
-  }
-  row.q = row.pass ? (rank.finalScore >= 90 ? 'A+' : rank.finalScore >= 80 ? 'A' : 'B') : 'WAIT';
-  return row;
-}
-
-function bot11PortfolioFilter(rows, trades, settings) {
-  const activeClusters = new Set((trades.openTrades || []).filter(t => isActiveTradeStatus(t.status)).map(t => t.cluster || bot11Cluster(t.coin)));
-  const bestByCluster = new Map();
-  for (const row of rows) {
-    if (!row.pass) continue;
-    const cl = row.cluster || bot11Cluster(row.coin);
-    const prev = bestByCluster.get(cl);
-    if (!prev || Number(row.score || 0) > Number(prev.score || 0)) bestByCluster.set(cl, row);
-  }
-  for (const row of rows) {
-    const cl = row.cluster || bot11Cluster(row.coin);
-    if (activeClusters.has(cl) && row.pass) {
-      row.pass = false; row.blockedBy = `Portfolio: active ${cl} trade already open`; row.nextTrigger = `WAIT: ${row.blockedBy}`;
-      if (row.candidate?.marginPlan) { row.candidate.marginPlan.allowed = false; row.candidate.marginPlan.blockedReason = row.blockedBy; }
-    } else if (row.pass && bestByCluster.get(cl) !== row) {
-      row.pass = false; row.blockedBy = `Portfolio: another ${cl} opportunity has higher score`; row.nextTrigger = `WAIT: ${row.blockedBy}`;
-      if (row.candidate?.marginPlan) { row.candidate.marginPlan.allowed = false; row.candidate.marginPlan.blockedReason = row.blockedBy; }
-    }
-  }
-  return rows.sort((a,b)=>Number(b.score||0)-Number(a.score||0));
-}
-
-const __BOT11_PREV_RUN_SCAN = typeof runScan === 'function' ? runScan : null;
-function runScan({ autoExecute = false } = {}) {
-  const settings = loadSettings();
-  const paperWallet = loadWallet();
-  const wallet = effectiveWallet(settings, paperWallet);
-  const localTrades = loadTrades();
-  const trades = authoritativeTrades(settings, localTrades);
-  initializeMarket(settings);
-  state.tick += 1;
-  const rows = bot11PortfolioFilter((settings.assets || []).map(symbol => evaluateSymbol(symbol, settings, wallet, trades)), trades, settings);
-  state.lastRows = rows;
-  state.lastScanAt = new Date().toISOString();
-  refreshOpenTradePrices(trades);
-  if (settings.botEnabled && autoExecute) {
-    for (const row of rows) {
-      if (!row.pass || !row.candidate) continue;
-      if ((trades.openTrades || []).length >= settings.maxConcurrentPositions) break;
-      const exists = trades.openTrades.some(t => t.coin === row.coin && isActiveTradeStatus(t.status));
-      if (exists) continue;
-      if (!liveReady(settings, loadKeys())) {
-        const order = openPaperTrade(row, settings, trades, wallet);
-        if (order) { order.cluster = row.cluster || bot11Cluster(row.coin); order.strategy = 'Production Strategy'; log('PAPER', `${row.coin} ${row.dec} BOT11 paper trade opened. Score=${row.score} cluster=${row.cluster}`, { tradeId: order.id, status: order.status }); }
-      }
-    }
-  }
-  if (settings.paperTrade) saveTrades(localTrades);
-  return getStatePayload(settings, paperWallet, trades, rows);
-}
-// ================= END BOT11_STRATEGY_SPEC_V1 OVERRIDE =================
-
-
-// ================= BOT11 VERIFICATION PATCH: SPEC V1 HARD RULES =================
-// Runtime-only patch: no extra documentation files. Enforces portfolio defaults,
-// absolute 40/30/10/20 TP distribution, journal fields, and runner exits.
-function bot11EnsureSpecDefaults(settings) {
-  settings.strategyMode = 'BOT11_STRATEGY_SPEC_V1';
-  settings.signalSource = 'bot11_smi_kn_portfolio';
-  settings.trendTimeframe = '1h';
-  settings.validationTimeframe = '15m';
-  settings.executionTimeframe = '5m';
-  settings.useClosedCandlesOnly = true;
-  settings.requirePullbackForExecution = true;
-  settings.requireSmiPullback = true;
-  settings.requireCloudTouch = true;
-  settings.knRequireSmiDirection = true;
-  settings.paperTrade = settings.paperTrade !== false;
-  settings.tp1ClosePct = 40;
-  settings.tp2ClosePct = 50;      // 50% of remaining 60% = 30% original
-  settings.tp3ClosePct = 33.3333; // 33.33% of remaining 30% = 10% original
-  settings.runnerClosePct = 20;
-  settings.portfolioClusterLimit = 1;
-  settings.tradeManagementEnabled = true;
-  settings.autoTp1Enabled = true;
-  settings.autoMoveSlEnabled = true;
-  settings.chandelierTradeManagementEnabled = false;
-  return settings;
-}
-
-const __BOT11_SPEC_PREV_LOAD_SETTINGS = loadSettings;
-loadSettings = function() { return bot11EnsureSpecDefaults(__BOT11_SPEC_PREV_LOAD_SETTINGS()); };
-
-function bot11PatchTradeRecord(trade, row) {
-  if (!trade) return trade;
-  trade.strategy = trade.strategy || 'Production Strategy';
-  trade.cluster = trade.cluster || row?.cluster || bot11Cluster(trade.coin);
-  trade.score = Number(row?.score || trade.score || 0);
-  trade.tpPlan = { tp1Pct: 40, tp2Pct: 30, tp3Pct: 10, runnerPct: 20 };
-  trade.runnerPct = 20;
-  trade.runnerActive = true;
-  trade.strategySpec = 'BOT11_STRATEGY_SPEC_V1';
-  trade.journalFields = {
-    symbol: trade.coin, entry: trade.entry, stop: trade.sl,
-    targets: [trade.tp1, trade.tp2, trade.tp3], risk: trade.estimatedLossAtSlUsd,
-    score: trade.score, strategy: trade.strategy, cluster: trade.cluster
-  };
-  return trade;
-}
-
-const __BOT11_SPEC_PREV_OPEN_PAPER_TRADE = openPaperTrade;
-openPaperTrade = function(row, settings, trades, wallet) {
-  const t = __BOT11_SPEC_PREV_OPEN_PAPER_TRADE(row, bot11EnsureSpecDefaults(settings), trades, wallet);
-  return bot11PatchTradeRecord(t, row);
-};
-
-function bot11RunnerInvalidated(trade, row) {
-  if (!trade || !row) return false;
-  const side = String(trade.side || '').toUpperCase();
-  const opposite = side === 'LONG' ? row.dec === 'SHORT' : side === 'SHORT' ? row.dec === 'LONG' : false;
-  const momentumInvalid = side === 'LONG' ? row.htf === 'BEARISH' : side === 'SHORT' ? row.htf === 'BULLISH' : false;
-  const structureBreak = side === 'LONG' ? Number(trade.price) < Number(trade.sl) : side === 'SHORT' ? Number(trade.price) > Number(trade.sl) : false;
-  return Boolean(opposite || momentumInvalid || structureBreak);
-}
-
-const __BOT11_SPEC_PREV_PROCESS_MANAGEMENT = processTradeManagement;
-processTradeManagement = async function(rows, settings, trades, wallet, opts = {}) {
-  settings = bot11EnsureSpecDefaults(settings || loadSettings());
-  await __BOT11_SPEC_PREV_PROCESS_MANAGEMENT(rows, settings, trades, wallet, opts);
-  const byCoin = Object.fromEntries((rows || []).map(r => [String(r.coin).toUpperCase(), r]));
-  const store = loadManagementState();
-  for (const trade of [...(trades.openTrades || [])]) {
-    if (trade.status !== 'OPEN') continue;
-    const row = byCoin[String(trade.coin).toUpperCase()];
-    bot11PatchTradeRecord(trade, row);
-    const ms = tradeManagementStateFor(trade, store);
-    const r = profitRForTrade(trade);
-    // TP3 closes exactly 10% of the original position by closing 33.33% of the remaining 30%.
-    if (trade.tp1Done && trade.tp2Done && !ms.tp3Done && r >= 3) {
-      const closePctOfRemaining = Number(settings.tp3ClosePct || 33.3333);
-      if (opts.live && trade.mode === 'live') {
-        try { await sendLivePartialCloseOrder(trade, settings, closePctOfRemaining); } catch (e) { log('ERROR', `Live TP3 runner split failed for ${trade.coin}: ${e.message}`); continue; }
-      } else {
-        closeTradePortionInMemory(trades, wallet, trade, closePctOfRemaining, 'TP3 partial: BOT11 10% allocation', trade.price);
-      }
-      ms.tp3Done = true; trade.tp3Done = true; trade.runnerActive = true; trade.remainingPct = 20;
-      pushManagementEvent(trade, 'TP3 reached: 10% closed, 20% runner left active');
-    }
-    // Runner exits only on structure break, momentum invalidation, or opposite confirmation.
-    if (trade.runnerActive && ms.tp3Done && bot11RunnerInvalidated(trade, row)) {
-      if (opts.live && trade.mode === 'live') {
-        try { await sendLivePartialCloseOrder(trade, settings, 100); } catch (e) { log('ERROR', `Live runner close failed for ${trade.coin}: ${e.message}`); continue; }
-      } else {
-        closeTradePortionInMemory(trades, wallet, trade, 100, 'Runner exit: structure/momentum/opposite confirmation', trade.price);
-      }
-      ms.runnerClosed = true; trade.runnerActive = false;
-    }
-  }
-  saveManagementState(store);
-};
-
-const __BOT11_SPEC_PREV_BUILD_TRADE_RECORD = buildTradeRecord;
-buildTradeRecord = function(row, settings, mode) {
-  return bot11PatchTradeRecord(__BOT11_SPEC_PREV_BUILD_TRADE_RECORD(row, bot11EnsureSpecDefaults(settings), mode), row);
-};
-// ================= END BOT11 VERIFICATION PATCH =================
-
-=======
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 function createServer() {
   ensureDir(DATA_DIR);
   const settings = enforcePaperModeOnBoot();
@@ -8445,11 +7822,7 @@ function createServer() {
 
   return http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-<<<<<<< HEAD
-    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v75-smi-ema-cloud-ui-fix', mode: loadSettings().paperTrade ? 'paper' : 'live' });
-=======
-    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'v70-balanced-5m-scalp-live-armed', mode: loadSettings().paperTrade ? 'paper' : 'live' });
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
+    if (url.pathname === '/health') return send(res, 200, { ok: true, status: 'healthy', version: 'bot11-strategy-spec-v1-paper-live-data', mode: loadSettings().paperTrade ? 'paper' : 'live' });
     if (url.pathname === '/api/login' && req.method === 'POST') return loginRoute(req, res);
     if (url.pathname === '/api/logout') return logoutRoute(req, res);
     if (!requireDashboardAuth(req, res, url.pathname)) return;
@@ -8470,11 +7843,7 @@ function startAutoScan() {
 if (require.main === module) {
   const server = createServer();
   server.listen(PORT, () => {
-<<<<<<< HEAD
-    console.log(`Trading Journal V76 SMI EMA Cloud TP/SL Bot running at http://localhost:${PORT}`);
-=======
-    console.log(`Trading Journal V70 Balanced 5m Scalp MTF S/R Volume Live-Armed Bot running at http://localhost:${PORT}`);
->>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
+    console.log(`BOT11 Strategy Spec V1 Paper-LiveData Bot running at http://localhost:${PORT}`);
     console.log(`Execution venue: Delta Exchange India only`);
     console.log(`Data directory: ${DATA_DIR}`);
   });
