@@ -1,0 +1,21 @@
+{
+  "name": "bot11-smi-kn-pullback-tpsl",
+  "version": "7.9.0",
+  "description": "BOT11 Delta Exchange India bot with SMI pullback continuation hard gate, KN Smart TP/SL, and TradingView-style chart tools.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "crypto",
+    "futures",
+    "scanner",
+    "trading",
+    "dashboard",
+    "delta-exchange-india"
+  ],
+  "author": "Trading North",
+  "license": "UNLICENSED"
+}
