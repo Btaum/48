@@ -3,8 +3,13 @@
   "paperTrade": true,
   "exchange": "delta_exchange_india",
   "executionApi": "delta_exchange_india",
+<<<<<<< HEAD
   "signalSource": "bot11_smi_kn_portfolio",
   "strategyMode": "BOT11_STRATEGY_SPEC_V1",
+=======
+  "signalSource": "v70_balanced_5m_scalp_mtf_sr_volume_memory_cloud",
+  "strategyMode": "V70_BALANCED_5M_SCALP_MTF_SR_VOLUME",
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   "deltaBaseUrl": "https://api.india.delta.exchange",
   "assets": [
     "BTCUSD",
@@ -13,6 +18,7 @@
     "XRPUSD",
     "BNBUSD",
     "DOGEUSD",
+<<<<<<< HEAD
     "ADAUSD",
     "AVAXUSD",
     "LINKUSD",
@@ -27,6 +33,9 @@
     "ATOMUSD",
     "NEARUSD",
     "APTUSD"
+=======
+    "ADAUSD"
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   ],
   "primaryTimeframe": "5m",
   "executionTimeframe": "5m",
@@ -34,10 +43,18 @@
   "emaSlowTimeframe": "1h",
   "higherTimeframes": [
     "15m",
+<<<<<<< HEAD
     "1h"
   ],
   "emaPeriod": 100,
   "mtfEmaPeriod": 100,
+=======
+    "1h",
+    "1d"
+  ],
+  "emaPeriod": 50,
+  "mtfEmaPeriod": 50,
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   "macdFastLength": 12,
   "macdSlowLength": 26,
   "macdSignalLength": 9,
@@ -50,11 +67,19 @@
   "maxTechnicalSlAtrMult": 6,
   "requireClosedCandle": true,
   "technicalSlEnabled": true,
+<<<<<<< HEAD
   "minRR": 2.0,
   "rewardTargetR": 3,
   "tp1TriggerR": 1,
   "tp1ClosePct": 40,
   "tp2ClosePct": 50,
+=======
+  "minRR": 2,
+  "rewardTargetR": 2,
+  "tp1TriggerR": 1,
+  "tp1ClosePct": 50,
+  "tp2ClosePct": 100,
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   "tradeManagementEnabled": true,
   "autoMoveSlEnabled": true,
   "autoTp1Enabled": true,
@@ -63,7 +88,11 @@
   "riskPercent": 1.0,
   "defaultLeverage": 25,
   "maxLeverage": 25,
+<<<<<<< HEAD
   "maxConcurrentPositions": 5,
+=======
+  "maxConcurrentPositions": 3,
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   "maxOnePositionPerAsset": true,
   "maxBotAllocationUsd": 500,
   "liveWalletAllocationPct": 25,
@@ -89,9 +118,15 @@
   "dailyDrawdownLimitPct": -5,
   "weeklyDrawdownLimitPct": -10,
   "monthlyDrawdownLimitPct": -20,
+<<<<<<< HEAD
   "entryModel": "SMI_KN_PULLBACK_TPSL",
   "requireDivergenceForEntry": false,
   "zeroLineMode": "off",
+=======
+  "entryModel": "PRACTICAL_MTF_MACD",
+  "requireDivergenceForEntry": false,
+  "zeroLineMode": "soft",
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   "entrySignalWindowCandles": 3,
   "histColorLookback": 8,
   "requirePullbackForExecution": true,
@@ -99,6 +134,7 @@
   "pullbackMaxAtrMult": 1.2,
   "allowMarketWhenNoPullback": false,
   "autoSizeToTargetProfit": true,
+<<<<<<< HEAD
   "minTargetProfitUsd": 0.25,
   "targetProfitUsd": 1,
   "blockTinyProfitTrades": true,
@@ -109,6 +145,18 @@
   "institutionalRequireEmaStack": false,
   "institutionalRequirePullback": false,
   "institutionalRequirePriceAction": false,
+=======
+  "minTargetProfitUsd": 2,
+  "targetProfitUsd": 5,
+  "blockTinyProfitTrades": true,
+  "autoUseMaxLeverageForProfitTarget": true,
+  "targetFullTradeProfitUsd": 5,
+  "minFullTradeProfitUsd": 2,
+  "institutionalEmaEnabled": true,
+  "institutionalRequireEmaStack": true,
+  "institutionalRequirePullback": false,
+  "institutionalRequirePriceAction": true,
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   "institutionalRequireHtfMacd": false,
   "institutionalEmaFastPeriod": 50,
   "institutionalEmaMidPeriod": 50,
@@ -126,23 +174,40 @@
   "trailingStopAtrBuffer": 0.2,
   "entryEmaFastPeriod": 50,
   "entryEmaSlowPeriod": 200,
+<<<<<<< HEAD
   "trendEmaPeriod": 100,
   "dominantEmaPeriod": 100,
+=======
+  "trendEmaPeriod": 50,
+  "dominantEmaPeriod": 200,
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   "rsiPeriod": 14,
   "cciPeriod": 20,
   "vwapConfluenceEnabled": false,
   "volumeSpikeConfluenceEnabled": false,
   "volumeSpikeMultiplier": 1.25,
+<<<<<<< HEAD
   "minConfluenceScore": 1,
   "aPlusConfluenceScore": 3,
   "tier3MinConfluenceScore": 3,
+=======
+  "minConfluenceScore": 6,
+  "aPlusConfluenceScore": 9,
+  "tier3MinConfluenceScore": 9,
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   "minMomentumConfirmations": 2,
   "structureProximityAtr": 1.35,
   "vwapLookback": 96,
   "liveAddOnsEnabled": false,
+<<<<<<< HEAD
   "marketMemoryEnabled": false,
   "marketMemoryRequirePullback": false,
   "marketMemoryRequireTopMatchOutcome": false,
+=======
+  "marketMemoryEnabled": true,
+  "marketMemoryRequirePullback": true,
+  "marketMemoryRequireTopMatchOutcome": true,
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   "marketMemoryScanDepth": 300,
   "marketMemoryTopMatches": 5,
   "marketMemoryPatternLength": 10,
@@ -161,15 +226,23 @@
   "sarMacdAllowLocalEntry": false,
   "vwapModuleEnabled": false,
   "vwapAllowLocalEntry": false,
+<<<<<<< HEAD
   "srVolumeAlignmentEnabled": false,
   "requirePreviousDayContext": false,
   "requireMtfSupportResistance": false,
   "requireVolumeFlowAlignment": false,
+=======
+  "srVolumeAlignmentEnabled": true,
+  "requirePreviousDayContext": true,
+  "requireMtfSupportResistance": true,
+  "requireVolumeFlowAlignment": true,
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   "previousDayMidTolerancePct": 0.35,
   "srProximityAtrMult": 1.15,
   "srBreakoutRetestAtrMult": 0.65,
   "volumeFlowLookback": 24,
   "volumeFlowMinBiasPct": 5,
+<<<<<<< HEAD
   "requireClosedDailyContext": false,
   "minDailyCandlesForContext": 3,
   "require5mVolumeFlow": false,
@@ -255,4 +328,9 @@
   "useClosedCandlesOnly": true,
   "requireSmiPullback": true,
   "chandelierTradeManagementEnabled": false
+=======
+  "requireClosedDailyContext": true,
+  "minDailyCandlesForContext": 3,
+  "require5mVolumeFlow": true
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 }

@@ -1,12 +1,24 @@
 {
+<<<<<<< HEAD
   "name": "bot11-smi-kn-pullback-tpsl",
   "version": "7.9.0",
   "description": "BOT11 Delta Exchange India bot with SMI pullback continuation hard gate, KN Smart TP/SL, and TradingView-style chart tools.",
+=======
+  "name": "trading-journal-confluence-structure-execution-v70",
+  "version": "7.0.0",
+  "description": "Delta Exchange India V70 balanced live-armed 5m scalp bot with 15m/1h/1D context, previous-day S/R, volume flow, Market Memory cloud, MACD timing, divergence/zero-line as soft confluence, structural SL/TP, blocker reasons, force sync, and stale trade clear.",
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",
+<<<<<<< HEAD
     "dev": "node server.js"
+=======
+    "dev": "node server.js",
+    "test": "node scripts/smoke-test.js",
+    "check": "node --check server.js && node --check public/app.js && node scripts/smoke-test.js && node scripts/frontend-render-test.js && node scripts/audit-v70.js"
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   },
   "keywords": [
     "crypto",

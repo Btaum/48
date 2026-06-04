@@ -8,7 +8,11 @@ const app = {
   page: 'dashboard',
   filter: 'ALL',
   polling: null,
+<<<<<<< HEAD
   chart: { coin: 'BTCUSD', timeframe: '5m', tab: 'Long', data: null, loading: false, error: '', view: { bars: 120, start: null, yPad: 0.12, yShift: 0 }, tool: 'pan', drawings: [] },
+=======
+  chart: { coin: 'BTCUSD', timeframe: '5m', tab: 'Long', data: null, loading: false, error: '' },
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   apiDraft: { apiKey: '', secret: '', deltaBaseUrl: '', whitelistedIpNote: '' },
   assetCatalog: { loaded: false, loading: false, symbols: [], error: '' }
 };
@@ -42,7 +46,11 @@ function selectedRow() {
 function selectedCoins() {
   return app.state?.settings?.assets || (app.state?.rows || []).map(r => r.coin) || ['BTCUSD','ETHUSD','SOLUSD','XRPUSD','DOGEUSD'];
 }
+<<<<<<< HEAD
 function signalSourceLabel(r) { return r?.strategySignalSource === 'SMI_KN_PULLBACK_TPSL_LOCAL' ? 'SMI-KN' : (r?.strategySignalSource === 'SMI_EMA_CLOUD_TPSL_LOCAL' ? 'SMI-CLOUD' : 'WAIT'); }
+=======
+function signalSourceLabel(r) { return r?.strategySignalSource === 'INSTITUTIONAL_EMA_MACD_MTF_LOCAL' ? 'INST-EMA+MACD' : 'WAIT'; }
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 
 async function loadState(opts = {}) {
   try {
@@ -95,7 +103,11 @@ function renderHeader() {
 function controlBar() {
   const s = app.state.settings;
   return `<section class="control-bar">
+<<<<<<< HEAD
     <span class="pill pill-data">Strategy: V77 SMI + KN Smart TP/SL</span>
+=======
+    <span class="pill pill-data">Strategy: V68 ALIGNED EMA50 + MACD Divergence + Memory Cloud</span>
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     <span class="pill ${s.botEnabled ? 'pill-data' : 'pill-warn'}">${s.botEnabled ? 'BOT ON' : 'BOT OFF'}</span>
     <span class="pill ${s.paperTrade ? 'pill-paper' : 'pill-red'}">${s.paperTrade ? 'PAPER MODE' : 'LIVE MODE — REAL ORDERS'}</span>
     <button id="scanNowBtn" class="btn-blue">Scan Now</button>
@@ -120,9 +132,15 @@ function dashboardPage() {
       ${kpi('Total Trades', m.totalTrades || 0)}${kpi('Wins', m.wins || 0, 'green')}${kpi('Losses', m.losses || 0, 'red')}${kpi('Win Rate', `${Number(m.winRate || 0).toFixed(0)}%`, 'green')}
       ${kpi('Funds Used', money(fundsUsed), 'yellow')}${kpi('Available Allocation', money(app.state.risk?.remainingBotAllocation || 0), 'green')}${kpi('Open P/L', money(m.openPnl), clsPnL(m.openPnl))}${kpi(app.state.wallet?.walletSynced ? 'Delta Wallet Ref.' : 'Wallet', app.state.wallet?.walletSynced ? money(app.state.wallet?.equity) : 'SYNC NEEDED', app.state.wallet?.walletSynced ? '' : 'yellow')}
     </section>
+<<<<<<< HEAD
     <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades stay above scanner signals. V77 scans 5m scalp, 15m intraday, and 1h swing; paper remains available.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
     <section class="panel"><div class="panel-title"><h2>Scanner Signals</h2><div class="legend"><b class="green">LONG</b><b class="red">SHORT</b><b class="yellow">WAIT</b></div></div>
       <div class="table-wrap"><table><thead><tr><th>Coin</th><th>Decision</th><th>Style</th><th>Signal</th><th>Entry</th><th>SL</th><th>TP1</th><th>TP2</th><th>Funds</th><th>Lots</th><th>Conf.</th><th>Est full-plan $</th><th>RR</th><th>SMI/KN</th><th>Reason</th></tr></thead><tbody>${scannerRows(app.state.rows || [])}</tbody></table></div></section>`;
+=======
+    <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades stay above scanner signals. V68 aligned live; paper remains available.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
+    <section class="panel"><div class="panel-title"><h2>Scanner Signals</h2><div class="legend"><b class="green">LONG</b><b class="red">SHORT</b><b class="yellow">WAIT</b></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Coin</th><th>Decision</th><th>Style</th><th>Signal</th><th>Entry</th><th>SL</th><th>TP1</th><th>TP2</th><th>Funds</th><th>Lots</th><th>Conf.</th><th>Est full-plan $</th><th>RR</th><th>MACD</th><th>Reason</th></tr></thead><tbody>${scannerRows(app.state.rows || [])}</tbody></table></div></section>`;
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 }
 
 
@@ -134,7 +152,11 @@ function scannerRows(rows) {
     const candidate = r.candidate || {};
     const lots = candidate.lotsPurchased ?? candidate.liveOrderSize ?? candidate.qty;
     const conf = r.confluenceScore ?? candidate.confluenceScore ?? r.confluence?.score;
+<<<<<<< HEAD
     return `<tr class="signal-row ${String(r.dec).toLowerCase()}"><td>${coinLogo(r.coin)}<b>${esc(r.coin)}</b></td><td class="${clsSide(r.dec)}">${esc(r.dec)}</td><td><span class="pill pill-data">${esc(r.tradeStyle || '-')}</span></td><td>${signalSourceLabel(r)}</td><td>${num(r.en)}</td><td>${num(r.sl)}</td><td>${num(r.t1)}</td><td>${num(r.t2)}</td><td>${money(candidate.marginUsd ?? r.marginUsd)}</td><td>${num(lots)}</td><td>${Number.isFinite(Number(conf)) ? Number(conf).toFixed(0) : '-'}</td><td class="green">${money(r.estimatedFullTradeProfitUsd)}</td><td>${esc(r.rr || '-')}</td><td>${esc(r.smiCloudStatus || r.macdStatus || '-')}</td><td class="wide-cell">${esc(rowWhyText(r)).slice(0, 300)}</td></tr>`;
+=======
+    return `<tr class="signal-row ${String(r.dec).toLowerCase()}"><td>${coinLogo(r.coin)}<b>${esc(r.coin)}</b></td><td class="${clsSide(r.dec)}">${esc(r.dec)}</td><td><span class="pill pill-data">${esc(r.tradeStyle || '-')}</span></td><td>${signalSourceLabel(r)}</td><td>${num(r.en)}</td><td>${num(r.sl)}</td><td>${num(r.t1)}</td><td>${num(r.t2)}</td><td>${money(candidate.marginUsd ?? r.marginUsd)}</td><td>${num(lots)}</td><td>${Number.isFinite(Number(conf)) ? Number(conf).toFixed(0) : '-'}</td><td class="green">${money(r.estimatedFullTradeProfitUsd)}</td><td>${esc(r.rr || '-')}</td><td>${esc(r.macdStatus || '-')}</td><td class="wide-cell">${esc(rowWhyText(r)).slice(0, 300)}</td></tr>`;
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   }).join('') || '<tr><td colspan="15" class="empty">No scanner rows.</td></tr>';
 }
 
@@ -160,11 +182,17 @@ function chartDirectionForTab(row) {
 }
 
 function tradePlanFor(row, side) {
+<<<<<<< HEAD
   const p = app.chart.data?.plan || app.chart.data?.knVisualPlan || {};
   if (p.active && (!side || p.side === side)) return { ...p, active: true, side: p.side || side, price: p.entry, entry: p.entry, sl: p.sl, tp1: p.tp1, tp2: p.tp2, tp3: p.tp3, rr: p.rr || '1:3' };
   const v = app.chart.data?.knVisualPlan || {};
   if (v.active && (!side || v.side === side)) return { ...v, active: true, price: v.entry };
   return { active: false, side, price: app.chart.data?.currentPrice || app.chart.data?.candles?.at(-1)?.close || row?.price || 0, entry: null, sl: null, tp1: null, tp2: null, tp3: null, rr: '1:3' };
+=======
+  const p = app.chart.data?.plan || {};
+  if (p.active && (!side || p.side === side)) return { ...p, active: true, side: p.side || side, price: p.entry, entry: p.entry, sl: p.sl, tp1: p.tp1, tp2: p.tp2, rr: p.rr || '1:2' };
+  return { active: false, side, price: app.chart.data?.currentPrice || app.chart.data?.candles?.at(-1)?.close || row?.price || 0, entry: null, sl: null, tp1: null, tp2: null, rr: '1:2' };
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 }
 
 function conditionFromSignal(sig, side) {
@@ -180,13 +208,32 @@ function checkItem(ok, title, sub = '') {
 function forecastTabContent(row, side, plan) {
   const data = app.chart.data || {};
   const sig = data.signal || row?.macdDivergenceSignal || {};
+<<<<<<< HEAD
   const chosen = side === 'LONG' ? (sig.long || {}) : (sig.short || {});
   const c = chosen.conditions || sig.conditions || {};
   const setup = chosen.setup || sig.setup || {};
+=======
+  const c = conditionFromSignal(sig, side);
+  const trendOk = side === 'LONG' ? Boolean(c.longTrend) : Boolean(c.shortTrend);
+  const inst = sig.institutionalEma || {};
+  const instSide = side === 'LONG' ? inst.long || {} : inst.short || {};
+  const conf = instSide.confluence || row?.confluence || data.confluence || {};
+  const structure = conf.structure || {};
+  const score = Number(conf.score ?? row?.confluenceScore ?? 0);
+  const instTrendOk = Boolean(c.institutionalExecStack || c.institutionalHtfStack);
+  const instPullbackOk = Boolean(c.institutionalPullback || structure.pass);
+  const instPriceActionOk = Boolean(c.institutionalPriceAction);
+  const instMacdOk = Boolean(c.institutionalHtfMacd || c.momentumOk);
+  const zeroOk = Boolean(c.zeroOk);
+  const divOk = side === 'LONG' ? Boolean(c.priceLowerLow && c.macdHigherLow) : Boolean(c.priceHigherHigh && c.macdLowerHigh);
+  const histOk = Boolean(c.histColorChange);
+  const crossOk = Boolean(c.crossover);
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   const active = Boolean(plan.active);
   const executionReady = active && row && row.pass !== false && (!side || row.dec === side);
   const blockedBy = row?.blockedBy || '';
   const reason = sig.reason || rowWhyText(row);
+<<<<<<< HEAD
   const executionLabel = app.state?.settings?.paperTrade ? 'READY FOR PAPER ENTRY' : (app.state?.settings?.liveReady ? 'READY FOR LIVE ENTRY' : 'LIVE NOT READY');
   const modeLabel = app.state?.settings?.liveReady ? 'LIVE armed' : (app.state?.settings?.paperTrade ? 'paper mode' : 'live not ready');
   const entryText = active ? `${plan.entryType || 'LIMIT'} at ${num(plan.entry)}` : 'WAIT for SMI pullback + KN confirmation';
@@ -209,26 +256,70 @@ function forecastTabContent(row, side, plan) {
       <p><b>Entry style:</b> ${esc(entryText)}</p>
       <p><b>Forecast:</b> ${active ? 'Entry, SL, TP1, TP2 and TP3 are plotted from the KN Smart TP/SL plan. Bot execution still requires sizing and risk guards.' : 'No TP/SL projection until KN EMA crossover and valid candle confirmation appear. SMI remains visible as momentum confirmation.'}</p>
       <p><b>Reason:</b> ${esc(reason).slice(0, 420)}</p>${data.warning ? `<p class="warning-box">${esc(data.warning)}</p>` : ''}
+=======
+  const pullbackText = plan?.entryType === 'PULLBACK_LIMIT' || plan?.pullbackPlan ? `Pullback limit: ${plan?.pullbackPlan?.source || 'ATR/EMA50/MemoryCloud/SR'}; current ${num(plan?.currentPrice || data.currentPrice)} → entry ${num(plan?.entry)}` : (plan?.entryType === 'IMMEDIATE_LIMIT' ? 'Immediate limit after signal — allowed only after confluence passes' : 'No chase: wait for structure + trigger candle');
+  const executionLabel = app.state?.settings?.paperTrade ? 'READY FOR PAPER ENTRY' : (app.state?.settings?.liveReady ? 'READY FOR LIVE ENTRY' : 'LIVE NOT READY');
+  const modeLabel = app.state?.settings?.liveReady ? 'LIVE armed' : (app.state?.settings?.paperTrade ? 'paper mode' : 'live not ready');
+  const conditionList = `<ul class="check-list">
+    ${checkItem(score >= Number(app.state?.settings?.minConfluenceScore || 7), `Confluence score ${Number.isFinite(score) ? score.toFixed(0) : '-'}`, `Need MTF EMA50 + Memory Cloud + side-correct trigger + MACD timing. Notes: ${(conf.reasons || []).join(' | ').slice(0, 160)}`)}
+    ${checkItem(Boolean(structure.pass), 'Structure location gate', structure.reason || 'Need one valid location: support/resistance, range edge, sweep, EMA50 or memory-cloud pullback')}
+    ${checkItem(instTrendOk, 'EMA trend context', `MTF EMA50 direction; EMA200 advisory. EMA50 ${num(sig.ema50)} / EMA200 ${num(sig.ema200)}`)}
+    ${checkItem(instPullbackOk, 'Memory-cloud/SR pullback context', instSide.pullback ? `touched=${instSide.pullback.touched} reclaimed=${instSide.pullback.reclaimed} extension=${instSide.pullback.extensionAtr} ATR` : 'Controlled location required; middle-of-range is rejected')}
+    ${checkItem(instPriceActionOk, 'Execution candle trigger', instSide.priceAction?.reason || 'Engulfing / wick rejection / continuation close')}
+    ${checkItem(Boolean(instSide.srVolumePass || instSide.srVolume?.pass), 'Previous day + 1D/1H/15M S/R + volume flow', instSide.srVolume?.reason || data.mtfSrVolume?.reason || 'Higher-timeframe levels and directional volume must agree with the trade side')}
+    ${checkItem(instMacdOk, 'MACD momentum confirmation', `5m=${instSide.macd5Ok || false} 15m=${instSide.macd15Ok || false} 1h=${instSide.macd1hOk || false}`)}
+    ${checkItem(histOk || crossOk, 'Closed-candle MACD timing', 'Histogram flip/contraction or confirmed cross; cross alone is never enough')}
+  </ul>`;
+
+  if (app.chart.tab === 'Forecast') {
+    return `<div class="projection-card ${side === 'LONG' ? 'long' : 'short'}"><h3>${side} Forecast</h3>
+      <p><b>Status:</b> ${active ? '<span class="green">ACTIVE SETUP</span>' : '<span class="yellow">WAIT — no confirmed entry</span>'}</p>
+      <p><b>Execution:</b> ${executionReady ? `<span class="pill pill-data">${esc(executionLabel)}</span>` : `<span class="pill pill-warn">${active ? 'SETUP ACTIVE, EXECUTION BLOCKED' : 'WAIT'}</span>`} <span class="pill pill-paper">${esc(modeLabel)}</span></p>
+      ${active && !executionReady ? `<p class="warning-box"><b>Why not opened:</b> ${esc(blockedBy || rowWhyText(row) || 'Risk/sizing guard blocked execution. Check scanner row WHY column.')}</p>` : ''}
+      <p><b>Entry style:</b> ${esc(pullbackText)}</p>
+      <p><b>Forecast:</b> ${active ? 'Entry, SL, TP1, dynamic TP2, structure, EMA50/200, memory cloud and MACD are plotted. Bot execution still requires SL/RR sizing guards.' : 'No TP/SL projection until structure + confluence + trigger + risk pass.'}</p>
+      <p><b>Reason:</b> ${esc(reason).slice(0, 340)}</p>
+      ${data.warning ? `<p class="warning-box">${esc(data.warning)}</p>` : ''}
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     </div>${conditionList}`;
   }
   if (app.chart.tab === 'Projection') {
     return `<div class="projection-card ${side === 'LONG' ? 'long' : 'short'}"><h3>${side} Projection</h3>
+<<<<<<< HEAD
       ${active ? `<div class="plan-grid"><span>Entry</span><b>${num(plan.entry)}</b><span>Entry style</span><b>${esc(plan.entryType || 'LIMIT')}</b><span>Stop-Loss</span><b class="red">${num(plan.sl)}</b><span>TP1</span><b class="green">${num(plan.tp1)}</b><span>TP2</span><b class="green">${num(plan.tp2)}</b><span>TP3</span><b class="green">${num(plan.tp3)}</b><span>Risk/Reward</span><b>${esc(plan.rr)}</b><span>Est. full-plan profit</span><b class="green">${money(plan.estimatedFullTradeProfitUsd)}</b><span>Minimum full-plan</span><b>${money(plan.minFullTradeProfitUsd ?? plan.minTargetProfitUsd)}</b></div>${!executionReady ? `<p class="warning-box"><b>Projection is visual until execution guard passes:</b> ${esc(blockedBy || 'Check scanner WHY column.')}</p>` : ''}` : `<p class="yellow"><b>No active projection.</b></p><p>Projection waits for SMI pullback continuation + KN EMA crossover + valid entry candle.</p>`}
       <p class="muted">SL follows KN Smart ATR logic by default. After TP1, SL moves to entry/breakeven while TP2/TP3 remain active.</p>
+=======
+      ${active ? `<div class="plan-grid"><span>Entry</span><b>${num(plan.entry)}</b><span>Entry style</span><b>${esc(plan.entryType || 'LIMIT')}</b><span>Stop-Loss</span><b class="red">${num(plan.sl)}</b><span>TP1</span><b class="green">${num(plan.tp1)}</b><span>TP2 / dynamic target</span><b class="green">${num(plan.tp2)}</b><span>Risk/Reward</span><b>${esc(plan.rr)}</b><span>Est. full-plan profit</span><b class="green">${money(plan.estimatedFullTradeProfitUsd)}</b><span>Minimum full-plan</span><b>${money(plan.minFullTradeProfitUsd ?? plan.minTargetProfitUsd)}</b></div>${!executionReady ? `<p class="warning-box"><b>Projection is visual until execution guard passes:</b> ${esc(blockedBy || 'Check scanner row WHY column.')}</p>` : ''}` : `<p class="yellow"><b>No active projection.</b></p><p>Projection is blocked until the selected confluence entry model passes on closed candles.</p>`}
+      <p class="muted">SL is structure-first. If the structural SL is wide, lots reduce; SL is not tightened inside normal crypto noise.</p>
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     </div>${conditionList}`;
   }
   return `<div class="projection-card ${side === 'LONG' ? 'long' : 'short'}"><h3>${side} Setup</h3>
     <p><b>Bias:</b> <span class="${clsSide(side)}">${side}</span></p>
+<<<<<<< HEAD
     <p><b>Entry:</b> ${active ? num(plan.entry) : 'WAIT'}</p><p><b>Stop-Loss:</b> <span class="red">${active ? num(plan.sl) : 'WAIT'}</span></p>
     <p><b>TP1:</b> <span class="green">${active ? num(plan.tp1) : 'WAIT'}</span> <span class="muted">1R partial</span></p>
     <p><b>TP2:</b> <span class="green">${active ? num(plan.tp2) : 'WAIT'}</span> <span class="muted">2R</span></p>
     <p><b>TP3:</b> <span class="green">${active ? num(plan.tp3) : 'WAIT'}</span> <span class="muted">2.5R default</span></p>
     <p><b>Risk/Reward:</b> ${esc(plan.rr)}</p><p><b>Estimated full-plan profit:</b> <span class="green">${active ? money(plan.estimatedFullTradeProfitUsd) : 'WAIT'}</span></p>
     ${!active ? `<p class="warning-box">No trade: need EMA cloud trend, SMI band pullback, cloud touch, SMI recovery cross, candle color, and valid SL/RR.</p>` : ''}
+=======
+    <p><b>Entry:</b> ${active ? num(plan.entry) : 'WAIT'}</p>
+    <p><b>Entry style:</b> ${active ? esc(pullbackText) : 'WAIT'}</p>
+    <p><b>Stop-Loss:</b> <span class="red">${active ? num(plan.sl) : 'WAIT'}</span> <span class="muted">beyond structure + ATR buffer</span></p>
+    <p><b>Take-Profit 1:</b> <span class="green">${active ? num(plan.tp1) : 'WAIT'}</span> <span class="muted">partial profit</span></p>
+    <p><b>Take-Profit 2:</b> <span class="green">${active ? num(plan.tp2) : 'WAIT'}</span> <span class="muted">extends only when trend remains strong</span></p>
+    <p><b>Risk/Reward:</b> ${esc(plan.rr)}</p><p><b>Estimated full-plan profit:</b> <span class="green">${active ? money(plan.estimatedFullTradeProfitUsd) : 'WAIT'}</span></p>
+    ${!active ? `<p class="warning-box">No trade: need one valid structure location, directional bias, memory-cloud pullback, MACD timing, trigger candle, and valid SL/RR.</p>` : ''}
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   </div>${conditionList}`;
 }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 function svgPathFromSeries(series, x, y) {
   let d = '';
   series.forEach((v, i) => {
@@ -252,7 +343,11 @@ function svgBandAreas(high = [], low = [], regime = [], x, y) {
       top.push(`${x(i).toFixed(1)},${y(high[i]).toFixed(1)}`);
       bottom.unshift(`${x(i).toFixed(1)},${y(low[i]).toFixed(1)}`);
     }
+<<<<<<< HEAD
     if (top.length > 1 && bottom.length > 1) out += `<polygon points="${top.concat(bottom).join(' ')}" class="ema-cloud ${side === 'bear' ? 'bear' : 'bull'}"/>`;
+=======
+    if (top.length > 1 && bottom.length > 1) out += `<polygon points="${top.concat(bottom).join(' ')}" class="memory-cloud ${side === 'bear' ? 'bear' : 'bull'}"/>`;
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   }
   for (let i = 0; i < n; i += 1) {
     const ok = Number.isFinite(high[i]) && Number.isFinite(low[i]);
@@ -275,6 +370,7 @@ function chartSvg(row, side) {
   if (app.chart.loading && !data) return `<div class="chart-loading">Loading live Delta candles…</div>`;
   if (app.chart.error) return `<div class="chart-loading red">${esc(app.chart.error)}</div>`;
   if (!data || !Array.isArray(data.candles) || !data.candles.length) return `<div class="chart-loading">No chart candles loaded yet. Click Reload Chart.</div>`;
+<<<<<<< HEAD
   const allCandles = data.candles;
   const indAll = data.indicators || {};
   const view = app.chart.view || (app.chart.view = { bars: 120, start: null, yPad: 0.12, yShift: 0 });
@@ -324,16 +420,131 @@ function chartSvg(row, side) {
   return `<div id="chartCanvas" class="chart-svg-wrap"><svg id="mainChartSvg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(data.symbol)} live Delta chart"><defs><marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#00a63e"/></marker><marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#e00000"/></marker></defs><rect x="0" y="0" width="${W}" height="${H}" fill="#fff"/>${grid.join('')}<text x="18" y="24" class="chart-title">${esc(data.symbol.replace('USD','/USD'))} · ${esc(data.resolution)} · drag chart to pan · wheel to zoom</text><text x="520" y="24" class="chart-ohlc">${esc(ohlc)}</text><text x="18" y="48" class="legend-fast">EMA${esc(ind.emaFastLength || 5)}</text><text x="100" y="48" class="legend-slow">EMA${esc(ind.emaSlowLength || 12)}</text><text x="194" y="48" class="legend-memory">KN Smart Entry / SL / TP1 / TP2 / TP3 + SMI</text>${zones}${candleEls}<path d="${emaFastPath}" class="kn-fast"/><path d="${emaSlowPath}" class="kn-slow"/>${livePriceLine}${smiMarkers}${level(plan.entry, 'entry', 'ENTRY')}${level(plan.sl, 'sl', 'SL')}${level(plan.tp1, 'tp1', 'TP1')}${level(plan.tp2, 'tp2', 'TP2')}${level(plan.tp3, 'tp3', 'TP3')}${drawingEls}<line x1="0" y1="${priceH}" x2="${W}" y2="${priceH}" class="divider"/><text x="18" y="${smiTop-12}" class="chart-title">Stochastic Momentum Index · black SMI + red signal EMA</text>${smiGrid}<path d="${smiPath}" class="smi-line"/><path d="${smiSigPath}" class="smi-signal"/></svg><div class="chart-foot"><span>${plan.visualOnly ? 'Showing latest KN Smart visual levels even before bot execution confirmation.' : esc(data.source || '')}</span><span>${data.lastFetchAt ? `Last candle fetch: ${esc(new Date(data.lastFetchAt).toLocaleString())}` : ''}</span>${tvLink}</div></div>`;
 }
 
+=======
+  const candles = data.candles;
+  const ind = data.indicators || {};
+  const sr = data.supportResistance || row?.supportResistance || {};
+  const plan = tradePlanFor(row, side);
+  const W = 1120, priceH = 452, macdTop = 480, macdH = 220, H = 748;
+  const leftPad = 26, rightPad = 82;
+  const x = i => leftPad + i * ((W - leftPad - rightPad) / Math.max(1, candles.length - 1));
+  const candleW = Math.max(3, Math.min(9, (W - leftPad - rightPad) / candles.length * 0.62));
+
+  const emaVals = [...(ind.ema50Exec || []), ...(ind.ema200Exec || []), ...(ind.ema15 || []), ...(ind.ema1h || []), ...(ind.memoryLine || []), ...(ind.memoryCloudHigh || []), ...(ind.memoryCloudLow || [])].filter(Number.isFinite);
+  const planVals = plan.active ? [plan.entry, plan.sl, plan.tp1, plan.tp2] : [];
+  const srVals = [sr.support, sr.resistance].filter(v => Number.isFinite(Number(v))).map(Number);
+  const lows = candles.map(c => c.low), highs = candles.map(c => c.high);
+  let minP = Math.min(...lows, ...emaVals, ...planVals, ...srVals), maxP = Math.max(...highs, ...emaVals, ...planVals, ...srVals);
+  if (!Number.isFinite(minP) || !Number.isFinite(maxP) || minP === maxP) { minP = candles.at(-1).close * 0.99; maxP = candles.at(-1).close * 1.01; }
+  const pad = (maxP - minP) * 0.12;
+  minP -= pad; maxP += pad;
+  const y = v => 38 + (maxP - v) / (maxP - minP) * (priceH - 72);
+
+  const grid = [];
+  for (let i = 0; i <= 7; i += 1) {
+    const val = minP + (maxP - minP) * (i / 7);
+    const yy = y(val);
+    grid.push(`<line x1="0" y1="${yy.toFixed(1)}" x2="${W}" y2="${yy.toFixed(1)}" class="grid"/><text x="${W-76}" y="${(yy-4).toFixed(1)}" class="axis-label">${num(val)}</text>`);
+  }
+  for (let i = 0; i < 8; i += 1) {
+    const idx = Math.round(i * (candles.length - 1) / 7);
+    const xx = x(idx);
+    grid.push(`<line x1="${xx.toFixed(1)}" y1="30" x2="${xx.toFixed(1)}" y2="${H-32}" class="grid faint"/><text x="${(xx-14).toFixed(1)}" y="${H-12}" class="axis-label">${formatTime(candles[idx]?.time)}</text>`);
+  }
+
+  const candleEls = candles.map((c, i) => {
+    const up = c.close >= c.open;
+    const cx = x(i);
+    const top = Math.min(y(c.open), y(c.close));
+    const h = Math.max(2, Math.abs(y(c.open) - y(c.close)));
+    const liveCls = c.live ? ' live-candle' : '';
+    return `<line x1="${cx.toFixed(1)}" y1="${y(c.high).toFixed(1)}" x2="${cx.toFixed(1)}" y2="${y(c.low).toFixed(1)}" class="wick ${up ? 'up' : 'down'}${liveCls}"/><rect x="${(cx-candleW/2).toFixed(1)}" y="${top.toFixed(1)}" width="${candleW.toFixed(1)}" height="${h.toFixed(1)}" rx="1" class="candle ${up ? 'up' : 'down'}${liveCls}"/>`;
+  }).join('');
+
+  const ema50Path = svgPathFromSeries(ind.ema50Exec || [], x, y);
+  const ema200Path = svgPathFromSeries(ind.ema200Exec || [], x, y);
+  const ema15Path = svgPathFromSeries(ind.ema15 || [], x, y);
+  const ema1hPath = svgPathFromSeries(ind.ema1h || [], x, y);
+  const memoryLinePath = svgPathFromSeries(ind.memoryLine || [], x, y);
+  const memoryCloud = svgBandAreas(ind.memoryCloudHigh || [], ind.memoryCloudLow || [], ind.memoryRegime || [], x, y);
+  const level = (v, klass, label) => !Number.isFinite(Number(v)) ? '' : `<line x1="0" y1="${y(v).toFixed(1)}" x2="${W-rightPad}" y2="${y(v).toFixed(1)}" class="level ${klass}"/><text x="${W-220}" y="${(y(v)-7).toFixed(1)}" class="label ${klass}">${label} ${num(v)}</text>`;
+  const zones = plan.active ? (() => {
+    const gy = Math.min(y(plan.entry), y(plan.tp2)), gh = Math.abs(y(plan.entry)-y(plan.tp2));
+    const ry = Math.min(y(plan.entry), y(plan.sl)), rh = Math.abs(y(plan.entry)-y(plan.sl));
+    return `<rect x="${W*0.62}" y="${gy.toFixed(1)}" width="${W*0.26}" height="${gh.toFixed(1)}" class="target-zone"/><rect x="${W*0.62}" y="${ry.toFixed(1)}" width="${W*0.26}" height="${rh.toFixed(1)}" class="stop-zone"/>`;
+  })() : '';
+  const proj = plan.active ? (plan.side === 'LONG'
+    ? `<path d="M ${W*0.64} ${y(plan.entry)} Q ${W*0.74} ${y((plan.entry+plan.tp2)/2)} ${W*0.86} ${y(plan.tp2)}" class="projection long" marker-end="url(#arrowGreen)"/>`
+    : `<path d="M ${W*0.64} ${y(plan.entry)} Q ${W*0.74} ${y((plan.entry+plan.tp2)/2)} ${W*0.86} ${y(plan.tp2)}" class="projection short" marker-end="url(#arrowRed)"/>`) : '';
+
+  const macdLine = ind.macdLine || [], macdSig = ind.macdSignal || [], hist = ind.macdHist || [];
+  const macdVals = [...macdLine, ...macdSig, ...hist].filter(Number.isFinite);
+  const maxAbs = Math.max(1e-9, ...macdVals.map(v => Math.abs(v))) * 1.2;
+  const zeroY = macdTop + macdH / 2;
+  const ym = v => zeroY - (v / maxAbs) * (macdH * 0.42);
+  const macdPath = svgPathFromSeries(macdLine, x, ym);
+  const signalPath = svgPathFromSeries(macdSig, x, ym);
+  const histEls = hist.map((h, i) => {
+    if (!Number.isFinite(h)) return '';
+    const yy = h >= 0 ? ym(h) : zeroY;
+    return `<rect x="${(x(i)-3).toFixed(1)}" y="${yy.toFixed(1)}" width="6" height="${Math.max(1, Math.abs(ym(h)-zeroY)).toFixed(1)}" class="hist ${h >= 0 ? 'pos' : 'neg'}"/>`;
+  }).join('');
+  const macdGrid = [-maxAbs, 0, maxAbs].map(v => `<line x1="0" y1="${ym(v).toFixed(1)}" x2="${W}" y2="${ym(v).toFixed(1)}" class="grid"/><text x="${W-76}" y="${(ym(v)-4).toFixed(1)}" class="axis-label">${num(v)}</text>`).join('');
+
+  const sig = data.signal || {};
+  const offset = Number(data.chartOffset || 0);
+  let divPrice = '', divMacd = '';
+  if (data.resolution === '5m' && sig.divergence?.first && sig.divergence?.second) {
+    const i1 = sig.divergence.first.index - offset;
+    const i2 = sig.divergence.second.index - offset;
+    if (i1 >= 0 && i2 >= 0 && i1 < candles.length && i2 < candles.length) {
+      const isLong = sig.entrySide === 'LONG' || (sig.conditions?.longTrend && !sig.conditions?.shortTrend);
+      divPrice = isLong
+        ? `<line x1="${x(i1)}" y1="${y(candles[i1].low)}" x2="${x(i2)}" y2="${y(candles[i2].low)}" class="div-price"/><text x="${x(i1)}" y="${y(candles[i2].low)+20}" class="tag">Price Lower Low</text>`
+        : `<line x1="${x(i1)}" y1="${y(candles[i1].high)}" x2="${x(i2)}" y2="${y(candles[i2].high)}" class="div-price"/><text x="${x(i1)}" y="${y(candles[i2].high)-12}" class="tag">Price Higher High</text>`;
+      if (Number.isFinite(macdLine[i1]) && Number.isFinite(macdLine[i2])) {
+        divMacd = isLong
+          ? `<line x1="${x(i1)}" y1="${ym(macdLine[i1])}" x2="${x(i2)}" y2="${ym(macdLine[i2])}" class="div-macd"/><text x="${x(i2)+10}" y="${ym(macdLine[i2])+20}" class="macd-note">MACD Higher Low</text>`
+          : `<line x1="${x(i1)}" y1="${ym(macdLine[i1])}" x2="${x(i2)}" y2="${ym(macdLine[i2])}" class="div-macd"/><text x="${x(i2)+10}" y="${ym(macdLine[i2])-12}" class="macd-note">MACD Lower High</text>`;
+      }
+    }
+  }
+
+  const last = candles.at(-1);
+  const currentPrice = Number(data.currentPrice || last?.close || 0);
+  const livePriceLine = Number.isFinite(currentPrice) && currentPrice > 0 ? `<line x1="0" y1="${y(currentPrice).toFixed(1)}" x2="${W-rightPad}" y2="${y(currentPrice).toFixed(1)}" class="live-price-line"/><rect x="${W-rightPad+4}" y="${(y(currentPrice)-11).toFixed(1)}" width="74" height="22" rx="4" class="live-price-box"/><text x="${W-rightPad+10}" y="${(y(currentPrice)+4).toFixed(1)}" class="live-price-text">${num(currentPrice)}</text>` : '';
+  const liveFlag = data.usesLivePreview ? ' LIVE PREVIEW' : ' CLOSED';
+  const ohlc = last ? `O${num(last.open)} H${num(last.high)} L${num(last.low)} C${num(last.close)}${liveFlag}` : '';
+  const tvLink = data.tradingViewUrl ? `<a class="tv-link" href="${esc(data.tradingViewUrl)}" target="_blank" rel="noreferrer">Open TradingView Reference</a>` : '';
+  return `<div id="chartCanvas" class="chart-svg-wrap"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(data.symbol)} live Delta chart">
+    <defs><marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#00a63e"/></marker><marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#e00000"/></marker></defs>
+    <rect x="0" y="0" width="${W}" height="${H}" fill="#fff"/>${grid.join('')}
+    <text x="18" y="24" class="chart-title">${esc(data.symbol.replace('USD','/USD'))} · ${esc(data.resolution)} closed-candle chart · ${esc(data.exchange || 'Delta')}</text>
+    <text x="430" y="24" class="chart-ohlc">${esc(ohlc)}</text>
+    <text x="18" y="48" class="legend-mid">EMA50</text><text x="96" y="48" class="legend-slow">EMA200</text><text x="190" y="48" class="legend-memory">Memory Cloud</text><text x="314" y="48" class="legend-blue">15m EMA50</text><text x="430" y="48" class="legend-orange">1h EMA50</text>
+    ${memoryCloud}${zones}${candleEls}<path d="${memoryLinePath}" class="memory-line"/><path d="${ema50Path}" class="ema ema50"/><path d="${ema200Path}" class="ema ema200"/><path d="${ema15Path}" class="ema ema15"/><path d="${ema1hPath}" class="ema ema1h"/>${level(sr.support, 'support', 'Support')}${level(sr.resistance, 'resistance', 'Resistance')}${livePriceLine}${divPrice}${level(plan.entry, 'entry', 'Entry')}${level(plan.sl, 'sl', 'Stop-Loss')}${level(plan.tp1, 'tp1', 'TP1')}${level(plan.tp2, 'tp2', 'Take-Profit')}${proj}
+    <line x1="0" y1="${priceH}" x2="${W}" y2="${priceH}" class="divider"/>
+    <text x="18" y="${macdTop-10}" class="chart-title">MACD 12/26/9 · histogram expansion/contraction · MACD timing + optional divergence + memory-cloud pullback${data.usesLivePreview ? ' · live preview' : ''}</text>${macdGrid}${histEls}<path d="${macdPath}" class="macd-line"/><path d="${signalPath}" class="signal-line"/>${divMacd}
+  </svg><div class="chart-foot"><span>${esc(data.source || '')}</span><span>${data.lastFetchAt ? `Last candle fetch: ${esc(new Date(data.lastFetchAt).toLocaleString())}` : ''}</span>${tvLink}</div></div>`;
+}
+
+
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 function drawChart() { /* SVG chart is rendered directly by chartSvg(). */ }
 
 function chartPage() {
   const coins = selectedCoins(); if (!coins.includes(app.chart.coin)) app.chart.coin = coins[0] || 'BTCUSD';
   const r = selectedRow(); const direction = chartDirectionForTab(r); const plan = tradePlanFor(r, direction);
+<<<<<<< HEAD
   return `${coinSelector()}<section class="chart-layout"><div class="panel chart-panel"><div class="panel-title"><h2>${coinLogo(app.chart.coin)} ${esc(app.chart.coin)} Chart</h2><div class="chart-actions"><select id="chartTf"><option ${app.chart.timeframe==='5m'?'selected':''}>5m</option><option ${app.chart.timeframe==='15m'?'selected':''}>15m</option><option ${app.chart.timeframe==='30m'?'selected':''}>30m</option><option ${app.chart.timeframe==='1h'?'selected':''}>1h</option></select><button id="loadChartBtn">Reload Chart</button></div></div><div class="tv-toolbar"><button data-chart-tool="pan" class="${app.chart.tool==='pan'?'active':''}">Pan</button><button data-chart-tool="line" class="${app.chart.tool==='line'?'active':''}">Line</button><button data-chart-tool="long" class="${app.chart.tool==='long'?'active':''}">Long</button><button data-chart-tool="short" class="${app.chart.tool==='short'?'active':''}">Short</button><button data-chart-tool="measure" class="${app.chart.tool==='measure'?'active':''}">Measure</button><button data-chart-action="zoomIn">+</button><button data-chart-action="zoomOut">−</button><button data-chart-action="resetView">Reset</button><button data-chart-action="clearDrawings">Clear tools</button></div><div class="tv-chart-shell"><div class="tv-leftbar"><button data-chart-tool="pan">↕</button><button data-chart-tool="line">╱</button><button data-chart-tool="long">L</button><button data-chart-tool="short">S</button><button data-chart-tool="measure">⌁</button><button data-chart-action="resetView">⌂</button></div><div class="tv-chart-main">${chartSvg(r, direction)}</div><div class="tv-rightbar"><button title="Watchlist">☰</button><button title="Alerts">⏰</button><button title="Objects">◇</button><button title="Comments">☷</button><button title="Settings">⚙</button></div></div><div class="indicator-settings-mini"><b>Indicator settings:</b> KN EMA ${esc(app.state.settings?.knFastEmaLength || 5)} / ${esc(app.state.settings?.knSlowEmaLength || 12)}, ATR ${esc(app.state.settings?.knAtrPeriod || 14)} × ${esc(app.state.settings?.knSlAtrMultiplier ?? 1.5)}, SMI ${esc(app.state.settings?.smiPercentKLength || 10)} ${esc(app.state.settings?.smiPercentDLength || 3)} ${esc(app.state.settings?.smiSmoothingPeriod || 5)} ${esc(app.state.settings?.smiOverbought ?? 40)} ${esc(app.state.settings?.smiOversold ?? -40)}. Change them on Strategy page.</div></div>
+=======
+  return `${coinSelector()}<section class="chart-layout"><div class="panel chart-panel"><div class="panel-title"><h2>${coinLogo(app.chart.coin)} ${esc(app.chart.coin)} Chart</h2><div class="chart-actions"><select id="chartTf"><option ${app.chart.timeframe==='5m'?'selected':''}>5m</option><option ${app.chart.timeframe==='15m'?'selected':''}>15m</option><option ${app.chart.timeframe==='30m'?'selected':''}>30m</option><option ${app.chart.timeframe==='1h'?'selected':''}>1h</option></select><button id="loadChartBtn">Reload Chart</button></div></div>${chartSvg(r, direction)}</div>
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     <aside class="panel forecast-panel"><div class="panel-title"><h2>Forecast / Projection</h2><span class="muted">${esc(app.chart.coin)} · ${direction}</span></div><div class="seg-tabs">${['Forecast','Projection','Long','Short'].map(x=>`<button class="seg ${app.chart.tab===x?'active':''}" data-chart-tab="${x}">${x}</button>`).join('')}</div>
     <div class="forecast-body">${forecastTabContent(r, direction, plan)}</div></aside></section>`;
 }
 
+<<<<<<< HEAD
 function strategySettingsPanel() {
   const s = app.state.settings || {};
   return `<section class="panel"><div class="panel-title"><h2>Strategy Engine Settings</h2><span class="pill pill-data">V77 Strategy Page</span></div><p class="warning-box"><b>Strategy controls:</b> keep only Stochastic Momentum Index + KN Smart TP/SL. Wallet/API controls remain on Settings.</p><form id="strategySettingsForm" class="settings-grid">
@@ -366,6 +577,12 @@ function strategiesPage() {
 }
 
 
+=======
+function strategiesPage() {
+  return `${coinSelector()}<section class="strategy-grid"><article class="rule-card long"><h2>BULL SETUP</h2><ol><li>Use only the transcript MTF trend rule: 15m EMA50 must be above 1h EMA50.</li><li>Keep only EMA50 and EMA200 on the chart. EMA8/9/13/21 are removed as hard filters.</li><li>Market Memory cloud must be green/bullish, price must pull back into or near the green cloud, and a closed candle must reject upward.</li><li>MACD 12/26/9 must confirm timing. For the strict transcript setup: MACD and signal stay below zero, price makes lower low, MACD makes higher low, histogram changes color, and bullish crossover confirms.</li><li>Entry is pullback-limit first. Market entry is blocked unless explicitly enabled later.</li><li>SL goes below the cloud/swing/divergence low with ATR buffer. Wider SL reduces lots; it is not tightened into noise.</li><li>TP1 books partial at 1R. TP2 uses 2R minimum and may extend only if momentum remains strong.</li></ol></article><article class="rule-card short"><h2>BEAR SETUP</h2><ol><li>Use only the transcript MTF trend rule: 15m EMA50 must be below 1h EMA50.</li><li>Keep only EMA50 and EMA200 on the chart. EMA8/9/13/21 are removed as hard filters.</li><li>Market Memory cloud must be red/bearish, price must pull back into or near the red cloud, and a closed candle must reject downward.</li><li>MACD 12/26/9 must confirm timing. For the strict transcript setup: MACD and signal stay above zero, price makes higher high, MACD makes lower high, histogram changes color, and bearish crossover confirms.</li><li>Entry is pullback-limit first. Market entry is blocked unless explicitly enabled later.</li><li>SL goes above the cloud/swing/divergence high with ATR buffer. Wider SL reduces lots; it is not tightened into wick noise.</li><li>TP1 books partial at 1R. TP2 uses 2R minimum and may extend only if momentum remains strong.</li></ol></article><aside class="rule-card params"><h2>V70 Execution DNA</h2><p><b>Core:</b> EMA50/200 + Market Memory cloud + MACD timing + optional divergence confluence + previous-day candle context + 1D/1H/15M support-resistance + directional volume flow.</p><p><b>Removed as hard filters:</b> EMA8/9/13/21, standalone VWAP, RSI, CCI, breakout, SAR, two-pole.</p><p><b>Visual:</b> chart tab shows green/red memory cloud like the reference image, EMA50, EMA200, 15m EMA50, 1h EMA50, support/resistance, entry, SL and TP.</p><p><b>Safety:</b> closed candles only, paper/live same scanner path, limit-first execution, SL/TP plotted before order.</p></aside></section>`;
+}
+
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 function tradesPage() {
   const closed = app.state.closedTrades || [];
   const m = app.state.metrics || {};
@@ -391,7 +608,11 @@ function assetManagerHtml() {
   const options = symbols.map(sym => `<option value="${esc(sym)}">${esc(sym)}</option>`).join('');
   return `<section class="panel asset-panel"><div class="panel-title"><h2>Delta Coin Universe</h2><button type="button" id="loadDeltaSymbolsBtn" class="btn-blue">${catalog.loading ? 'Loading…' : 'Load Delta Coins'}</button></div>
     <div class="asset-manager">
+<<<<<<< HEAD
       <p class="muted">Add or remove Delta Exchange India symbols scanned by this V77 practical multi-horizon SMI + KN Smart TP/SL bot. This affects Dashboard, Chart coin selector, scanner, Forecast/Projection, and paper/live trade candidates.</p>
+=======
+      <p class="muted">Add or remove Delta Exchange India symbols scanned by this Institutional EMA + MACD MTF bot. This affects Dashboard, Chart coin selector, scanner, Forecast/Projection, and paper/live trade candidates.</p>
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
       <div class="asset-chips">${assets.map(sym => `<span class="asset-chip">${coinLogo(sym)}<b>${esc(sym)}</b><button type="button" title="Remove ${esc(sym)}" data-remove-asset="${esc(sym)}">×</button></span>`).join('') || '<span class="empty-inline">No coins selected.</span>'}</div>
       <div class="asset-add-row">
         <input id="assetSymbolInput" list="deltaSymbolList" placeholder="Example: LINKUSD, MATICUSD, BTCUSD" autocomplete="off">
@@ -439,6 +660,7 @@ async function loadDeltaSymbols() {
   }
 }
 
+<<<<<<< HEAD
 function walletSettingsPanel() {
   const s = app.state.settings || {};
   const m = app.state.metrics || {};
@@ -479,6 +701,75 @@ function settingsPage() {
 }
 
 
+=======
+function settingsPage() {
+  const s = app.state.settings, a = app.state.apiStatus || {};
+  return `${assetManagerHtml()}<section class="settings-layout"><section class="panel"><div class="panel-title"><h2>Strategy Settings</h2><span class="pill pill-data">V70 balanced 5m scalp + MTF S/R</span></div><p class="warning-box"><b>V70:</b> balanced 5m scalp execution only. 15m/1h/1D are context for EMA50 direction, support/resistance, previous-day candle and volume flow. Market Memory cloud + side-correct 5m closed candle + MACD timing must pass before entry; divergence and zero-line are confluence, not blockers. Limit/pullback-first; LIVE requires Delta order id + bracket SL/TP payload.</p><form id="strategySettingsForm" class="settings-grid">
+    <div class="field"><label>Entry model</label><select name="entryModel"><option value="PRACTICAL_MTF_MACD" ${s.entryModel !== 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'selected' : ''}>Practical: MTF EMA + MACD cross + histogram change</option><option value="STRICT_TRANSCRIPT_DIVERGENCE" ${s.entryModel === 'STRICT_TRANSCRIPT_DIVERGENCE' ? 'selected' : ''}>Strict transcript: divergence + zero-line hard</option></select></div>
+    <div class="field"><label>Zero-line mode</label><select name="zeroLineMode"><option value="soft" ${s.zeroLineMode !== 'hard' ? 'selected' : ''}>Soft context</option><option value="hard" ${s.zeroLineMode === 'hard' ? 'selected' : ''}>Hard blocker</option></select></div>
+    <div class="field"><label>Require divergence for entry</label><select name="requireDivergenceForEntry"><option value="false" ${!s.requireDivergenceForEntry ? 'selected' : ''}>No — show as context</option><option value="true" ${s.requireDivergenceForEntry ? 'selected' : ''}>Yes — hard blocker</option></select></div>
+    <div class="field"><label>Institutional EMA layer</label><select name="institutionalEmaEnabled"><option value="true" ${s.institutionalEmaEnabled !== false ? 'selected' : ''}>On — hard gate</option><option value="false" ${s.institutionalEmaEnabled === false ? 'selected' : ''}>Off</option></select></div>
+    <div class="field"><label>Market Memory layer</label><select name="marketMemoryEnabled"><option value="true" ${s.marketMemoryEnabled !== false ? 'selected' : ''}>On — hard pullback/match gate</option><option value="false" ${s.marketMemoryEnabled === false ? 'selected' : ''}>Off</option></select></div>
+    <div class="field"><label>Require Memory pullback</label><select name="marketMemoryRequirePullback"><option value="true" ${s.marketMemoryRequirePullback !== false ? 'selected' : ''}>Yes — wait for cloud retest</option><option value="false" ${s.marketMemoryRequirePullback === false ? 'selected' : ''}>No — regime only</option></select></div>
+    <div class="field"><label>Require top match outcome</label><select name="marketMemoryRequireTopMatchOutcome"><option value="true" ${s.marketMemoryRequireTopMatchOutcome !== false ? 'selected' : ''}>Yes — #1 match must continue same direction</option><option value="false" ${s.marketMemoryRequireTopMatchOutcome === false ? 'selected' : ''}>No — similarity only</option></select></div>
+    <div class="field"><label>Memory scan depth</label><input name="marketMemoryScanDepth" type="number" min="120" max="900" value="${esc(s.marketMemoryScanDepth || 300)}"></div>
+    <div class="field"><label>Top similar matches</label><input name="marketMemoryTopMatches" type="number" min="1" max="10" value="${esc(s.marketMemoryTopMatches || 5)}"></div>
+    <div class="field"><label>Pattern length candles</label><input name="marketMemoryPatternLength" type="number" min="5" max="30" value="${esc(s.marketMemoryPatternLength || 10)}"></div>
+    <div class="field"><label>Min similarity %</label><input name="marketMemoryMinSimilarityPct" type="number" min="55" max="98" step="1" value="${esc(s.marketMemoryMinSimilarityPct || 80)}"></div>
+    <div class="field"><label>Memory sensitivity</label><input name="marketMemorySensitivity" type="number" min="0.3" max="5" step="0.1" value="${esc(s.marketMemorySensitivity || 1.5)}"></div>
+    <div class="field"><label>Memory cloud ATR width</label><input name="marketMemoryCloudAtrMult" type="number" min="0.2" max="3" step="0.05" value="${esc(s.marketMemoryCloudAtrMult || 0.75)}"></div>
+    <div class="field"><label>Memory max extension ATR</label><input name="marketMemoryMaxExtensionAtr" type="number" min="0.5" max="5" step="0.1" value="${esc(s.marketMemoryMaxExtensionAtr || 1.6)}"></div>
+    <div class="field"><label>Require EMA stack</label><select name="institutionalRequireEmaStack"><option value="true" ${s.institutionalRequireEmaStack !== false ? 'selected' : ''}>Yes</option><option value="false" ${s.institutionalRequireEmaStack === false ? 'selected' : ''}>No</option></select></div>
+    <div class="field"><label>Require EMA50 pullback</label><select name="institutionalRequirePullback"><option value="true" ${s.institutionalRequirePullback !== false ? 'selected' : ''}>Yes</option><option value="false" ${s.institutionalRequirePullback === false ? 'selected' : ''}>No</option></select></div>
+    <div class="field"><label>Require price action</label><select name="institutionalRequirePriceAction"><option value="true" ${s.institutionalRequirePriceAction !== false ? 'selected' : ''}>Yes</option><option value="false" ${s.institutionalRequirePriceAction === false ? 'selected' : ''}>No</option></select></div>
+    <div class="field"><label>Require HTF MACD</label><select name="institutionalRequireHtfMacd"><option value="true" ${s.institutionalRequireHtfMacd !== false ? 'selected' : ''}>Yes</option><option value="false" ${s.institutionalRequireHtfMacd === false ? 'selected' : ''}>No</option></select></div>
+    <div class="field"><label>Execution EMA 9 / 21</label><input disabled value="${esc(s.entryEmaFastPeriod || 9)} / ${esc(s.entryEmaSlowPeriod || 21)}"></div><div class="field"><label>Trend EMA 50 / 200</label><input disabled value="${esc(s.trendEmaPeriod || 50)} / ${esc(s.dominantEmaPeriod || 200)}"></div>
+    <div class="field"><label>EMA50 pullback lookback</label><input name="institutionalPullbackLookback" type="number" min="3" max="30" value="${esc(s.institutionalPullbackLookback || 10)}"></div>
+    <div class="field"><label>EMA50 pullback ATR tolerance</label><input name="institutionalPullbackAtrMult" type="number" step="0.05" value="${esc(s.institutionalPullbackAtrMult || 0.85)}"></div>
+    <div class="field"><label>Max extension from EMA50 ATR</label><input name="institutionalMaxExtensionAtr" type="number" step="0.1" value="${esc(s.institutionalMaxExtensionAtr || 2.2)}"></div>
+    <div class="field"><label>MACD cross window candles</label><input name="entrySignalWindowCandles" type="number" min="1" max="12" value="${esc(s.entrySignalWindowCandles || 2)}"></div>
+    <div class="field"><label>Histogram color lookback</label><input name="histColorLookback" type="number" min="2" max="30" value="${esc(s.histColorLookback || 6)}"></div>
+    <div class="field"><label>Min confluence score</label><input name="minConfluenceScore" type="number" min="5" max="12" value="${esc(s.minConfluenceScore || 7)}"></div><div class="field"><label>A+ confluence score</label><input name="aPlusConfluenceScore" type="number" min="7" max="13" value="${esc(s.aPlusConfluenceScore || 10)}"></div><div class="field"><label>Tier 3 min score</label><input name="tier3MinConfluenceScore" type="number" min="7" max="13" value="${esc(s.tier3MinConfluenceScore || 10)}"></div><div class="field"><label>Structure proximity ATR</label><input name="structureProximityAtr" type="number" min="0.25" max="4" step="0.05" value="${esc(s.structureProximityAtr || 1.35)}"></div><div class="field"><label>VWAP filter</label><select name="vwapConfluenceEnabled"><option value="false" ${s.vwapConfluenceEnabled === false ? 'selected' : ''}>Off — not a hard gate</option><option value="true" ${s.vwapConfluenceEnabled === true ? 'selected' : ''}>On — soft/structure only</option></select></div><div class="field"><label>Volume spike filter</label><select name="volumeSpikeConfluenceEnabled"><option value="false" ${s.volumeSpikeConfluenceEnabled === false ? 'selected' : ''}>Off — not a hard gate</option><option value="true" ${s.volumeSpikeConfluenceEnabled === true ? 'selected' : ''}>On — soft only</option></select></div><div class="field"><label>Max concurrent positions</label><input name="maxConcurrentPositions" type="number" min="1" max="5" value="${esc(s.maxConcurrentPositions)}"></div>
+    <div class="field"><label>Risk %</label><input name="riskPercent" type="number" step="0.1" value="${esc(s.riskPercent)}"></div>
+    <div class="field"><label>Default leverage</label><input name="defaultLeverage" type="number" min="1" max="25" value="${esc(s.defaultLeverage)}"></div>
+    <div class="field"><label>Max leverage</label><input name="maxLeverage" type="number" min="1" max="25" value="${esc(s.maxLeverage)}"></div>
+    <div class="field"><label>Auto-size to target profit</label><select name="autoSizeToTargetProfit"><option value="true" ${s.autoSizeToTargetProfit !== false ? 'selected' : ''}>Yes — adjust margin/leverage</option><option value="false" ${s.autoSizeToTargetProfit === false ? 'selected' : ''}>No</option></select></div>
+    <div class="field"><label>Target full-trade profit $</label><input name="targetFullTradeProfitUsd" type="number" min="0" step="0.25" value="${esc(s.targetFullTradeProfitUsd ?? s.targetProfitUsd ?? 2)}"></div>
+    <div class="field"><label>Minimum full-trade profit $</label><input name="minFullTradeProfitUsd" type="number" min="0" step="0.25" value="${esc(s.minFullTradeProfitUsd ?? s.minTargetProfitUsd ?? 1)}"></div>
+    <div class="field"><label>Block tiny-profit trades</label><select name="blockTinyProfitTrades"><option value="true" ${s.blockTinyProfitTrades !== false ? 'selected' : ''}>Yes — skip if below minimum</option><option value="false" ${s.blockTinyProfitTrades === false ? 'selected' : ''}>No</option></select></div>
+    <div class="field"><label>Use max leverage for target sizing</label><select name="autoUseMaxLeverageForProfitTarget"><option value="true" ${s.autoUseMaxLeverageForProfitTarget !== false ? 'selected' : ''}>Yes</option><option value="false" ${s.autoUseMaxLeverageForProfitTarget === false ? 'selected' : ''}>No</option></select></div>
+    <div class="field"><label>Pivot left</label><input name="divergencePivotLeft" type="number" min="1" max="10" value="${esc(s.divergencePivotLeft || 3)}"></div>
+    <div class="field"><label>Pivot right</label><input name="divergencePivotRight" type="number" min="1" max="10" value="${esc(s.divergencePivotRight || 3)}"></div>
+    <div class="field"><label>Divergence lookback</label><input name="divergenceLookback" type="number" min="20" max="180" value="${esc(s.divergenceLookback || 60)}"></div>
+    <div class="field"><label>SL ATR buffer</label><input name="slBufferAtrMult" type="number" step="0.01" value="${esc(s.slBufferAtrMult || 0.25)}"></div>
+    <div class="field"><label>TP1 close %</label><input name="tp1ClosePct" type="number" min="0" max="100" value="${esc(s.tp1ClosePct || 50)}"></div>
+    <div class="field"><label>TP2 close remaining %</label><input name="tp2ClosePct" type="number" min="0" max="100" value="${esc(s.tp2ClosePct || 100)}"></div>
+    <div class="field"><label>Dynamic TP extension</label><select name="dynamicTpEnabled"><option value="true" ${s.dynamicTpEnabled !== false ? 'selected' : ''}>On — MACD strength extends TP</option><option value="false" ${s.dynamicTpEnabled === false ? 'selected' : ''}>Off</option></select></div>
+    <div class="field"><label>Strong MACD TP2 target R</label><input name="dynamicTpStrongR" type="number" min="2" max="8" step="0.5" value="${esc(s.dynamicTpStrongR || 3)}"></div>
+    <div class="field"><label>Max dynamic TP R</label><input name="dynamicTpMaxR" type="number" min="2" max="8" step="0.5" value="${esc(s.dynamicTpMaxR || 5)}"></div>
+    <div class="field"><label>Shift TP1 to R</label><input name="dynamicTp1ShiftR" type="number" min="1" max="5" step="0.25" value="${esc(s.dynamicTp1ShiftR || 1.5)}"></div>
+    <div class="field"><label>Strong MACD TP1 close %</label><input name="dynamicTp1StrongClosePct" type="number" min="1" max="90" value="${esc(s.dynamicTp1StrongClosePct || 25)}"></div>
+    <div class="field"><label>EMA trail period</label><input name="trailingStopEmaPeriod" type="number" min="3" max="50" value="${esc(s.trailingStopEmaPeriod || 13)}"></div>
+    <div class="field"><label>EMA trail ATR buffer</label><input name="trailingStopAtrBuffer" type="number" min="0" max="2" step="0.05" value="${esc(s.trailingStopAtrBuffer || 0.20)}"></div>
+    <div class="field"><label>Normal coin initial margin $</label><input name="initialMarginUsd" type="number" min="1" step="1" value="${esc(s.initialMarginUsd)}"></div>
+    <div class="field"><label>BTC/ETH initial margin $</label><input name="majorInitialMarginUsd" type="number" min="1" step="1" value="${esc(s.majorInitialMarginUsd)}"></div>
+    <div class="field"><label>Max margin / coin $</label><input name="maxMarginPerCoinUsd" type="number" min="1" step="1" value="${esc(s.maxMarginPerCoinUsd)}"></div>
+    <div class="field"><label>BTC/ETH max margin $</label><input name="majorCoinMaxMarginUsd" type="number" min="1" step="1" value="${esc(s.majorCoinMaxMarginUsd)}"></div>
+    <div class="field"><label>Max SL loss / trade $</label><input name="maxStopLossUsd" type="number" min="0.1" step="0.1" value="${esc(s.maxStopLossUsd)}"></div>
+    <div class="field"><label>Paper bot allocation $</label><input name="maxBotAllocationUsd" type="number" min="1" step="1" value="${esc(s.maxBotAllocationUsd)}"></div>
+    <div class="field"><label>Live wallet allocation %</label><input name="liveWalletAllocationPct" type="number" min="1" max="100" step="1" value="${esc(s.liveWalletAllocationPct)}"></div>
+    <div class="field"><label>Live max bot allocation $</label><input name="liveMaxBotAllocationUsd" type="number" min="0" step="1" value="${esc(s.liveMaxBotAllocationUsd)}"></div>
+    <div class="field"><label>Entry order type</label><select name="entryOrderType"><option value="limit" ${s.entryOrderType !== 'market' ? 'selected' : ''}>Limit / pullback preferred</option><option value="market" ${s.entryOrderType === 'market' ? 'selected' : ''}>Market only if allowed</option></select></div>
+    <div class="field"><label>Require pullback execution</label><select name="requirePullbackForExecution"><option value="false" ${s.requirePullbackForExecution === false ? 'selected' : ''}>No — immediate limit after signal (not recommended)</option><option value="true" ${s.requirePullbackForExecution !== false ? 'selected' : ''}>Yes — wait/place pullback limit (recommended)</option></select></div>
+    <div class="field"><label>Pullback ATR gap</label><input name="pullbackAtrMult" type="number" step="0.01" value="${esc(s.pullbackAtrMult ?? 0.20)}"></div>
+    <div class="field"><label>Max pullback ATR gap</label><input name="pullbackMaxAtrMult" type="number" step="0.05" value="${esc(s.pullbackMaxAtrMult ?? 1.50)}"></div>
+    <div class="field"><label>Allow market fallback</label><select name="allowMarketWhenNoPullback"><option value="false" ${!s.allowMarketWhenNoPullback ? 'selected' : ''}>No — safer</option><option value="true" ${s.allowMarketWhenNoPullback ? 'selected' : ''}>Yes — only if explicitly selected</option></select></div>
+    <button class="btn-green" type="submit">Save Strategy Settings</button>
+  </form></section>
+  <section class="panel"><div class="panel-title"><h2>Delta India API</h2><span class="pill ${s.paperTrade ? 'pill-paper' : 'pill-red'}">${s.paperTrade ? 'PAPER' : 'LIVE ARMED'}</span></div><form id="apiKeyForm" class="settings-grid"><div class="field"><label>Base URL</label><input name="deltaBaseUrl" value="${esc(s.deltaBaseUrl)}"></div><div class="field"><label>API key</label><input name="apiKey" value="${esc(app.apiDraft.apiKey)}" placeholder="${a.keysConfigured ? esc(a.keyPreview) : 'Paste key'}"></div><div class="field"><label>API secret</label><input name="secret" type="password" value="${esc(app.apiDraft.secret)}" placeholder="Paste secret"></div><div class="field"><label>Whitelist IP</label><input name="whitelistedIpNote" value="${esc(app.apiDraft.whitelistedIpNote || a.whitelistedIpNote || a.serverOutboundIp || '')}"></div><div class="field wide"><label><input name="liveTradingConfirmed" type="checkbox" ${a.liveTradingConfirmed ? 'checked' : ''}> I understand LIVE mode sends real Delta orders</label></div><button type="button" id="detectAndTestBtn" class="btn-blue">Detect IP + Test</button><button type="submit" class="btn-green">Save + Auto Setup</button><button type="button" id="forceSyncPositionsBtn" class="btn-blue">Sync Delta Positions Now</button><button type="button" id="clearStaleTradesBtn" class="btn-red">Clear Stale Local Live Trades</button><button type="button" id="clearKeysBtn" class="btn-red">Delete API Key</button></form><p class="warning-box">LIVE mode is blocked until API test passes, wallet sync passes, positions sync passes, and this live confirmation checkbox is saved. BOT stays OFF after switching modes. Use force sync after manual Delta closes; clear stale local live trades only after Delta shows no matching open position.</p></section></section>`;
+}
+
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 function render() {
   if (!app.state) return;
   renderHeader();
@@ -495,6 +786,7 @@ function render() {
 
 function payloadFromForm(formEl) {
   const fd = new FormData(formEl), out = {};
+<<<<<<< HEAD
   ['maxConcurrentPositions','riskPercent','defaultLeverage','maxLeverage','initialMarginUsd','majorInitialMarginUsd','majorCoinMaxMarginUsd','maxStopLossUsd','liveWalletAllocationPct','liveMaxBotAllocationUsd','slBufferAtrMult','tp1TriggerR','maxMarginPerCoinUsd','maxBotAllocationUsd','targetFullTradeProfitUsd','minFullTradeProfitUsd','smiPercentKLength','smiPercentDLength','smiSmoothingPeriod','smiSignalLength','smiOverbought','smiOversold','smiPullbackWindowCandles','smiRecoveryLookbackCandles','emaCloudFastLength','emaCloudSlowLength','cloudTouchToleranceAtrMult','cloudBreakToleranceAtrMult','rewardTargetR','minRR','slSwingLookback','knFastEmaLength','knSlowEmaLength','knAtrPeriod','knSlAtrMultiplier','knSignalLookbackCandles','knEntryConfirmLookbackCandles','knMaxEntryCandleAtrMult','knMaxEntryCandlePct','tp2TriggerR','tp3TriggerR'].forEach(k => { if (fd.has(k)) out[k] = Number(fd.get(k)); });
   ['autoSizeToTargetProfit','blockTinyProfitTrades','autoUseMaxLeverageForProfitTarget','knRequireSmiDirection'].forEach(k => { if (fd.has(k)) out[k] = String(fd.get(k)) === 'true'; });
   if (fd.has('ma1Type')) out.ma1Type = String(fd.get('ma1Type') || 'SMA');
@@ -510,6 +802,19 @@ function payloadFromForm(formEl) {
   out.strategyTimeframes = ['5m','15m','1h'];
   out.requirePullbackForExecution = false;
   out.allowMarketWhenNoPullback = false;
+=======
+  ['maxConcurrentPositions','riskPercent','defaultLeverage','maxLeverage','initialMarginUsd','majorInitialMarginUsd','majorCoinMaxMarginUsd','maxStopLossUsd','liveWalletAllocationPct','liveMaxBotAllocationUsd','divergencePivotLeft','divergencePivotRight','divergenceLookback','slBufferAtrMult','tp1ClosePct','tp2ClosePct','maxMarginPerCoinUsd','maxBotAllocationUsd','entrySignalWindowCandles','histColorLookback','pullbackAtrMult','pullbackMaxAtrMult','targetFullTradeProfitUsd','minFullTradeProfitUsd','institutionalEmaFastPeriod','institutionalEmaMidPeriod','institutionalEmaSlowPeriod','institutionalPullbackLookback','institutionalPullbackAtrMult','institutionalMaxExtensionAtr','institutionalPatternLookback','marketMemoryScanDepth','marketMemoryTopMatches','marketMemoryPatternLength','marketMemoryFutureLookahead','marketMemorySensitivity','marketMemoryMinSimilarityPct','marketMemoryCloudAtrMult','marketMemoryNearCloudAtrMult','marketMemoryMaxExtensionAtr','marketMemoryMinForwardMoveAtr','dynamicTpStrongR','dynamicTpMaxR','dynamicTp1ShiftR','dynamicTp1StrongClosePct','trailingStopEmaPeriod','trailingStopAtrBuffer','minConfluenceScore','aPlusConfluenceScore','tier3MinConfluenceScore','minMomentumConfirmations','structureProximityAtr','volumeSpikeMultiplier','vwapLookback'].forEach(k => { if (fd.has(k)) out[k] = Number(fd.get(k)); });
+  ['institutionalEmaEnabled','institutionalRequireEmaStack','institutionalRequirePullback','institutionalRequirePriceAction','institutionalRequireHtfMacd','marketMemoryEnabled','marketMemoryRequirePullback','marketMemoryRequireTopMatchOutcome','dynamicTpEnabled','vwapConfluenceEnabled','volumeSpikeConfluenceEnabled'].forEach(k => { if (fd.has(k)) out[k] = String(fd.get(k)) === 'true'; });
+  if (fd.has('entryModel')) out.entryModel = String(fd.get('entryModel') || 'PRACTICAL_MTF_MACD');
+  if (fd.has('zeroLineMode')) out.zeroLineMode = String(fd.get('zeroLineMode') || 'soft');
+  if (fd.has('requireDivergenceForEntry')) out.requireDivergenceForEntry = String(fd.get('requireDivergenceForEntry')) === 'true';
+  if (fd.has('entryOrderType')) out.entryOrderType = String(fd.get('entryOrderType') || 'limit');
+  if (fd.has('requirePullbackForExecution')) out.requirePullbackForExecution = String(fd.get('requirePullbackForExecution')) === 'true';
+  if (fd.has('allowMarketWhenNoPullback')) out.allowMarketWhenNoPullback = String(fd.get('allowMarketWhenNoPullback')) === 'true';
+  if (fd.has('autoSizeToTargetProfit')) out.autoSizeToTargetProfit = String(fd.get('autoSizeToTargetProfit')) === 'true';
+  if (fd.has('blockTinyProfitTrades')) out.blockTinyProfitTrades = String(fd.get('blockTinyProfitTrades')) === 'true';
+  if (fd.has('autoUseMaxLeverageForProfitTarget')) out.autoUseMaxLeverageForProfitTarget = String(fd.get('autoUseMaxLeverageForProfitTarget')) === 'true';
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
   // Mode is controlled by the PAPER/LIVE switch, not by this strategy form.
   return out;
 }
@@ -545,12 +850,19 @@ function bind() {
   $('#modeSwitch').addEventListener('change', e => setMode(e.target.checked));
   document.body.addEventListener('input', e => { if (!e.target.name) return; if (e.target.name === 'apiKey') app.apiDraft.apiKey = e.target.value; if (e.target.name === 'secret') app.apiDraft.secret = e.target.value; if (e.target.name === 'deltaBaseUrl') app.apiDraft.deltaBaseUrl = e.target.value; if (e.target.name === 'whitelistedIpNote') app.apiDraft.whitelistedIpNote = e.target.value; });
   document.body.addEventListener('change', e => { if (e.target.id === 'chartTf') { app.chart.timeframe = e.target.value; app.chart.data = null; loadChart({force:true}); } });
+<<<<<<< HEAD
   document.body.addEventListener('submit', e => { if (e.target.id === 'strategySettingsForm' || e.target.id === 'walletSettingsForm') { e.preventDefault(); saveSettings(e.target).catch(err=>toast(err.message)); } if (e.target.id === 'apiKeyForm') { e.preventDefault(); saveApi().catch(err=>toast(err.message)); } });
   document.body.addEventListener('click', e => {
     const coin = e.target.closest('[data-coin]'); if (coin) { app.chart.coin = coin.dataset.coin; app.chart.data = null; render(); if (app.page === 'chart') loadChart({force:true}); return; }
     const tab = e.target.closest('[data-chart-tab]'); if (tab) { app.chart.tab = tab.dataset.chartTab; render(); return; }
     const chartTool = e.target.closest('[data-chart-tool]'); if (chartTool) { app.chart.tool = chartTool.dataset.chartTool; render(); return; }
     const chartAction = e.target.closest('[data-chart-action]'); if (chartAction) { handleChartAction(chartAction.dataset.chartAction); return; }
+=======
+  document.body.addEventListener('submit', e => { if (e.target.id === 'strategySettingsForm') { e.preventDefault(); saveSettings(e.target).catch(err=>toast(err.message)); } if (e.target.id === 'apiKeyForm') { e.preventDefault(); saveApi().catch(err=>toast(err.message)); } });
+  document.body.addEventListener('click', e => {
+    const coin = e.target.closest('[data-coin]'); if (coin) { app.chart.coin = coin.dataset.coin; app.chart.data = null; render(); if (app.page === 'chart') loadChart({force:true}); return; }
+    const tab = e.target.closest('[data-chart-tab]'); if (tab) { app.chart.tab = tab.dataset.chartTab; render(); return; }
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
     const removeAsset = e.target.closest('[data-remove-asset]'); if (removeAsset) { const sym = removeAsset.dataset.removeAsset; saveAssetUniverse(selectedCoins().filter(x => x !== sym)).catch(err => toast(err.message)); return; }
     if (e.target.id === 'loadDeltaSymbolsBtn') { loadDeltaSymbols(); return; }
     if (e.target.id === 'addAssetBtn') { const input = $('#assetSymbolInput'); const sym = normalizeAssetInput(input?.value); if (!sym) { toast('Enter a Delta symbol first.'); return; } saveAssetUniverse([...selectedCoins(), sym]).then(() => { if (input) input.value = ''; }).catch(err => toast(err.message)); return; }
@@ -569,6 +881,7 @@ function bind() {
   });
 }
 function startPolling() { clearInterval(app.polling); app.polling = setInterval(() => loadState({ silent:true }), 5000); }
+<<<<<<< HEAD
 
 let chartDrag = null;
 function svgPoint(evt) {
@@ -625,5 +938,7 @@ document.body.addEventListener('wheel', e => {
   render();
 }, { passive: false });
 
+=======
+>>>>>>> 93470720e704c6f71ad4dd05e1ccaf5186004d5b
 window.addEventListener('resize', () => { if (app.page === 'chart') drawChart(); });
 window.addEventListener('DOMContentLoaded', () => { bind(); loadState(); startPolling(); });
