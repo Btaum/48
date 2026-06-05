@@ -120,9 +120,9 @@ function dashboardPage() {
       ${kpi('Total Trades', m.totalTrades || 0)}${kpi('Wins', m.wins || 0, 'green')}${kpi('Losses', m.losses || 0, 'red')}${kpi('Win Rate', `${Number(m.winRate || 0).toFixed(0)}%`, 'green')}
       ${kpi('Funds Used', money(fundsUsed), 'yellow')}${kpi('Available Allocation', money(app.state.risk?.remainingBotAllocation || 0), 'green')}${kpi('Open P/L', money(m.openPnl), clsPnL(m.openPnl))}${kpi(app.state.wallet?.walletSynced ? 'Delta Wallet Ref.' : 'Wallet', app.state.wallet?.walletSynced ? money(app.state.wallet?.equity) : 'SYNC NEEDED', app.state.wallet?.walletSynced ? '' : 'yellow')}
     </section>
-    <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades stay above scanner signals. V77 scans 5m scalp, 15m intraday, and 1h swing; paper remains available.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
-    <section class="panel"><div class="panel-title"><h2>Scanner Signals</h2><div class="legend"><b class="green">LONG</b><b class="red">SHORT</b><b class="yellow">WAIT</b></div></div>
-      <div class="table-wrap"><table><thead><tr><th>Coin</th><th>Decision</th><th>Style</th><th>Signal</th><th>Entry</th><th>SL</th><th>TP1</th><th>TP2</th><th>Funds</th><th>Lots</th><th>Conf.</th><th>Est full-plan $</th><th>RR</th><th>SMI/KN</th><th>Reason</th></tr></thead><tbody>${scannerRows(app.state.rows || [])}</tbody></table></div></section>`;
+    <section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2><span class="muted">Open trades stay above scanner signals.</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>RR</th><th>Action</th></tr></thead><tbody>${openTradesRows(open)}</tbody></table></div></section>
+    <section class="panel scanner-panel"><div class="panel-title"><h2>Scanner Signals</h2><div class="legend"><b class="green">LONG</b><b class="red">SHORT</b><b class="yellow">WAIT</b><b class="strong-text">STRONG</b></div></div>
+      <div class="table-wrap"><table class="scanner-table"><thead><tr><th>Coin</th><th>Dec</th><th>Trend Stack</th><th>HTF</th><th>MACD</th><th>TV</th><th>Score</th><th>Q</th><th>En</th><th>SL</th><th>TP1</th><th>TP2</th><th>TP3</th><th>RR</th></tr></thead><tbody>${scannerRows(app.state.rows || [])}</tbody></table></div></section>`;
 }
 
 
@@ -130,12 +130,22 @@ function scannerRows(rows) {
   let list = rows.slice();
   if (app.filter === 'LONG' || app.filter === 'SHORT' || app.filter === 'WAIT') list = list.filter(r => r.dec === app.filter);
   if (app.filter === 'STRONG') list = list.filter(r => r.q === 'STRONG');
-  return list.map(r => {
+  const major = new Set(['BTCUSD','ETHUSD','SOLUSD','BNBUSD']);
+  const tier1 = list.filter(r => major.has(String(r.coin).toUpperCase()));
+  const tier2 = list.filter(r => !major.has(String(r.coin).toUpperCase()));
+  const rowHtml = r => {
     const candidate = r.candidate || {};
-    const lots = candidate.lotsPurchased ?? candidate.liveOrderSize ?? candidate.qty;
-    const conf = r.confluenceScore ?? candidate.confluenceScore ?? r.confluence?.score;
-    return `<tr class="signal-row ${String(r.dec).toLowerCase()}"><td>${coinLogo(r.coin)}<b>${esc(r.coin)}</b></td><td class="${clsSide(r.dec)}">${esc(r.dec)}</td><td><span class="pill pill-data">${esc(r.tradeStyle || '-')}</span></td><td>${signalSourceLabel(r)}</td><td>${num(r.en)}</td><td>${num(r.sl)}</td><td>${num(r.t1)}</td><td>${num(r.t2)}</td><td>${money(candidate.marginUsd ?? r.marginUsd)}</td><td>${num(lots)}</td><td>${Number.isFinite(Number(conf)) ? Number(conf).toFixed(0) : '-'}</td><td class="green">${money(r.estimatedFullTradeProfitUsd)}</td><td>${esc(r.rr || '-')}</td><td>${esc(r.smiCloudStatus || r.macdStatus || '-')}</td><td class="wide-cell">${esc(rowWhyText(r)).slice(0, 300)}</td></tr>`;
-  }).join('') || '<tr><td colspan="15" class="empty">No scanner rows.</td></tr>';
+    const conf = r.confluenceScore ?? candidate.confluenceScore ?? r.confluence?.score ?? r.score;
+    const trendStack = r.trendStack || r.trendStackStatus || r.stack || '-';
+    const htf = r.htf || r.htfTrend || r.higherTimeframeTrend || r.trend || '-';
+    const macd = r.macdStatus || r.macd || (r.macdOk ? 'ON' : 'OFF');
+    const tv = r.tvSignal || r.tradingViewSignal || r.tv || '-';
+    const q = r.q || r.quality || (Number(conf) >= 70 ? 'STRONG' : 'WEAK');
+    return `<tr class="signal-row ${String(r.dec).toLowerCase()}"><td>${coinLogo(r.coin)}<b>${esc(r.coin)}</b></td><td class="${clsSide(r.dec)}"><b>${esc(r.dec)}</b></td><td>${esc(trendStack)}</td><td class="${String(htf).toUpperCase().includes('BULL') ? 'green' : String(htf).toUpperCase().includes('BEAR') ? 'red' : ''}"><b>${esc(htf)}</b></td><td><b>${esc(macd)}</b></td><td>${esc(tv)}</td><td><b>${Number.isFinite(Number(conf)) ? Number(conf).toFixed(0) : '-'}</b></td><td class="${String(q).toUpperCase()==='STRONG'?'strong-text':''}"><b>${esc(q)}</b></td><td>${num(r.en)}</td><td>${num(r.sl)}</td><td>${num(r.t1)}</td><td>${num(r.t2)}</td><td>${num(r.t3 ?? r.tp3)}</td><td>${esc(r.rr || '-')}</td></tr>`;
+  };
+  const section = (title, arr) => arr.length ? `<tr class="tier-row"><td colspan="14">${esc(title)}</td></tr>${arr.map(rowHtml).join('')}` : '';
+  const html = section('TIER 1 — MAJOR COINS', tier1) + section('TIER 2 — MID CAP / INTRADAY', tier2);
+  return html || '<tr><td colspan="14" class="empty">No scanner rows.</td></tr>';
 }
 
 
@@ -336,35 +346,37 @@ function chartPage() {
 
 function strategySettingsPanel() {
   const s = app.state.settings || {};
-  return `<section class="panel"><div class="panel-title"><h2>Strategy Engine Settings</h2><span class="pill pill-data">V77 Strategy Page</span></div><p class="warning-box"><b>Strategy controls:</b> keep only Stochastic Momentum Index + KN Smart TP/SL. Wallet/API controls remain on Settings.</p><form id="strategySettingsForm" class="settings-grid">
-    <div class="field"><label>Entry model</label><input disabled value="SMI Pullback Continuation + KN Smart TP/SL"></div>
-    <div class="field"><label>Strategy horizons</label><input disabled value="5m scalp + 15m intraday + 1h swing"></div>
+  return `<section class="panel"><div class="panel-title"><h2>Strategy Engine Settings</h2><span class="pill pill-data">Clean Bot Strategy</span></div>
+  <p class="info-note"><b>Kept only relevant:</b> EMA Cloud trend, SMI pullback, MACD momentum, KN Smart entry/SL/TP and risk filters.</p>
+  <form id="strategySettingsForm" class="settings-grid compact-settings">
+    <div class="field"><label>Entry model</label><input disabled value="Step 1 + SMI + MACD + KN Smart"></div>
+    <div class="field"><label>Timeframes</label><input disabled value="1H trend · 15M validation · 5M entry"></div>
+    <div class="field"><label>EMA cloud fast</label><input name="emaCloudFastLength" type="number" min="1" max="200" value="${esc(s.emaCloudFastLength || 50)}"></div>
+    <div class="field"><label>EMA cloud slow</label><input name="emaCloudSlowLength" type="number" min="2" max="400" value="${esc(s.emaCloudSlowLength || 200)}"></div>
     <div class="field"><label>KN fast EMA</label><input name="knFastEmaLength" type="number" min="1" max="100" value="${esc(s.knFastEmaLength || 5)}"></div>
     <div class="field"><label>KN slow EMA</label><input name="knSlowEmaLength" type="number" min="2" max="200" value="${esc(s.knSlowEmaLength || 12)}"></div>
-    <div class="field"><label>KN ATR period</label><input name="knAtrPeriod" type="number" min="1" max="100" value="${esc(s.knAtrPeriod || 14)}"></div>
-    <div class="field"><label>KN SL ATR multiplier</label><input name="knSlAtrMultiplier" type="number" min="0.2" max="10" step="0.1" value="${esc(s.knSlAtrMultiplier ?? 1.5)}"></div>
-    <div class="field"><label>KN signal lookback candles</label><input name="knSignalLookbackCandles" type="number" min="1" max="60" value="${esc(s.knSignalLookbackCandles || 8)}"></div>
-    <div class="field"><label>Entry confirm lookback candles</label><input name="knEntryConfirmLookbackCandles" type="number" min="1" max="30" value="${esc(s.knEntryConfirmLookbackCandles || 5)}"></div>
+    <div class="field"><label>ATR period</label><input name="knAtrPeriod" type="number" min="1" max="100" value="${esc(s.knAtrPeriod || 14)}"></div>
+    <div class="field"><label>SL ATR multiplier</label><input name="knSlAtrMultiplier" type="number" min="0.2" max="10" step="0.1" value="${esc(s.knSlAtrMultiplier ?? 1.5)}"></div>
+    <div class="field"><label>SMI overbought</label><input name="smiOverbought" type="number" min="10" max="90" step="1" value="${esc(s.smiOverbought ?? 40)}"></div>
+    <div class="field"><label>SMI oversold</label><input name="smiOversold" type="number" min="-90" max="-10" step="1" value="${esc(s.smiOversold ?? -40)}"></div>
     <div class="field"><label>Max entry candle ATR</label><input name="knMaxEntryCandleAtrMult" type="number" min="0.5" max="10" step="0.1" value="${esc(s.knMaxEntryCandleAtrMult ?? 2.2)}"></div>
-    <div class="field"><label>Max entry candle %</label><input name="knMaxEntryCandlePct" type="number" min="0.05" max="10" step="0.05" value="${esc(s.knMaxEntryCandlePct ?? 1.0)}"></div>
-    <div class="field"><label>Require SMI direction</label><select name="knRequireSmiDirection"><option value="false" ${s.knRequireSmiDirection !== true ? 'selected' : ''}>No — unsafe / not recommended</option><option value="true" ${s.knRequireSmiDirection === true ? 'selected' : ''}>Yes — SMI hard pullback gate</option></select></div>
-    <div class="field"><label>SMI %K length</label><input name="smiPercentKLength" type="number" min="1" max="100" value="${esc(s.smiPercentKLength || 10)}"></div>
-    <div class="field"><label>SMI %D length</label><input name="smiPercentDLength" type="number" min="1" max="50" value="${esc(s.smiPercentDLength || 3)}"></div>
-    <div class="field"><label>SMI smoothing period</label><input name="smiSmoothingPeriod" type="number" min="1" max="50" value="${esc(s.smiSmoothingPeriod || 5)}"></div>
-    <div class="field"><label>SMI signal EMA length</label><input name="smiSignalLength" type="number" min="1" max="100" value="${esc(s.smiSignalLength || 10)}"></div>
-    <div class="field"><label>SMI overbought level</label><input name="smiOverbought" type="number" min="10" max="90" step="1" value="${esc(s.smiOverbought ?? 40)}"></div>
-    <div class="field"><label>SMI oversold level</label><input name="smiOversold" type="number" min="-90" max="-10" step="1" value="${esc(s.smiOversold ?? -40)}"></div>
-    <div class="field"><label>TP1 trigger R</label><input name="tp1TriggerR" type="number" min="0.5" max="5" step="0.1" value="${esc(s.tp1TriggerR || 1)}"></div>
-    <div class="field"><label>TP2 trigger R</label><input name="tp2TriggerR" type="number" min="1" max="8" step="0.1" value="${esc(s.tp2TriggerR || 2)}"></div>
-    <div class="field"><label>TP3 trigger R</label><input name="tp3TriggerR" type="number" min="1" max="10" step="0.1" value="${esc(s.tp3TriggerR || 3)}"></div>
+    <div class="field"><label>Minimum RR</label><input name="minRR" type="number" min="1" max="10" step="0.1" value="${esc(s.minRR || 2)}"></div>
+    <div class="field"><label>TP1 R</label><input name="tp1TriggerR" type="number" min="0.5" max="5" step="0.1" value="${esc(s.tp1TriggerR || 1)}"></div>
+    <div class="field"><label>TP2 R</label><input name="tp2TriggerR" type="number" min="1" max="8" step="0.1" value="${esc(s.tp2TriggerR || 2)}"></div>
+    <div class="field"><label>TP3 R</label><input name="tp3TriggerR" type="number" min="1" max="10" step="0.1" value="${esc(s.tp3TriggerR || 3)}"></div>
+    <div class="field"><label>Require SMI pullback</label><select name="knRequireSmiDirection"><option value="true" ${s.knRequireSmiDirection !== false ? 'selected' : ''}>Yes</option><option value="false" ${s.knRequireSmiDirection === false ? 'selected' : ''}>No</option></select></div>
     <button class="btn-green" type="submit">Save Strategy Settings</button>
   </form></section>`;
 }
 
 function strategiesPage() {
-  return `${coinSelector()}${assetManagerHtml()}${strategySettingsPanel()}<section class="strategy-grid"><article class="rule-card long"><h2>BULL SETUP</h2><ol><li>KN fast EMA crosses above KN slow EMA.</li><li>Wait for a bullish candle to close above the KN entry line.</li><li>Reject oversized candles using the golden candle-size filter.</li><li>SMI pullback continuation is a hard entry gate: band pullback, cloud touch/reject, recovery cross, then KN confirmation.</li><li>Entry, SL, TP1, TP2, and TP3 must be plotted before the paper/live order opens.</li><li>SL = ATR × KN multiplier below entry. TP1=1R, TP2=2R, TP3=3R default.</li><li>After TP1, SL moves to entry/breakeven for remaining position.</li></ol></article><article class="rule-card short"><h2>BEAR SETUP</h2><ol><li>KN fast EMA crosses below KN slow EMA.</li><li>Wait for a bearish candle to close below the KN entry line.</li><li>Reject oversized candles using the golden candle-size filter.</li><li>SMI pullback continuation is a hard entry gate: band pullback, cloud touch/reject, recovery cross, then KN confirmation.</li><li>Entry, SL, TP1, TP2, and TP3 must be plotted before the paper/live order opens.</li><li>SL = ATR × KN multiplier above entry. TP1=1R, TP2=2R, TP3=3R default.</li><li>After TP1, SL moves to entry/breakeven for remaining position.</li></ol></article><aside class="rule-card params"><h2>V77 Execution DNA</h2><p><b>Core:</b> SMI Trend Continuation pullback + KN Smart TP/SL confirmation only.</p><p><b>Removed as hard filters:</b> WaveTrend, Break/Retest, MACD, Market Memory, VWAP, RSI, CCI, SAR, two-pole, and EMA50/200 cloud.</p><p><b>Visual:</b> chart shows candles, KN EMA5/12, KN buy/sell signal marker, confirmed entry marker, SL, TP1, TP2, TP3, profit zone, loss zone, and SMI panel.</p><p><b>Safety:</b> closed candles only across 5m/15m/1h, paper/live same scanner path, SL/TP calculated before order. Scalp can upgrade into intraday; intraday can upgrade into swing.</p></aside></section>`;
+  return `${coinSelector()}${assetManagerHtml()}${strategySettingsPanel()}<section class="strategy-grid clean-rules"><article class="rule-card long"><h2>LONG Rules</h2><ol><li>Step 1 confirms bullish structure and HTF trend.</li><li>EMA50 above EMA200 and price above cloud.</li><li>SMI shows pullback, then recovery cross.</li><li>MACD momentum supports long side.</li><li>KN Smart gives bullish entry candle, SL and TP levels.</li></ol></article><article class="rule-card short"><h2>SHORT Rules</h2><ol><li>Step 1 confirms bearish structure and HTF trend.</li><li>EMA50 below EMA200 and price below cloud.</li><li>SMI shows pullback, then recovery cross.</li><li>MACD momentum supports short side.</li><li>KN Smart gives bearish entry candle, SL and TP levels.</li></ol></article><aside class="rule-card params"><h2>Trade Management</h2><p><b>TP1:</b> close 33% and move SL to breakeven.</p><p><b>TP2:</b> close 33% and keep SL at breakeven.</p><p><b>TP3:</b> close remaining position.</p><p><b>Reject:</b> oversized candles, poor RR, incomplete candles, bad HTF alignment.</p></aside></section>`;
 }
 
+
+function tradeLogXlsButton() {
+  return `<button type="button" id="downloadTradeLogBtn" class="btn-blue">Download Trade Log XLS</button>`;
+}
 
 function tradesPage() {
   const closed = app.state.closedTrades || [];
@@ -373,14 +385,19 @@ function tradesPage() {
   const grossLosses = Number.isFinite(Number(m.grossLossUsdAbs)) ? Number(m.grossLossUsdAbs) : Math.abs(closed.filter(t=>Number(t.pnl||0)<0).reduce((a,t)=>a+Number(t.pnl||0),0));
   const netClosed = Number.isFinite(Number(m.netClosedPnl ?? m.closedPnl)) ? Number(m.netClosedPnl ?? m.closedPnl) : grossWins - grossLosses;
   const openPnl = Number(m.openPnl || 0);
-  const tradesStats = `<section class="kpi-grid trades-kpi"><div class="kpi-card"><span>Closed Wins Amount</span><strong class="green">${money(grossWins)}</strong><small>${esc(m.wins ?? 0)} wins</small></div><div class="kpi-card"><span>Closed Losses Amount</span><strong class="red">-${money(grossLosses)}</strong><small>${esc(m.losses ?? 0)} losses</small></div><div class="kpi-card"><span>Net Closed P/L</span><strong class="${clsPnL(netClosed)}">${money(netClosed)}</strong><small>Win rate ${Number(m.winRate || 0).toFixed(1)}%</small></div><div class="kpi-card"><span>Open / Unrealized P/L</span><strong class="${clsPnL(openPnl)}">${money(openPnl)}</strong><small>Total P/L ${money(m.totalPnl || 0)}</small></div></section>`;
-  return `${tradesStats}<section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>Why</th><th>Action</th></tr></thead><tbody>${(app.state.openTrades||[]).map(t=>{ const lots=t.lotsPurchased??t.liveOrderSize??t.qty; const conf=t.confluenceScore??t.confluence?.score; return `<tr><td>${coinLogo(t.coin)}${esc(t.coin)}</td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td><span class="pill pill-data">${esc(t.tradeStyle || '-')}</span></td><td class="${statusClass(t.status)}"><b>${esc(t.status||'OPEN')}</b>${t.entryType ? `<small class="row-note">${esc(t.entryType)}</small>` : ''}</td><td>${esc(t.mode||'paper')}</td><td>${num(t.entry)}</td><td>${num(t.price)}</td><td>${money(t.marginUsedUsd)}</td><td>${num(lots)}</td><td>${num(t.sl)}</td><td>${num(t.tp1)}</td><td>${num(t.tp2)}</td><td>${Number.isFinite(Number(conf)) ? Number(conf).toFixed(0) : '-'}</td><td class="green">${money(t.estimatedFullTradeProfitUsd)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td class="wide-cell">${esc(t.entryReason||'-').slice(0,300)}</td><td><button class="action-close" data-close="${esc(t.id)}">Close</button></td></tr>`; }).join('') || '<tr><td colspan="17" class="empty">No open or pending trades.</td></tr>'}</tbody></table></div></section>
-  <section class="panel"><div class="panel-title"><h2>Saved Closed Trades</h2><span class="muted">Saved in data/trades.json and journaled in data/tradeJournal.json</span></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Entry</th><th>Exit</th><th>P/L</th><th>Result</th><th>Reason</th><th>Closed</th></tr></thead><tbody>${closed.map(t=>`<tr><td>${coinLogo(t.coin)}${esc(t.coin)}</td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td>${num(t.entry)}</td><td>${num(t.exit)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td>${esc(t.result)}</td><td>${esc(t.closeReason||'-')}</td><td>${t.closedAt?new Date(t.closedAt).toLocaleString():'-'}</td></tr>`).join('') || '<tr><td colspan="8" class="empty">No closed trades saved yet.</td></tr>'}</tbody></table></div></section>`;
+  const tradesStats = `<section class="kpi-grid trades-kpi"><div class="kpi-card"><span>Closed Wins Amount</span><strong class="green">${money(grossWins)}</strong><small>${esc(m.wins ?? 0)} wins</small></div><div class="kpi-card"><span>Closed Loss Amount</span><strong class="red">${money(grossLosses)}</strong><small>${esc(m.losses ?? 0)} losses</small></div><div class="kpi-card"><span>Net Closed P/L</span><strong class="${clsPnL(netClosed)}">${money(netClosed)}</strong><small>Closed trades only</small></div><div class="kpi-card"><span>Open / Unrealized P/L</span><strong class="${clsPnL(openPnl)}">${money(openPnl)}</strong><small>Total P/L ${money(m.totalPnl || 0)}</small></div></section>`;
+  const openRows = (app.state.openTrades||[]).map(t=>{ const lots=t.lotsPurchased??t.liveOrderSize??t.qty; const conf=t.confluenceScore??t.confluence?.score; return `<tr><td>${coinLogo(t.coin)}${esc(t.coin)}</td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td><span class="pill pill-data">${esc(t.tradeStyle || '-')}</span></td><td class="${statusClass(t.status)}"><b>${esc(t.status||'OPEN')}</b>${t.entryType ? `<small class="row-note">${esc(t.entryType)}</small>` : ''}</td><td>${esc(t.mode||'paper')}</td><td>${num(t.entry)}</td><td>${num(t.price)}</td><td>${money(t.marginUsedUsd)}</td><td>${num(lots)}</td><td>${num(t.sl)}</td><td>${num(t.tp1)}</td><td>${num(t.tp2)}</td><td>${Number.isFinite(Number(conf)) ? Number(conf).toFixed(0) : '-'}</td><td class="green">${money(t.estimatedFullTradeProfitUsd)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td><button class="action-close" data-close="${esc(t.id)}">Close</button></td></tr>`; }).join('') || '<tr><td colspan="16" class="empty">No open or pending trades.</td></tr>';
+  const closedRows = closed.map(t=>`<tr><td>${coinLogo(t.coin)}${esc(t.coin)}</td><td class="${clsSide(t.side)}">${esc(t.side)}</td><td>${num(t.entry)}</td><td>${num(t.exit)}</td><td class="${clsPnL(t.pnl)}">${money(t.pnl)}</td><td>${esc(t.result)}</td><td>${esc(t.closeReason||'-')}</td><td>${t.closedAt?new Date(t.closedAt).toLocaleString():'-'}</td></tr>`).join('') || '<tr><td colspan="8" class="empty">No closed trades saved yet.</td></tr>';
+  return `${tradesStats}<section class="panel"><div class="panel-title"><h2>Open / Pending Trades</h2></div><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Style</th><th>Status</th><th>Mode</th><th>Entry</th><th>Price</th><th>Funds</th><th>Lots</th><th>SL</th><th>TP1</th><th>TP2</th><th>Conf.</th><th>Est full-plan $</th><th>P/L</th><th>Action</th></tr></thead><tbody>${openRows}</tbody></table></div></section>
+  <section class="panel"><details class="trade-details"><summary><span><b>Saved Closed Trades</b> <small>${closed.length} saved</small></span>${tradeLogXlsButton()}</summary><div class="table-wrap"><table><thead><tr><th>Coin</th><th>Side</th><th>Entry</th><th>Exit</th><th>P/L</th><th>Result</th><th>Reason</th><th>Closed</th></tr></thead><tbody>${closedRows}</tbody></table></div></details></section>`;
 }
 
 
 
-function logsPage() { return `<section class="panel"><div class="panel-title"><h2>Logs</h2><button id="refreshLogsBtn">Refresh</button></div><div class="logs-list">${(app.state.logs||[]).map(l=>`<div class="log-line"><span>${new Date(l.time).toLocaleString()}</span><b class="${l.level==='ERROR'?'red':l.level==='SAFE'?'yellow':'green'}">${esc(l.level)}</b><span>${esc(l.message)}</span></div>`).join('') || '<p class="empty">No logs yet.</p>'}</div></section>`; }
+function logsPage() {
+  const important = (app.state.logs || []).filter(l => /ERROR|SAFE|WARN|ORDER|TRADE|ENTRY|EXIT|CLOSE|LIVE|PAPER|BOT|SYNC/i.test(`${l.level || ''} ${l.message || ''}`)).slice(-50).reverse();
+  return `<section class="panel"><details class="logs-details"><summary><span><b>Advanced Logs</b> <small>${important.length} important recent logs</small></span><button id="refreshLogsBtn" type="button">Refresh</button></summary><div class="logs-list compact-logs">${important.map(l=>`<div class="log-line"><span>${new Date(l.time).toLocaleString()}</span><b class="${l.level==='ERROR'?'red':l.level==='SAFE'?'yellow':'green'}">${esc(l.level)}</b><span>${esc(l.message)}</span></div>`).join('') || '<p class="empty">No important logs yet.</p>'}</div></details></section>`;
+}
 
 
 function assetManagerHtml() {
@@ -444,29 +461,22 @@ function walletSettingsPanel() {
   const m = app.state.metrics || {};
   const open = app.state.openTrades || [];
   const fundsUsed = app.state.risk?.totalBotMarginUsed || open.reduce((x,t)=>x+Number(t.marginUsedUsd||0),0);
-  return `<section class="panel"><div class="panel-title"><h2>Wallet & Risk Allocation</h2><span class="pill ${s.paperTrade ? 'pill-paper' : 'pill-red'}">${s.paperTrade ? 'PAPER' : 'LIVE ARMED'}</span></div>
+  return `<section class="panel"><div class="panel-title"><h2>Wallet & Risk</h2><span class="pill ${s.paperTrade ? 'pill-paper' : 'pill-red'}">${s.paperTrade ? 'PAPER' : 'LIVE ARMED'}</span></div>
     <div class="kpi-grid settings-kpi">
       ${kpi('Delta Wallet', app.state.wallet?.walletSynced ? money(app.state.wallet?.equity) : 'SYNC NEEDED', app.state.wallet?.walletSynced ? '' : 'yellow')}
       ${kpi('Funds Used', money(fundsUsed), 'yellow')}
       ${kpi('Available Allocation', money(app.state.risk?.remainingBotAllocation || 0), 'green')}
       ${kpi('Open P/L', money(m.openPnl), clsPnL(m.openPnl))}
     </div>
-    <form id="walletSettingsForm" class="settings-grid">
-      <div class="field"><label>Max concurrent positions</label><input name="maxConcurrentPositions" type="number" min="1" max="5" value="${esc(s.maxConcurrentPositions)}"></div>
+    <form id="walletSettingsForm" class="settings-grid compact-settings">
+      <div class="field"><label>Max positions</label><input name="maxConcurrentPositions" type="number" min="1" max="5" value="${esc(s.maxConcurrentPositions)}"></div>
       <div class="field"><label>Risk %</label><input name="riskPercent" type="number" min="0.1" max="5" step="0.1" value="${esc(s.riskPercent)}"></div>
       <div class="field"><label>Default leverage</label><input name="defaultLeverage" type="number" min="1" max="25" value="${esc(s.defaultLeverage)}"></div>
       <div class="field"><label>Max leverage</label><input name="maxLeverage" type="number" min="1" max="25" value="${esc(s.maxLeverage)}"></div>
-      <div class="field"><label>Auto-size to target profit</label><select name="autoSizeToTargetProfit"><option value="true" ${s.autoSizeToTargetProfit !== false ? 'selected' : ''}>Yes</option><option value="false" ${s.autoSizeToTargetProfit === false ? 'selected' : ''}>No</option></select></div>
-      <div class="field"><label>Target full-trade profit $</label><input name="targetFullTradeProfitUsd" type="number" min="0" step="0.25" value="${esc(s.targetFullTradeProfitUsd ?? s.targetProfitUsd ?? 5)}"></div>
-      <div class="field"><label>Minimum full-trade profit $</label><input name="minFullTradeProfitUsd" type="number" min="0" step="0.25" value="${esc(s.minFullTradeProfitUsd ?? s.minTargetProfitUsd ?? 2)}"></div>
-      <div class="field"><label>Normal coin initial margin $</label><input name="initialMarginUsd" type="number" min="1" step="1" value="${esc(s.initialMarginUsd)}"></div>
-      <div class="field"><label>BTC/ETH initial margin $</label><input name="majorInitialMarginUsd" type="number" min="1" step="1" value="${esc(s.majorInitialMarginUsd)}"></div>
+      <div class="field"><label>Max SL loss $</label><input name="maxStopLossUsd" type="number" min="0.1" step="0.1" value="${esc(s.maxStopLossUsd)}"></div>
       <div class="field"><label>Max margin / coin $</label><input name="maxMarginPerCoinUsd" type="number" min="1" step="1" value="${esc(s.maxMarginPerCoinUsd)}"></div>
-      <div class="field"><label>BTC/ETH max margin $</label><input name="majorCoinMaxMarginUsd" type="number" min="1" step="1" value="${esc(s.majorCoinMaxMarginUsd)}"></div>
-      <div class="field"><label>Max SL loss / trade $</label><input name="maxStopLossUsd" type="number" min="0.1" step="0.1" value="${esc(s.maxStopLossUsd)}"></div>
-      <div class="field"><label>Paper bot allocation $</label><input name="maxBotAllocationUsd" type="number" min="1" step="1" value="${esc(s.maxBotAllocationUsd)}"></div>
-      <div class="field"><label>Live wallet allocation %</label><input name="liveWalletAllocationPct" type="number" min="1" max="100" step="1" value="${esc(s.liveWalletAllocationPct)}"></div>
-      <div class="field"><label>Live max bot allocation $</label><input name="liveMaxBotAllocationUsd" type="number" min="0" step="1" value="${esc(s.liveMaxBotAllocationUsd)}"></div>
+      <div class="field"><label>Paper allocation $</label><input name="maxBotAllocationUsd" type="number" min="1" step="1" value="${esc(s.maxBotAllocationUsd)}"></div>
+      <div class="field"><label>Live allocation %</label><input name="liveWalletAllocationPct" type="number" min="1" max="100" step="1" value="${esc(s.liveWalletAllocationPct)}"></div>
       <button class="btn-green" type="submit">Save Wallet Settings</button>
     </form>
   </section>`;
@@ -474,8 +484,7 @@ function walletSettingsPanel() {
 
 function settingsPage() {
   const s = app.state.settings, a = app.state.apiStatus || {};
-  return `${walletSettingsPanel()}<section class="settings-layout"><section class="panel"><div class="panel-title"><h2>Delta India API</h2><span class="pill ${s.paperTrade ? 'pill-paper' : 'pill-red'}">${s.paperTrade ? 'PAPER' : 'LIVE ARMED'}</span></div><form id="apiKeyForm" class="settings-grid"><div class="field"><label>Base URL</label><input name="deltaBaseUrl" value="${esc(s.deltaBaseUrl)}"></div><div class="field"><label>API key</label><input name="apiKey" value="${esc(app.apiDraft.apiKey)}" placeholder="${a.keysConfigured ? esc(a.keyPreview) : 'Paste key'}"></div><div class="field"><label>API secret</label><input name="secret" type="password" value="${esc(app.apiDraft.secret)}" placeholder="Paste secret"></div><div class="field"><label>Whitelist IP</label><input name="whitelistedIpNote" value="${esc(app.apiDraft.whitelistedIpNote || a.whitelistedIpNote || a.serverOutboundIp || '')}"></div><div class="field wide"><label><input name="liveTradingConfirmed" type="checkbox" ${a.liveTradingConfirmed ? 'checked' : ''}> I understand LIVE mode sends real Delta orders</label></div><button type="button" id="detectAndTestBtn" class="btn-blue">Detect IP + Test</button><button type="submit" class="btn-green">Save + Auto Setup</button><button type="button" id="forceSyncPositionsBtn" class="btn-blue">Sync Delta Positions Now</button><button type="button" id="clearStaleTradesBtn" class="btn-red">Clear Stale Local Live Trades</button><button type="button" id="clearKeysBtn" class="btn-red">Delete API Key</button></form><p class="warning-box">LIVE mode remains blocked until API test, wallet sync, position sync, and live confirmation pass. Bot stays OFF after switching modes.</p></section>
-  <section class="panel"><div class="panel-title"><h2>Settings Page Scope</h2><span class="pill pill-data">Wallet only</span></div><div class="settings-info"><p><b>Kept here:</b> Delta API keys, wallet sync, paper/live allocation, leverage, margin caps, risk %, and max SL loss.</p><p><b>Moved to Strategy page:</b> coin universe, SMI, KN EMA/ATR settings, candle confirmation, golden candle-size filter, TP1/TP2/TP3 values.</p></div></section></section>`;
+  return `${walletSettingsPanel()}<section class="settings-layout"><section class="panel"><div class="panel-title"><h2>Delta India API</h2><span class="pill ${s.paperTrade ? 'pill-paper' : 'pill-red'}">${s.paperTrade ? 'PAPER' : 'LIVE ARMED'}</span></div><form id="apiKeyForm" class="settings-grid compact-settings"><div class="field"><label>Base URL</label><input name="deltaBaseUrl" value="${esc(s.deltaBaseUrl)}"></div><div class="field"><label>API key</label><input name="apiKey" value="${esc(app.apiDraft.apiKey)}" placeholder="${a.keysConfigured ? esc(a.keyPreview) : 'Paste key'}"></div><div class="field"><label>API secret</label><input name="secret" type="password" value="${esc(app.apiDraft.secret)}" placeholder="Paste secret"></div><div class="field"><label>Whitelist IP</label><input name="whitelistedIpNote" value="${esc(app.apiDraft.whitelistedIpNote || a.whitelistedIpNote || a.serverOutboundIp || '')}"></div><div class="field wide"><label><input name="liveTradingConfirmed" type="checkbox" ${a.liveTradingConfirmed ? 'checked' : ''}> I understand LIVE mode sends real Delta orders</label></div><button type="button" id="detectAndTestBtn" class="btn-blue">Detect IP + Test</button><button type="submit" class="btn-green">Save + Auto Setup</button><button type="button" id="forceSyncPositionsBtn" class="btn-blue">Sync Positions</button><button type="button" id="clearKeysBtn" class="btn-red">Delete API Key</button></form><p class="warning-box">LIVE mode remains blocked until API test, wallet sync, position sync, and live confirmation pass.</p></section></section>`;
 }
 
 
@@ -537,6 +546,23 @@ async function forceSyncPositions() { app.state = await api('/api/force-sync-pos
 async function clearStaleTrades() { if (!confirm('Clear local LIVE trade rows that are not present in the latest Delta position sync? Use only after manually closing on Delta.')) return; const data = await api('/api/clear-stale-local-trades', { method:'POST', body:'{}', timeoutMs: 30000 }); app.state = data.state || data; render(); toast(`Cleared ${data.cleared?.removedCount || 0} stale trade(s).`); }
 async function closeTrade(id) { const data = await api('/api/close-trade', { method:'POST', body: JSON.stringify({ id }) }); app.state = data.state; render(); toast(`Closed ${data.closed.coin} ${data.closed.side || ''}.`); }
 
+function downloadTradeLogXls() {
+  const closed = app.state?.closedTrades || [];
+  const headers = ['Coin','Side','Entry','Exit','PnL','Result','Reason','Closed At'];
+  const rows = closed.map(t => [t.coin, t.side, t.entry, t.exit, t.pnl, t.result, t.closeReason || '', t.closedAt ? new Date(t.closedAt).toLocaleString() : '']);
+  const html = `<table><thead><tr>${headers.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `trade-log-${new Date().toISOString().slice(0,10)}.xls`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  toast('Trade log downloaded.');
+}
+
 function bind() {
   $('.filterbar').addEventListener('click', e => { const f=e.target.closest('[data-filter]'), s=e.target.closest('[data-sort]'); if (f) { app.filter=f.dataset.filter; $$('[data-filter]').forEach(b=>b.classList.toggle('active', b===f)); render(); } if (s) { app.filter='ALL'; render(); } });
   $('.tabbar').addEventListener('click', e => { const b=e.target.closest('[data-page]'); if (b) { app.page=b.dataset.page; render(); } });
@@ -561,6 +587,7 @@ function bind() {
     if (e.target.id === 'stopBotBtn') setBot(false);
     if (e.target.id === 'emergencyStopBtn') emergencyStop().catch(err=>toast(err.message));
     if (e.target.id === 'refreshLogsBtn') loadState();
+    if (e.target.id === 'downloadTradeLogBtn') downloadTradeLogXls();
     if (e.target.id === 'detectAndTestBtn') detectAndTest().catch(err=>toast(err.message));
     if (e.target.id === 'forceSyncPositionsBtn') forceSyncPositions().catch(err=>toast(err.message));
     if (e.target.id === 'clearStaleTradesBtn') clearStaleTrades().catch(err=>toast(err.message));
