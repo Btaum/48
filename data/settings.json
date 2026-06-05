@@ -3,8 +3,8 @@
   "paperTrade": true,
   "exchange": "delta_exchange_india",
   "executionApi": "delta_exchange_india",
-  "signalSource": "bot11_strategy_spec_v2",
-  "strategyMode": "BOT11_STRATEGY_SPEC_V2",
+  "signalSource": "bot11_strategy_spec_v3",
+  "strategyMode": "BOT11_STRATEGY_SPEC_V3",
   "deltaBaseUrl": "https://api.india.delta.exchange",
   "assets": [
     "BTCUSD",
@@ -34,7 +34,9 @@
   "emaSlowTimeframe": "1h",
   "higherTimeframes": [
     "15m",
-    "1h"
+    "1h",
+    "1d",
+    "1w"
   ],
   "emaPeriod": 100,
   "mtfEmaPeriod": 100,
@@ -53,8 +55,8 @@
   "minRR": 2.0,
   "rewardTargetR": 3,
   "tp1TriggerR": 1,
-  "tp1ClosePct": 40,
-  "tp2ClosePct": 30,
+  "tp1ClosePct": 25,
+  "tp2ClosePct": 25,
   "tradeManagementEnabled": true,
   "autoMoveSlEnabled": true,
   "autoTp1Enabled": true,
@@ -206,7 +208,7 @@
   "intradayToSwingTargetR": 3.5,
   "tp2TriggerR": 2,
   "tp3TriggerR": 3,
-  "tp3ClosePct": 10,
+  "tp3ClosePct": 25,
   "smiPercentKLength": 10,
   "smiPercentDLength": 3,
   "smiSignalLength": 10,
@@ -240,9 +242,18 @@
   "preferredScore": 80,
   "exceptionalScore": 90,
   "maxOneTradePerCorrelationCluster": true,
-  "runnerClosePct": 20,
+  "runnerClosePct": 25,
   "requireMacdTranscriptConfirmation": true,
   "macdRequireZeroLine": true,
   "macdTranscriptLookbackCandles": 8,
-  "knMaxRejectionWickBodyMult": 1.2
+  "knMaxRejectionWickBodyMult": 1.2,
+  "weeklyMacroBiasEnabled": true,
+  "weeklyMacroTimeframe": "1w",
+  "weeklyMacroMinScore": 2,
+  "weeklyCounterTrendPullbackOnly": true,
+  "counterTrendRiskMultiplier": 0.5,
+  "counterTrendQualityDowngrade": true,
+  "smartRunnerEnabled": true,
+  "runnerRequireTrendStrength": true,
+  "runnerTrailAfterTp3": true
 }

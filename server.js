@@ -11,7 +11,7 @@ const ROOT = __dirname;
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 8080);
-const USER_AGENT = 'TradingNorth-BOT11-Strategy-Spec-V1/1.0-PAPER-LIVE-DATA';
+const USER_AGENT = 'TradingNorth-BOT11-Strategy-Spec-V3/1.0-PAPER-LIVE-DATA';
 
 const DASHBOARD_PASSWORD = String(process.env.DASHBOARD_PASSWORD || '').trim();
 const DASHBOARD_SESSION_SECRET = String(process.env.DASHBOARD_SESSION_SECRET || process.env.DASHBOARD_PASSWORD || crypto.randomBytes(32).toString('hex'));
@@ -49,8 +49,8 @@ const DEFAULT_SETTINGS = {
   paperTrade: true,
   exchange: 'delta_exchange_india',
   executionApi: 'delta_exchange_india',
-  signalSource: 'bot11_strategy_spec_v2',
-  strategyMode: 'BOT11_STRATEGY_SPEC_V2',
+  signalSource: 'bot11_strategy_spec_v3',
+  strategyMode: 'BOT11_STRATEGY_SPEC_V3',
   deltaBaseUrl: 'https://api.india.delta.exchange',
   assets: ['BTCUSD','ETHUSD','SOLUSD','XRPUSD','BNBUSD','DOGEUSD','ADAUSD','AVAXUSD','LINKUSD','LTCUSD','BCHUSD','TRXUSD','DOTUSD','MATICUSD','UNIUSD','APTUSD','INJUSD','NEARUSD','FILUSD','ARBUSD'],
   primaryTimeframe: '5m',
@@ -60,7 +60,7 @@ const DEFAULT_SETTINGS = {
   validationTimeframe: '15m',
   emaFastTimeframe: '15m',
   emaSlowTimeframe: '1h',
-  higherTimeframes: ['15m', '1h', '1d'],
+  higherTimeframes: ['15m', '1h', '1d', '1w'],
   entryEmaFastPeriod: 50, // legacy compatibility only; not used as a fast EMA gate
   entryEmaSlowPeriod: 200, // legacy compatibility only; not used as a fast EMA gate
   trendEmaPeriod: 100,
@@ -221,10 +221,10 @@ const DEFAULT_SETTINGS = {
   pullbackAtrMult: 0.35,
   pullbackMaxAtrMult: 1.20,
   allowMarketWhenNoPullback: false,
-  tp1ClosePct: 40,
-  tp2ClosePct: 30,
-  tp3ClosePct: 10,
-  runnerClosePct: 20,
+  tp1ClosePct: 25,
+  tp2ClosePct: 25,
+  tp3ClosePct: 25,
+  runnerClosePct: 25,
   liveOrderSize: 1,
   autoScanSeconds: 10,
   marketDataRefreshSeconds: 15,
@@ -232,6 +232,15 @@ const DEFAULT_SETTINGS = {
   requireTradingViewSignalForExecution: false,
   paperLiveCompatibleSizing: true,
   strategyTimeframes: ['5m', '15m', '1h'],
+  weeklyMacroBiasEnabled: true,
+  weeklyMacroTimeframe: '1w',
+  weeklyMacroMinScore: 2,
+  weeklyCounterTrendPullbackOnly: true,
+  counterTrendRiskMultiplier: 0.5,
+  counterTrendQualityDowngrade: true,
+  smartRunnerEnabled: true,
+  runnerRequireTrendStrength: true,
+  runnerTrailAfterTp3: true,
   multiHorizonScanEnabled: true,
   horizonUpgradeEnabled: true,
   horizonUpgradeRequireSameSideSignal: true,
@@ -457,7 +466,7 @@ function enforceTimeframePolicy(settings = {}) {
     macdTrendTimeframe: '1h',
   trendTimeframe: '1h',
   validationTimeframe: '15m',
-    higherTimeframes: ['15m', '1h', '1d'],
+    higherTimeframes: ['15m', '1h', '1d', '1w'],
     htfMinimumAligned: 1,
     paperTrade: settings.liveDataPaperTradingOnly === false ? (typeof settings.paperTrade === 'boolean' ? settings.paperTrade : true) : true,
     liveDataPaperTradingOnly: settings.liveDataPaperTradingOnly !== false,
@@ -465,8 +474,8 @@ function enforceTimeframePolicy(settings = {}) {
     preferredScore: 80,
     exceptionalScore: 90,
     maxOneTradePerCorrelationCluster: settings.maxOneTradePerCorrelationCluster !== false,
-    signalSource: 'bot11_strategy_spec_v2',
-    strategyMode: 'BOT11_STRATEGY_SPEC_V2',
+    signalSource: 'bot11_strategy_spec_v3',
+    strategyMode: 'BOT11_STRATEGY_SPEC_V3',
     emaPeriod,
     mtfEmaPeriod: emaPeriod,
     macdFastLength: 12,
@@ -1530,6 +1539,106 @@ function macdTranscriptMomentumFromCandles(candles = [], direction = 'LONG', set
       ? `${direction} MACD transcript momentum PASS: histogram color flip + momentum weakening + MACD/signal cross + ${requireZero ? 'zero-line confirmation' : 'zero-line advisory'}.`
       : `WAIT ${direction} MACD: weakening=${weakening} colorFlip=${colorFlip} cross=${cross} sideOk=${sideOk} zeroOk=${zeroOk}; line=${pct(nowLine)} signal=${pct(nowSignal)} hist=${pct(nowHist)}.`
   };
+}
+
+
+function recentKnDirection(rows = [], direction = 'LONG', settings = loadSettings()) {
+  const kn = knSmartFromCandles(rows, settings);
+  const lastIndex = rows.length - 1;
+  const lookback = Math.min(Math.max(Math.floor(Number(settings.knSignalLookbackCandles || 8)), 1), 60);
+  const signals = direction === 'LONG' ? kn.buySignals : kn.sellSignals;
+  let signalIndex = null;
+  for (let i = Math.max(1, lastIndex - lookback + 1); i <= lastIndex; i += 1) {
+    if (signals[i]) signalIndex = i;
+  }
+  const fast = Number(kn.fast[lastIndex]);
+  const slow = Number(kn.slow[lastIndex]);
+  const trendOk = direction === 'LONG' ? fast > slow : fast < slow;
+  return {
+    pass: Boolean(signalIndex !== null || trendOk),
+    freshSignal: signalIndex !== null,
+    trendOk,
+    signalIndex,
+    fast,
+    slow,
+    reason: `${direction} KN weekly ${signalIndex !== null ? 'fresh signal' : trendOk ? 'EMA bias' : 'not aligned'}; EMA${kn.fastLen}/${kn.slowLen} fast=${pct(fast)} slow=${pct(slow)}.`
+  };
+}
+
+function assessWeeklyMacroBias(symbol, settings = loadSettings()) {
+  const tf = normalizeResolution(settings.weeklyMacroTimeframe || '1w');
+  const rows = weeklyCandlesForSymbol(symbol, settings).filter(c => c && Number.isFinite(c.open) && Number.isFinite(c.high) && Number.isFinite(c.low) && Number.isFinite(c.close));
+  const minBars = Math.max(40, Number(settings.macdSlowLength || 26) + Number(settings.macdSignalLength || 9) + 5, Number(settings.smiPercentKLength || 10) + Number(settings.smiSignalLength || 10) + 10);
+  if (settings.weeklyMacroBiasEnabled === false) return { enabled: false, ready: true, timeframe: tf, bias: 'DISABLED', direction: '', strength: 0, reason: 'Weekly macro bias disabled.' };
+  if (!rows.length || rows.length < minBars) return { enabled: true, ready: false, timeframe: tf, bias: 'WARMUP', direction: '', strength: 0, reason: `Need ${minBars} closed ${tf} candles for weekly macro bias.` };
+  const smi = smiFromCandles(rows, settings);
+  const cloud = emaCloudFromCandles(rows, settings);
+  const lastIndex = rows.length - 1;
+  const macdLong = macdTranscriptMomentumFromCandles(rows, 'LONG', settings);
+  const macdShort = macdTranscriptMomentumFromCandles(rows, 'SHORT', settings);
+  const smiLong = recentSmiDirection(symbol, rows, 'LONG', smi, settings);
+  const smiShort = recentSmiDirection(symbol, rows, 'SHORT', smi, settings);
+  const knLong = recentKnDirection(rows, 'LONG', settings);
+  const knShort = recentKnDirection(rows, 'SHORT', settings);
+  const price = Number(rows[lastIndex]?.close || 0);
+  const cloudLong = Number(cloud.fast[lastIndex]) > Number(cloud.slow[lastIndex]) && price >= Number(cloud.upper[lastIndex]);
+  const cloudShort = Number(cloud.fast[lastIndex]) < Number(cloud.slow[lastIndex]) && price <= Number(cloud.lower[lastIndex]);
+  const bullScore = [macdLong.pass, smiLong.pass, knLong.pass, cloudLong].filter(Boolean).length;
+  const bearScore = [macdShort.pass, smiShort.pass, knShort.pass, cloudShort].filter(Boolean).length;
+  const minScore = Math.min(Math.max(Number(settings.weeklyMacroMinScore || 2), 1), 4);
+  let bias = 'NEUTRAL';
+  let direction = '';
+  if (bullScore >= minScore && bullScore > bearScore) { direction = 'LONG'; bias = bullScore >= 3 ? 'STRONG_BULL' : 'BULL'; }
+  if (bearScore >= minScore && bearScore > bullScore) { direction = 'SHORT'; bias = bearScore >= 3 ? 'STRONG_BEAR' : 'BEAR'; }
+  return {
+    enabled: true,
+    ready: true,
+    timeframe: tf,
+    bias,
+    direction,
+    strength: direction === 'LONG' ? bullScore : direction === 'SHORT' ? bearScore : 0,
+    bullScore,
+    bearScore,
+    macdLong,
+    macdShort,
+    smiLong,
+    smiShort,
+    knLong,
+    knShort,
+    cloudLong,
+    cloudShort,
+    reason: `Weekly ${tf} bias=${bias}; bullScore=${bullScore}/4 bearScore=${bearScore}/4. MACD uses corrected histogram logic: red weakening → green expanding = bullish; green weakening → red expanding = bearish. SMI uses default values/cross zones, not custom colors. KN uses EMA5/12 visual signal.`
+  };
+}
+
+function weeklyPolicyForDirection(weekly, direction, signal = null, settings = loadSettings()) {
+  if (!weekly || weekly.enabled === false || !weekly.ready || !weekly.direction || direction !== 'LONG' && direction !== 'SHORT') {
+    return { pass: true, mode: 'NO_WEEKLY_BLOCK', riskMultiplier: 1, reason: weekly?.reason || 'Weekly bias unavailable/advisory.' };
+  }
+  const sameSide = weekly.direction === direction;
+  if (sameSide) return { pass: true, mode: 'TREND_TRADE', riskMultiplier: 1, reason: `${direction} aligned with ${weekly.bias}.` };
+  const pullbackOk = Boolean(signal?.conditions?.smiPullback && signal?.conditions?.cloudTouch && signal?.conditions?.smiRecoveryCross && signal?.conditions?.entryCandle);
+  const pass = settings.weeklyCounterTrendPullbackOnly === false || pullbackOk;
+  return {
+    pass,
+    mode: 'COUNTER_TREND_PULLBACK',
+    riskMultiplier: Math.min(Math.max(Number(settings.counterTrendRiskMultiplier || 0.5), 0.1), 1),
+    reason: pass
+      ? `${direction} is counter to ${weekly.bias}; allowed only because SMI/KN pullback entry is valid. Use reduced risk.`
+      : `${direction} blocked: weekly bias is ${weekly.bias}; counter-trend trades require a confirmed SMI/KN pullback.`
+  };
+}
+
+function tradeTrendStillStrong(trade, row, settings = loadSettings()) {
+  if (!trade || !row || row.dec !== trade.side) return false;
+  const sig = row.macdDivergenceSignal || {};
+  const cond = sig.conditions || {};
+  const sameSideSignal = Boolean(row.pass && sig.pass && sig.entrySide === trade.side);
+  const macdOk = Boolean(cond.macdTranscript || cond.macdColorFlip || cond.macdSignalCross);
+  const smiOk = Boolean(cond.smiDirection || cond.smiRecoveryCross);
+  const cloudOk = trade.side === 'LONG' ? Boolean(cond.longTrend || cond.trendCloud) : Boolean(cond.shortTrend || cond.trendCloud);
+  if (settings.runnerRequireTrendStrength === false) return sameSideSignal;
+  return Boolean(sameSideSignal && macdOk && smiOk && cloudOk);
 }
 
 function downsampleCloses(values, factor) {
@@ -4222,14 +4331,16 @@ function resolutionToSeconds(resolution = '5m') {
   if (r === '2h') return 7200;
   if (r === '4h') return 14400;
   if (r === '1d' || r === 'd') return 86400;
+  if (r === '1w' || r === 'w') return 604800;
   return 300;
 }
 
 function normalizeResolution(resolution = '5m') {
   const r = String(resolution || '5m').toLowerCase().trim();
-  if (['1m','3m','5m','15m','30m','1h','2h','4h','1d'].includes(r)) return r;
+  if (['1m','3m','5m','15m','30m','1h','2h','4h','1d','1w'].includes(r)) return r;
   if (r === '60m') return '1h';
   if (r === 'd') return '1d';
+  if (r === 'w') return '1w';
   return '5m';
 }
 
@@ -4344,7 +4455,7 @@ async function refreshDeltaCandles(symbol, resolutions = ['5m','15m','1h'], sett
     const last = state.delta.candlesLastFetchAt[key] ? new Date(state.delta.candlesLastFetchAt[key]).getTime() : 0;
     if (!force && last && now - last < minMs && Array.isArray(state.delta.candlesByKey[key]) && state.delta.candlesByKey[key].length) { ok = true; continue; }
     try {
-      await fetchDeltaCandles(sym, res, settings, res === '1d' ? 180 : res === '1h' ? 720 : 900);
+      await fetchDeltaCandles(sym, res, settings, res === '1w' ? 260 : res === '1d' ? 365 : res === '1h' ? 720 : 900);
       ok = true;
     } catch (error) {
       state.delta.candlesMessage = `${sym} ${res} candles unavailable: ${error.message}`;
@@ -4358,7 +4469,7 @@ async function refreshDeltaCandlesForAssets(settings = loadSettings(), force = f
   if (process.env.DELTA_SYNC_DISABLED === '1') return false;
   const assets = Array.isArray(settings.assets) ? settings.assets : [];
   for (const symbol of assets) {
-    await refreshDeltaCandles(symbol, ['5m','15m','1h','1d'], settings, force);
+    await refreshDeltaCandles(symbol, ['5m','15m','1h','1d','1w'], settings, force);
   }
   return true;
 }
@@ -4366,6 +4477,38 @@ async function refreshDeltaCandlesForAssets(settings = loadSettings(), force = f
 function getCachedCandles(symbol, resolution = '5m') {
   const key = candleKey(symbol, resolution);
   return (state.delta.candlesByKey && Array.isArray(state.delta.candlesByKey[key])) ? state.delta.candlesByKey[key] : [];
+}
+
+
+function aggregateCandlesToWeekly(dailyCandles = []) {
+  const rows = (dailyCandles || []).filter(c => c && Number.isFinite(c.open) && Number.isFinite(c.high) && Number.isFinite(c.low) && Number.isFinite(c.close) && Number.isFinite(c.time));
+  if (!rows.length) return [];
+  const weekSec = 7 * 24 * 60 * 60;
+  const buckets = new Map();
+  for (const c of rows) {
+    const t = Number(c.time);
+    const d = new Date(t * 1000);
+    const day = d.getUTCDay();
+    const daysFromMonday = (day + 6) % 7;
+    const monday = Math.floor((t - daysFromMonday * 86400) / weekSec) * weekSec;
+    const key = monday;
+    const b = buckets.get(key) || { time: key, open: Number(c.open), high: Number(c.high), low: Number(c.low), close: Number(c.close), volume: 0, resolution: '1w', syntheticFrom: '1d' };
+    if (!buckets.has(key)) b.open = Number(c.open);
+    b.high = Math.max(Number(b.high), Number(c.high));
+    b.low = Math.min(Number(b.low), Number(c.low));
+    b.close = Number(c.close);
+    b.volume = Number(b.volume || 0) + Number(c.volume || 0);
+    buckets.set(key, b);
+  }
+  return Array.from(buckets.values()).sort((a, b) => a.time - b.time);
+}
+
+function weeklyCandlesForSymbol(symbol, settings = loadSettings()) {
+  const direct = getCachedCandles(symbol, '1w');
+  if (Array.isArray(direct) && direct.length >= 40) return direct;
+  const daily = getCachedCandles(symbol, '1d');
+  const aggregated = aggregateCandlesToWeekly(daily);
+  return aggregated.length ? aggregated : direct;
 }
 
 function atrFromCandles(candles = [], length = 14) {
@@ -4572,6 +4715,15 @@ function generateSignalProfile(symbol, settings) {
   const atrPreview = candles5.length ? Math.max(atrFromCandles(candles5, Number(settings.atrPeriod || 14)), base * 0.001) : (state.market[symbol]?.atr || base * 0.006);
   const supportResistance = calculateSupportResistanceLocal(symbol, history, price, atrPreview, settings);
   const macdDivergenceSignal = calculateSmiKnSmartSignal(symbol, history, price, atrPreview, settings);
+  const weeklyBias = assessWeeklyMacroBias(symbol, settings);
+  const weeklyPolicyPreview = weeklyPolicyForDirection(weeklyBias, macdDivergenceSignal?.entrySide || '', macdDivergenceSignal, settings);
+  if (macdDivergenceSignal && macdDivergenceSignal.pass && macdDivergenceSignal.entrySide && !weeklyPolicyPreview.pass) {
+    macdDivergenceSignal.pass = false;
+    macdDivergenceSignal.weeklyPolicy = weeklyPolicyPreview;
+    macdDivergenceSignal.reason = `${macdDivergenceSignal.reason} WEEKLY_POLICY_BLOCK: ${weeklyPolicyPreview.reason}`;
+  } else if (macdDivergenceSignal) {
+    macdDivergenceSignal.weeklyPolicy = weeklyPolicyPreview;
+  }
   const webhookSarMacd = null;
   const localSarMacd = null;
   const twoPoleSignal = null;
@@ -4648,7 +4800,7 @@ function generateSignalProfile(symbol, settings) {
     technicalStop = { ...technicalStop, sl: macdDivergenceSignal.invalidationLevel, reason: `KN Smart ATR TP/SL: ${macdDivergenceSignal.reason}` };
   }
 
-  state.market[symbol] = { price, prevPrice: previous, atr, relVolume: 1 + Math.abs(volumeSeed), fundingRate, source, macd, structure, supportResistance, macdDivergenceSignal, sarMacdSignal, twoPoleSignal, breakoutSignal, vwapSignal };
+  state.market[symbol] = { price, prevPrice: previous, atr, relVolume: 1 + Math.abs(volumeSeed), fundingRate, source, macd, structure, supportResistance, weeklyBias, macdDivergenceSignal, sarMacdSignal, twoPoleSignal, breakoutSignal, vwapSignal };
 
   return {
     symbol,
@@ -4675,6 +4827,8 @@ function generateSignalProfile(symbol, settings) {
     htfBias,
     marketStructure: structure,
     supportResistance,
+    weeklyBias,
+    weeklyPolicy: weeklyPolicyPreview,
     strategyFilters,
     zoneDistancePct,
     fundingRate,
@@ -5098,6 +5252,8 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
   const isMacdDivergenceEntry = profile.strategySignalSource === 'SMI_KN_PULLBACK_TPSL_LOCAL';
   const tradeStyle = profile.macdDivergenceSignal?.selectedHorizon || profile.macdDivergenceSignal?.tradeStyle || tradeStyleFromSettings(settings);
   const sizing = highProbabilitySizing(profile, settings);
+  const weeklyPolicy = profile.weeklyPolicy || weeklyPolicyForDirection(profile.weeklyBias, direction, profile.macdDivergenceSignal, settings);
+  const isCounterTrendPullback = weeklyPolicy.mode === 'COUNTER_TREND_PULLBACK';
   const tp1R = Math.min(Math.max(Number(settings.tp1TriggerR || 1), 0.5), 5);
   const tp2R = Math.min(Math.max(Number(settings.tp2TriggerR || 2), tp1R), 5);
   let rewardR = Math.min(Math.max(Number(settings.tp3TriggerR || settings.rewardTargetR || 2.5), tp2R), 6);
@@ -5136,9 +5292,12 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
     slMode: 'TECHNICAL_SL_FIRST_POSITION_SIZE_SECOND',
     slReason: stopPlan.reason || 'Technical stop',
     tp1R,
-    sizingMultiplier: sizing.multiplier,
-    sizingReason: sizing.reason,
-    exitPlan: 'SMI + KN Smart TP/SL multi-horizon plan: 5m scalp, 15m intraday, and 1h swing are scanned. KN EMA5/12 creates the signal; candle confirmation opens the trade; SL=ATR×1.5; TP1=1R, TP2=2R, TP3=3R; SL moves to entry after TP1.',
+    sizingMultiplier: pct((sizing.multiplier || 1) * (weeklyPolicy.riskMultiplier || 1)),
+    sizingReason: [sizing.reason, weeklyPolicy.reason].filter(Boolean).join(' | '),
+    exitPlan: 'V3: SMI + KN Smart TP/SL with weekly macro bias. Same-weekly-side trades use full size; counter-weekly trades are pullback-only and reduced risk. TP1=25%, TP2=25%, TP3=25%, runner=25%; SL moves to breakeven after TP1 and trails while MACD/SMI/KN trend remains strong.',
+    weeklyBias: profile.weeklyBias,
+    weeklyPolicy,
+    isCounterTrendPullback,
     tradeStyle,
     signalTimeframe: profile.macdDivergenceSignal?.selectedTimeframe || profile.macdDivergenceSignal?.timeframe || settings.executionTimeframe || '5m',
     selectedHorizon: profile.macdDivergenceSignal?.selectedHorizon || profile.macdDivergenceSignal?.tradeStyle || tradeStyle,
@@ -5236,6 +5395,8 @@ function evaluateSymbol(symbol, settings, wallet, trades) {
     marketStructure: profile.marketStructure,
     supportResistance: profile.supportResistance,
     strategyFilters: profile.strategyFilters,
+    weeklyBias: profile.weeklyBias,
+    weeklyPolicy: profile.weeklyPolicy,
     technicalStop: profile.technicalStop,
     confluence: (profile.decision === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence : profile.decision === 'SHORT' ? profile.macdDivergenceSignal?.institutionalEma?.short?.confluence : null),
     confluenceScore: (profile.decision === 'LONG' ? profile.macdDivergenceSignal?.institutionalEma?.long?.confluence?.score : profile.decision === 'SHORT' ? profile.macdDivergenceSignal?.institutionalEma?.short?.confluence?.score : 0) || 0,
@@ -5442,6 +5603,24 @@ function tp2ReachedForTrade(trade, settings) {
     triggerR,
     tp2,
     reason: priceHit ? `TP2 price ${tp2} reached at ${trade.price}` : rHit ? `${pct(r)}R reached TP2 trigger ${triggerR}R` : `TP2 not reached; price=${trade.price} tp2=${tp2 || '-'} r=${pct(r)}R`
+  };
+}
+
+
+function tp3ReachedForTrade(trade, settings) {
+  const triggerR = currentTargetRForTrade(trade, 'tp3') || Number(settings.tp3TriggerR || 3);
+  const r = profitRForTrade(trade);
+  const tp3 = Number(trade.tp3 || 0);
+  const priceHit = targetPriceHit(trade, tp3);
+  const rHit = r >= triggerR;
+  return {
+    hit: Boolean(priceHit || rHit),
+    priceHit,
+    rHit,
+    r,
+    triggerR,
+    tp3,
+    reason: priceHit ? `TP3 price ${tp3} reached at ${trade.price}` : rHit ? `${pct(r)}R reached TP3 trigger ${triggerR}R` : `TP3 not reached; price=${trade.price} tp3=${tp3 || '-'} r=${pct(r)}R`
   };
 }
 
@@ -5765,6 +5944,8 @@ async function processTradeManagement(rows, settings, trades, wallet, opts = {})
     const ms = tradeManagementStateFor(trade, managementStore);
     if (ms.tp1Done) trade.tp1Done = true;
     if (ms.tp2Done) trade.tp2Done = true;
+    if (ms.tp3Done) trade.tp3Done = true;
+    if (ms.runnerActive) trade.runnerActive = true;
     if (ms.breakEvenMoved) trade.breakEvenMoved = true;
     if (typeof ms.addOnCount === 'number') trade.addOnCount = Math.max(Number(trade.addOnCount || 0), ms.addOnCount);
     const r = profitRForTrade(trade);
@@ -5883,6 +6064,48 @@ async function processTradeManagement(rows, settings, trades, wallet, opts = {})
           ms.tp2At = new Date().toISOString();
           log('TRADE', `${trade.coin} ${trade.side} TP2 partial closed ${closePct}% at ${closed.exit}.`, { tradeId: trade.id, pnl: closed.pnl, trigger: tp2Check.reason });
         }
+      }
+    }
+
+
+    const tp3Check = tp3ReachedForTrade(trade, settings);
+    if (settings.autoTp1Enabled !== false && settings.smartRunnerEnabled !== false && !trade.tp3Done && trade.tp2Done && tp3Check.hit) {
+      const trendStrong = tradeTrendStillStrong(trade, row, settings);
+      const closePct = Math.min(Math.max(Number(settings.tp3ClosePct || 25), 1), 75);
+      if (opts.live && trade.mode === 'live') {
+        try {
+          const result = await sendLivePartialCloseOrder(trade, settings, closePct);
+          trade.tp3Done = true;
+          trade.runnerActive = true;
+          ms.tp3Done = true;
+          ms.runnerActive = true;
+          ms.tp3Reason = tp3Check.reason;
+          ms.tp3At = new Date().toISOString();
+          log('LIVE', `${trade.coin} ${trade.side} TP3 partial close sent (${closePct}%). Runner left open while trend remains strong.`, { tradeId: trade.id, closeSize: result.closeSize, trigger: tp3Check.reason, trendStrong });
+        } catch (error) {
+          log('ERROR', `Live TP3 partial close failed for ${trade.coin}: ${error.message}`, { tradeId: trade.id, trigger: tp3Check.reason });
+        }
+      } else {
+        const closed = closeTradePortionInMemory(trades, wallet, trade, closePct, `TP3 partial: ${tp3Check.reason}; runner left open`, trade.price);
+        if (closed) {
+          trade.tp3Done = true;
+          trade.runnerActive = true;
+          ms.tp3Done = true;
+          ms.runnerActive = true;
+          ms.tp3Reason = tp3Check.reason;
+          ms.tp3At = new Date().toISOString();
+          log('TRADE', `${trade.coin} ${trade.side} TP3 partial closed ${closePct}% at ${closed.exit}; runner active.`, { tradeId: trade.id, pnl: closed.pnl, trigger: tp3Check.reason, trendStrong });
+        }
+      }
+    }
+
+    if (settings.smartRunnerEnabled !== false && trade.runnerActive) {
+      const trendStrong = tradeTrendStillStrong(trade, row, settings);
+      const emaTrail = emaTrailStopForTrade(trade, settings);
+      if (settings.runnerTrailAfterTp3 !== false && emaTrail && moveTradeStop(trade, emaTrail, 'Runner EMA trail')) ms.lastRunnerTrail = trade.sl;
+      if (!trendStrong && r > Math.max(Number(settings.tp3TriggerR || 3), 2.5)) {
+        pushManagementEvent(trade, 'Runner trend-strength warning: MACD/SMI/KN no longer fully aligned; trailing stop remains active.');
+        ms.runnerTrendWeakAt = ms.runnerTrendWeakAt || new Date().toISOString();
       }
     }
 
@@ -6033,7 +6256,7 @@ function buildTradeRecord(row, settings, mode) {
     tp2: row.candidate.tp2,
     tp3: row.candidate.tp3,
     tp1R: row.candidate.tp1R || 1,
-    tpPlan: { tp1Pct: Number(settings.tp1ClosePct || 50), tp2Pct: Number(settings.tp2ClosePct || 25), tp3Pct: Number(settings.tp3ClosePct || 25) },
+    tpPlan: { tp1Pct: Number(settings.tp1ClosePct || 25), tp2Pct: Number(settings.tp2ClosePct || 25), tp3Pct: Number(settings.tp3ClosePct || 25), runnerPct: Number(settings.runnerClosePct || 25) },
     exitPlan: row.candidate.exitPlan || '',
     chandelierLevel: row.candidate.chandelierLevel || null,
     qty: row.candidate.qty,
@@ -6059,6 +6282,8 @@ function buildTradeRecord(row, settings, mode) {
     remainingPct: 100,
     tp1Done: false,
     tp2Done: false,
+    tp3Done: false,
+    runnerActive: false,
     breakEvenMoved: false,
     trailActive: false,
     lastManagedAt: null,
@@ -6072,8 +6297,8 @@ function buildTradeRecord(row, settings, mode) {
     pendingCreatedCandleTime: row.candidate.entryType === 'PULLBACK_LIMIT' ? (getCachedCandles(row.coin, row.candidate.signalTimeframe || '5m').at(-1)?.time || null) : null,
     rr: row.candidate.rr,
     score: row.score,
-    entryReason: [row.entryReason || row.whyReason || row.blockedBy || row.candidate.slReason || 'Entry conditions passed', row.candidate.entryReasonExtra].filter(Boolean).join(' | '),
-    whyReason: [row.entryReason || row.whyReason || row.blockedBy || row.candidate.slReason || 'Entry conditions passed', row.candidate.entryReasonExtra].filter(Boolean).join(' | '),
+    entryReason: [row.entryReason || row.whyReason || row.blockedBy || row.candidate.slReason || 'Entry conditions passed', row.candidate.entryReasonExtra, row.candidate.weeklyPolicy?.reason].filter(Boolean).join(' | '),
+    whyReason: [row.entryReason || row.whyReason || row.blockedBy || row.candidate.slReason || 'Entry conditions passed', row.candidate.entryReasonExtra, row.candidate.weeklyPolicy?.reason].filter(Boolean).join(' | '),
     mode,
     orderType: row.candidate.orderType || (settings.entryOrderType === 'market' ? 'market' : 'limit'),
     entryType: row.candidate.entryType || 'MARKET_OR_IMMEDIATE',
@@ -6081,7 +6306,10 @@ function buildTradeRecord(row, settings, mode) {
     marketSource: row.source || 'UNKNOWN',
     slMode: row.candidate.slMode || 'TECHNICAL_SL_FIRST_POSITION_SIZE_SECOND',
     slReason: row.candidate.slReason || '',
-    dynamicRiskCapUsd: row.candidate.dynamicRiskCapUsd || 0
+    dynamicRiskCapUsd: row.candidate.dynamicRiskCapUsd || 0,
+    weeklyBias: row.candidate.weeklyBias || row.weeklyBias || null,
+    weeklyPolicy: row.candidate.weeklyPolicy || row.weeklyPolicy || null,
+    isCounterTrendPullback: Boolean(row.candidate.isCounterTrendPullback)
   };
 }
 
@@ -6290,6 +6518,8 @@ function mapDeltaPositionToTrade(pos, idx = 0, openOrders = []) {
     remainingPct: 100,
     tp1Done: false,
     tp2Done: false,
+    tp3Done: false,
+    runnerActive: false,
     breakEvenMoved: false,
     trailActive: false,
     addOnCount: 0,
@@ -7925,7 +8155,7 @@ function startAutoScan() {
 if (require.main === module) {
   const server = createServer();
   server.listen(PORT, () => {
-    console.log(`BOT11 Strategy Spec V2 Paper-LiveData Bot running at http://localhost:${PORT}`);
+    console.log(`BOT11 Strategy Spec V3 Paper-LiveData Bot running at http://localhost:${PORT}`);
     console.log(`Execution venue: Delta Exchange India only`);
     console.log(`Data directory: ${DATA_DIR}`);
   });
