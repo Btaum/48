@@ -1,7 +1,7 @@
 {
-  "name": "bot11-strategy-spec-v1",
+  "name": "bot11-strategy-spec-v2",
   "version": "1.0.0",
-  "description": "BOT11 portfolio futures bot: live data, paper-mode execution, SMI pullback + KN TPSL strategy gates.",
+  "description": "BOT11 portfolio futures bot: live data, paper-mode execution, Strategy Spec V2 hybrid MACD + SMI + KN TPSL rules.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {

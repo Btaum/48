@@ -49,8 +49,8 @@ const DEFAULT_SETTINGS = {
   paperTrade: true,
   exchange: 'delta_exchange_india',
   executionApi: 'delta_exchange_india',
-  signalSource: 'bot11_strategy_spec_v1',
-  strategyMode: 'BOT11_STRATEGY_SPEC_V1',
+  signalSource: 'bot11_strategy_spec_v2',
+  strategyMode: 'BOT11_STRATEGY_SPEC_V2',
   deltaBaseUrl: 'https://api.india.delta.exchange',
   assets: ['BTCUSD','ETHUSD','SOLUSD','XRPUSD','BNBUSD','DOGEUSD','ADAUSD','AVAXUSD','LINKUSD','LTCUSD','BCHUSD','TRXUSD','DOTUSD','MATICUSD','UNIUSD','APTUSD','INJUSD','NEARUSD','FILUSD','ARBUSD'],
   primaryTimeframe: '5m',
@@ -128,7 +128,7 @@ const DEFAULT_SETTINGS = {
   trailingStopEmaPeriod: 50,
   trailingStopAtrBuffer: 0.20,
   requireDivergenceForEntry: false,
-  zeroLineMode: 'off', // V71: MACD zero-line is not used
+  zeroLineMode: 'transcript', // V2: MACD zero-line confirmation used
   entrySignalWindowCandles: 3,
   histColorLookback: 8,
   emaSlopeThresholdPct: 0.05,
@@ -241,7 +241,7 @@ const DEFAULT_SETTINGS = {
   paperExecutionMode: 'auto',
   liveDataPaperTradingOnly: true,
   paperUseDeltaWalletReference: true,
-  macdConfirmationEnabled: false,
+  macdConfirmationEnabled: true,
   smiPercentKLength: 10,
   smiPercentDLength: 3,
   smiSignalLength: 10,
@@ -251,6 +251,9 @@ const DEFAULT_SETTINGS = {
   smiPullbackWindowCandles: 80,
   smiRecoveryLookbackCandles: 8,
   smiAllowRecentRecoveryCross: true,
+  requireMacdTranscriptConfirmation: true,
+  macdRequireZeroLine: true,
+  macdTranscriptLookbackCandles: 8,
   practicalCloudTouchFallback: true,
   practicalCandleColorSoft: true,
   emaCloudFastLength: 50,
@@ -273,6 +276,7 @@ const DEFAULT_SETTINGS = {
   knEntryConfirmLookbackCandles: 5,
   knMaxEntryCandleAtrMult: 2.2,
   knMaxEntryCandlePct: 1.0,
+  knMaxRejectionWickBodyMult: 1.2,
   knRequireSmiDirection: true,
   waveTrendChannelLength: 10,
   waveTrendAverageLength: 21,
@@ -461,8 +465,8 @@ function enforceTimeframePolicy(settings = {}) {
     preferredScore: 80,
     exceptionalScore: 90,
     maxOneTradePerCorrelationCluster: settings.maxOneTradePerCorrelationCluster !== false,
-    signalSource: 'bot11_strategy_spec_v1',
-    strategyMode: 'BOT11_STRATEGY_SPEC_V1',
+    signalSource: 'bot11_strategy_spec_v2',
+    strategyMode: 'BOT11_STRATEGY_SPEC_V2',
     emaPeriod,
     mtfEmaPeriod: emaPeriod,
     macdFastLength: 12,
@@ -1466,6 +1470,68 @@ function calculateMacdRaw(values, settings) {
   };
 }
 
+function macdTranscriptMomentumFromCandles(candles = [], direction = 'LONG', settings = loadSettings()) {
+  const rows = (candles || []).filter(c => c && Number.isFinite(c.close));
+  const closes = rows.map(c => Number(c.close));
+  const macd = calculateMacdRaw(closes, settings);
+  const hist = macd.histSeries || [];
+  const line = macd.lineSeries || [];
+  const sig = macd.signalSeries || [];
+  const lastIndex = hist.length - 1;
+  const lookback = Math.min(Math.max(Math.floor(Number(settings.macdTranscriptLookbackCandles || settings.histColorLookback || 8)), 2), 40);
+  const requireZero = settings.macdRequireZeroLine !== false;
+  if (!macd.ready || lastIndex < 2) {
+    return { pass: false, ready: false, reason: 'MACD 12/26/9 warming up for transcript momentum confirmation.' };
+  }
+  let cross = false;
+  let crossIndex = null;
+  let colorFlip = false;
+  let colorFlipIndex = null;
+  let weakening = false;
+  const scanStart = Math.max(1, lastIndex - lookback + 1);
+  for (let i = scanStart; i <= lastIndex; i += 1) {
+    const h0 = Number(hist[i - 1]);
+    const h1 = Number(hist[i]);
+    const l0 = Number(line[i - 1]);
+    const s0 = Number(sig[i - 1]);
+    const l1 = Number(line[i]);
+    const s1 = Number(sig[i]);
+    if (![h0, h1, l0, s0, l1, s1].every(Number.isFinite)) continue;
+    if (direction === 'LONG') {
+      if (h0 < 0 && h1 >= 0) { colorFlip = true; colorFlipIndex = i; }
+      if (l0 <= s0 && l1 > s1) { cross = true; crossIndex = i; }
+      if (h0 < 0 && h1 > h0) weakening = true; // sellers losing momentum before red -> green
+    } else {
+      if (h0 > 0 && h1 <= 0) { colorFlip = true; colorFlipIndex = i; }
+      if (l0 >= s0 && l1 < s1) { cross = true; crossIndex = i; }
+      if (h0 > 0 && h1 < h0) weakening = true; // buyers losing momentum before green -> red
+    }
+  }
+  const nowLine = Number(macd.line);
+  const nowSignal = Number(macd.signal);
+  const nowHist = Number(macd.hist);
+  const zeroOk = !requireZero || (direction === 'LONG' ? nowLine >= 0 : nowLine <= 0);
+  const sideOk = direction === 'LONG' ? nowLine > nowSignal && nowHist >= 0 : nowLine < nowSignal && nowHist <= 0;
+  const pass = Boolean(cross && colorFlip && weakening && sideOk && zeroOk);
+  return {
+    pass,
+    ready: true,
+    cross,
+    crossIndex,
+    colorFlip,
+    colorFlipIndex,
+    weakening,
+    zeroOk,
+    sideOk,
+    line: pct(nowLine),
+    signal: pct(nowSignal),
+    histogram: pct(nowHist),
+    reason: pass
+      ? `${direction} MACD transcript momentum PASS: histogram color flip + momentum weakening + MACD/signal cross + ${requireZero ? 'zero-line confirmation' : 'zero-line advisory'}.`
+      : `WAIT ${direction} MACD: weakening=${weakening} colorFlip=${colorFlip} cross=${cross} sideOk=${sideOk} zeroOk=${zeroOk}; line=${pct(nowLine)} signal=${pct(nowSignal)} hist=${pct(nowHist)}.`
+  };
+}
+
 function downsampleCloses(values, factor) {
   const f = Math.max(1, Math.floor(Number(factor || 1)));
   const nums = (values || []).map(Number).filter(n => Number.isFinite(n) && n > 0);
@@ -2431,32 +2497,35 @@ function recentSmiDirection(symbol, rows = [], direction = 'LONG', smiObj = null
   const nowSig = Number(sig[lastIndex]);
   let crossed = false;
   let crossIndex = null;
-  for (let i = Math.max(1, lastIndex - lookback + 1); i <= lastIndex; i += 1) {
+  let pulledBack = false;
+  const scanStart = Math.max(1, lastIndex - lookback + 1);
+  for (let i = scanStart; i <= lastIndex; i += 1) {
     const ps = Number(smi[i - 1]);
     const pg = Number(sig[i - 1]);
     const cs = Number(smi[i]);
     const cg = Number(sig[i]);
     if (![ps, pg, cs, cg].every(Number.isFinite)) continue;
-    const ok = direction === 'LONG'
-      ? ps <= pg && cs > cg
-      : ps >= pg && cs < cg;
-    if (ok) { crossed = true; crossIndex = i; }
+    if (direction === 'LONG') {
+      if (ps < os || cs < os) pulledBack = true;
+      if (ps <= pg && cs > cg && cs > os) { crossed = true; crossIndex = i; }
+    } else {
+      if (ps > ob || cs > ob) pulledBack = true;
+      if (ps >= pg && cs < cg && cs < ob) { crossed = true; crossIndex = i; }
+    }
   }
   const directionOk = direction === 'LONG'
-    ? Number.isFinite(nowSmi) && Number.isFinite(nowSig) && (nowSmi >= nowSig || crossed)
-    : Number.isFinite(nowSmi) && Number.isFinite(nowSig) && (nowSmi <= nowSig || crossed);
-  const zone = direction === 'LONG'
-    ? (Number.isFinite(nowSmi) && nowSmi <= ob)
-    : (Number.isFinite(nowSmi) && nowSmi >= os);
+    ? Number.isFinite(nowSmi) && Number.isFinite(nowSig) && nowSmi > nowSig && nowSmi > os
+    : Number.isFinite(nowSmi) && Number.isFinite(nowSig) && nowSmi < nowSig && nowSmi < ob;
   return {
-    pass: Boolean(directionOk && zone),
+    pass: Boolean(pulledBack && crossed && directionOk),
     directionOk,
+    pulledBack,
     crossed,
     crossIndex,
     barsSinceCross: crossIndex === null ? null : lastIndex - crossIndex,
     smiValue: pct(nowSmi),
     smiSignal: pct(nowSig),
-    reason: `${direction} SMI ${directionOk ? 'supports' : 'does not support'} KN signal. SMI=${pct(nowSmi)} signal=${pct(nowSig)}${crossed ? ` recent cross ${lastIndex - crossIndex} candle(s) ago` : ''}.`
+    reason: `${direction} SMI exact recovery ${pulledBack && crossed && directionOk ? 'PASS' : 'WAIT'}: pullback=${pulledBack} cross=${crossed}${crossed ? ` ${lastIndex - crossIndex} candle(s) ago` : ''}; SMI=${pct(nowSmi)} signal=${pct(nowSig)}; required ${direction === 'LONG' ? 'cross above -40 after oversold' : 'cross below +40 after overbought'}.`
   };
 }
 
@@ -2497,11 +2566,16 @@ function findKnSmartSetup(symbol, rows = [], direction = 'LONG', kn = null, smiO
     const candleBodyOk = direction === 'LONG'
       ? Number(c.close) > Number(c.open) && Number(c.close) >= signalEntry
       : Number(c.close) < Number(c.open) && Number(c.close) <= signalEntry;
+    const body = Math.max(Math.abs(Number(c.close) - Number(c.open)), Number(c.close || signalEntry) * 0.00001);
+    const upperWick = Number(c.high) - Math.max(Number(c.open), Number(c.close));
+    const lowerWick = Math.min(Number(c.open), Number(c.close)) - Number(c.low);
+    const maxRejectWickBodyMult = Math.min(Math.max(Number(settings.knMaxRejectionWickBodyMult || 1.2), 0.2), 5);
+    const rejectionOk = direction === 'LONG' ? upperWick <= body * maxRejectWickBodyMult : lowerWick <= body * maxRejectWickBodyMult;
     const atr = Math.max(Number(atrSeries[i] || atrFromCandles(rows.slice(0, i + 1), Number(settings.knAtrPeriod || settings.atrPeriod || 14)) || 0), Number(c.close || signalEntry) * 0.001, 0.00000001);
     const maxRange = Math.max(atr * Math.min(Math.max(Number(settings.knMaxEntryCandleAtrMult || 2.2), 0.5), 10), Number(c.close || signalEntry) * (Math.min(Math.max(Number(settings.knMaxEntryCandlePct || 1.0), 0.05), 10) / 100));
     const rangeOk = Math.abs(Number(c.high) - Number(c.low)) <= maxRange;
     if (candleBodyOk && !rangeOk) candleTooLarge = true;
-    if (candleBodyOk && rangeOk && (!requireSmi || smiState.pass)) {
+    if (candleBodyOk && rangeOk && rejectionOk && (!requireSmi || smiState.pass)) {
       entryIndex = i;
       entryCandle = c;
     }
@@ -2553,6 +2627,8 @@ function calculateSmiKnSmartSignalForResolution(symbol, resolution = '5m', price
   const smi = smiFromCandles(rows, settings);
   const kn = knSmartFromCandles(rows, settings);
   const cloud = emaCloudFromCandles(rows, settings);
+  const macdLong = macdTranscriptMomentumFromCandles(rows, 'LONG', settings);
+  const macdShort = macdTranscriptMomentumFromCandles(rows, 'SHORT', settings);
   const atrNowForCloud = Math.max(Number(atr || atrFromCandles(rows, Number(settings.atrPeriod || 14)) || 0), p * 0.001, 0.00000001);
   const cloudLong = findSmiPullbackContinuation(symbol, rows, 'LONG', smi, cloud, atrNowForCloud, settings);
   const cloudShort = findSmiPullbackContinuation(symbol, rows, 'SHORT', smi, cloud, atrNowForCloud, settings);
@@ -2564,14 +2640,17 @@ function calculateSmiKnSmartSignalForResolution(symbol, resolution = '5m', price
   const rawShortPass = Boolean(short.pass);
   long.cloudSetup = cloudLong;
   short.cloudSetup = cloudShort;
-  long.pass = Boolean(rawLongPass && cloudLong.pass);
-  short.pass = Boolean(rawShortPass && cloudShort.pass);
+  long.macdTranscript = macdLong;
+  short.macdTranscript = macdShort;
+  const requireMacd = settings.requireMacdTranscriptConfirmation !== false;
+  long.pass = Boolean(rawLongPass && cloudLong.pass && (!requireMacd || macdLong.pass));
+  short.pass = Boolean(rawShortPass && cloudShort.pass && (!requireMacd || macdShort.pass));
   long.reason = long.pass
-    ? `${long.reason} ${cloudLong.reason}`
-    : `WAIT LONG: KN=${rawLongPass}; SMI_PULLBACK_CONTINUATION=${cloudLong.pass}. ${long.reason} ${cloudLong.reason}`;
+    ? `${long.reason} ${cloudLong.reason} ${macdLong.reason}`
+    : `WAIT LONG: KN=${rawLongPass}; SMI_PULLBACK_CONTINUATION=${cloudLong.pass}; MACD_TRANSCRIPT=${macdLong.pass}. ${long.reason} ${cloudLong.reason} ${macdLong.reason}`;
   short.reason = short.pass
-    ? `${short.reason} ${cloudShort.reason}`
-    : `WAIT SHORT: KN=${rawShortPass}; SMI_PULLBACK_CONTINUATION=${cloudShort.pass}. ${short.reason} ${cloudShort.reason}`;
+    ? `${short.reason} ${cloudShort.reason} ${macdShort.reason}`
+    : `WAIT SHORT: KN=${rawShortPass}; SMI_PULLBACK_CONTINUATION=${cloudShort.pass}; MACD_TRANSCRIPT=${macdShort.pass}. ${short.reason} ${cloudShort.reason} ${macdShort.reason}`;
   const entrySide = long.pass ? 'LONG' : short.pass ? 'SHORT' : '';
   const chosen = entrySide === 'LONG' ? long : entrySide === 'SHORT' ? short : (long.signalIndex !== null ? long : short.signalIndex !== null ? short : long);
   const signalGrade = entrySide ? (chosen.smi?.pass ? 'A+' : 'A') : 'WAIT';
@@ -2588,6 +2667,9 @@ function calculateSmiKnSmartSignalForResolution(symbol, resolution = '5m', price
     cloudNotBroken: Boolean(cloudChosen && !cloudChosen.cloudBroken),
     smiRecoveryCross: Boolean(cloudChosen?.cross),
     candleColor: Boolean(cloudChosen?.candleColorPass || settings.requireSmiCandleColor === false),
+    macdTranscript: Boolean((entrySide === 'LONG' ? macdLong : entrySide === 'SHORT' ? macdShort : chosen?.macdTranscript)?.pass),
+    macdColorFlip: Boolean((entrySide === 'LONG' ? macdLong : entrySide === 'SHORT' ? macdShort : chosen?.macdTranscript)?.colorFlip),
+    macdSignalCross: Boolean((entrySide === 'LONG' ? macdLong : entrySide === 'SHORT' ? macdShort : chosen?.macdTranscript)?.cross),
     longTrend: entrySide === 'LONG' && Boolean(cloudChosen?.trendPass),
     shortTrend: entrySide === 'SHORT' && Boolean(cloudChosen?.trendPass)
   };
@@ -7843,7 +7925,7 @@ function startAutoScan() {
 if (require.main === module) {
   const server = createServer();
   server.listen(PORT, () => {
-    console.log(`BOT11 Strategy Spec V1 Paper-LiveData Bot running at http://localhost:${PORT}`);
+    console.log(`BOT11 Strategy Spec V2 Paper-LiveData Bot running at http://localhost:${PORT}`);
     console.log(`Execution venue: Delta Exchange India only`);
     console.log(`Data directory: ${DATA_DIR}`);
   });

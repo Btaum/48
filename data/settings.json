@@ -3,8 +3,8 @@
   "paperTrade": true,
   "exchange": "delta_exchange_india",
   "executionApi": "delta_exchange_india",
-  "signalSource": "bot11_strategy_spec_v1",
-  "strategyMode": "BOT11_STRATEGY_SPEC_V1",
+  "signalSource": "bot11_strategy_spec_v2",
+  "strategyMode": "BOT11_STRATEGY_SPEC_V2",
   "deltaBaseUrl": "https://api.india.delta.exchange",
   "assets": [
     "BTCUSD",
@@ -91,7 +91,7 @@
   "monthlyDrawdownLimitPct": -20,
   "entryModel": "SMI_KN_PULLBACK_TPSL",
   "requireDivergenceForEntry": false,
-  "zeroLineMode": "off",
+  "zeroLineMode": "transcript",
   "entrySignalWindowCandles": 3,
   "histColorLookback": 8,
   "requirePullbackForExecution": false,
@@ -189,7 +189,7 @@
   "trendMaPeriod": 100,
   "trendMaType": "SMA",
   "trendMaToleranceAtrMult": 0.3,
-  "macdConfirmationEnabled": false,
+  "macdConfirmationEnabled": true,
   "waveTrendPracticalRecovery": true,
   "breakRetestLevelSearchCount": 12,
   "breakRetestLevelMaxAgeCandles": 360,
@@ -240,5 +240,9 @@
   "preferredScore": 80,
   "exceptionalScore": 90,
   "maxOneTradePerCorrelationCluster": true,
-  "runnerClosePct": 20
+  "runnerClosePct": 20,
+  "requireMacdTranscriptConfirmation": true,
+  "macdRequireZeroLine": true,
+  "macdTranscriptLookbackCandles": 8,
+  "knMaxRejectionWickBodyMult": 1.2
 }
