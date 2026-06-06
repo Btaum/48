@@ -96,7 +96,7 @@
   "zeroLineMode": "transcript",
   "entrySignalWindowCandles": 3,
   "histColorLookback": 8,
-  "requirePullbackForExecution": false,
+  "requirePullbackForExecution": true,
   "pullbackAtrMult": 0.35,
   "pullbackMaxAtrMult": 1.2,
   "allowMarketWhenNoPullback": false,
@@ -255,5 +255,14 @@
   "counterTrendQualityDowngrade": true,
   "smartRunnerEnabled": true,
   "runnerRequireTrendStrength": true,
-  "runnerTrailAfterTp3": true
+  "runnerTrailAfterTp3": true,
+  "smartEntryEnabled": true,
+  "smartEntryWaitCandles": 8,
+  "smartEntryMinGapAtr": 0.12,
+  "smartEntryMaxGapAtr": 1.2,
+  "smartEntryUseEma5": true,
+  "smartEntryUseEma12": true,
+  "smartEntryUseCandleMidpoint": true,
+  "smartEntryUseFib382": true,
+  "smartEntryUseFib50": true
 }

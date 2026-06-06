@@ -217,9 +217,18 @@ const DEFAULT_SETTINGS = {
   slBufferAtrMult: 0.25,
   maxTechnicalSlAtrMult: 6,
   requireClosedCandle: true,
-  requirePullbackForExecution: false,
+  requirePullbackForExecution: true,
   pullbackAtrMult: 0.35,
   pullbackMaxAtrMult: 1.20,
+  smartEntryEnabled: true,
+  smartEntryWaitCandles: 8,
+  smartEntryMinGapAtr: 0.12,
+  smartEntryMaxGapAtr: 1.20,
+  smartEntryUseEma5: true,
+  smartEntryUseEma12: true,
+  smartEntryUseCandleMidpoint: true,
+  smartEntryUseFib382: true,
+  smartEntryUseFib50: true,
   allowMarketWhenNoPullback: false,
   tp1ClosePct: 25,
   tp2ClosePct: 25,
@@ -496,7 +505,16 @@ function enforceTimeframePolicy(settings = {}) {
     minRR: 2.0,
     rewardTargetR: 2.5,
     requireClosedCandle: true,
-    requirePullbackForExecution: false,
+    requirePullbackForExecution: true,
+    smartEntryEnabled: settings.smartEntryEnabled !== false,
+    smartEntryWaitCandles: Math.min(Math.max(Math.floor(Number(settings.smartEntryWaitCandles || 8)), 1), 30),
+    smartEntryMinGapAtr: Math.min(Math.max(Number(settings.smartEntryMinGapAtr || 0.12), 0.02), 1.5),
+    smartEntryMaxGapAtr: Math.min(Math.max(Number(settings.smartEntryMaxGapAtr || 1.20), 0.2), 5),
+    smartEntryUseEma5: settings.smartEntryUseEma5 !== false,
+    smartEntryUseEma12: settings.smartEntryUseEma12 !== false,
+    smartEntryUseCandleMidpoint: settings.smartEntryUseCandleMidpoint !== false,
+    smartEntryUseFib382: settings.smartEntryUseFib382 !== false,
+    smartEntryUseFib50: settings.smartEntryUseFib50 !== false,
     sarMacdModuleEnabled: false,
     sarMacdAllowLocalEntry: false,
     twoPoleModuleEnabled: false,
@@ -4938,7 +4956,7 @@ function passFail(profile, settings, wallet, trades) {
   soft('Histogram Color Change', hasDirection && Boolean(sig.conditions?.histColorChange), `Preferred within ${sig.histColorLookback || settings.histColorLookback || 6} closed 5m candles; high confluence can still pass.`);
   soft('Confirmed MACD Crossover', hasDirection && Boolean(sig.conditions?.crossover), `Preferred within ${sig.entrySignalWindowCandles || settings.entrySignalWindowCandles || 3} candle(s); not standalone.`);
   if (settings.entryOrderType !== 'market' && settings.requirePullbackForExecution !== false) {
-    soft('Limit Pullback Entry', Boolean(profile.decision === 'LONG' || profile.decision === 'SHORT'), 'Execution uses pullback limit order near support/resistance/Market Memory cloud/MTF EMA. Higher TFs are context only; 5m closed candle is the trigger.');
+    soft('Limit Pullback Entry', Boolean(profile.decision === 'LONG' || profile.decision === 'SHORT'), 'Execution uses Dash-style smart pullback limit order from KN EMA5/EMA12, candle midpoint, fib pullback, support/resistance, and Market Memory zones. Higher TFs are context only; 5m closed candle is the trigger.');
   }
 
   soft('Support / Resistance Context', true, profile.supportResistance?.reason || 'Context only; not an entry engine');
@@ -5114,44 +5132,89 @@ function highProbabilitySizing(profile, settings) {
 function nearestPullbackEntry(profile, direction, settings) {
   const symbol = profile.symbol;
   const current = Number(profile.price || 0);
-  const atr = Math.max(Number(profile.atr || 0), current * 0.001);
+  const candles = getCachedCandles(symbol, settings.executionTimeframe || settings.primaryTimeframe || '5m');
+  const closed = Array.isArray(candles) ? candles.filter(c => Number(c?.close) > 0) : [];
+  const last = closed.at(-1) || {};
+  const atr = Math.max(Number(profile.atr || 0), atrFromCandles(closed, Number(settings.knAtrPeriod || settings.atrPeriod || 14)) || 0, current * 0.001);
   const tick = Math.pow(10, -precisionForCoin(symbol));
-  const minGap = Math.max(tick, atr * Math.min(Math.max(Number(settings.pullbackAtrMult || 0.20), 0.02), 1.5));
-  const maxGap = atr * Math.min(Math.max(Number(settings.pullbackMaxAtrMult || 1.50), 0.2), 5);
+  const minGapAtr = Number(settings.smartEntryMinGapAtr ?? settings.pullbackAtrMult ?? 0.12);
+  const maxGapAtr = Number(settings.smartEntryMaxGapAtr ?? settings.pullbackMaxAtrMult ?? 1.20);
+  const minGap = Math.max(tick, atr * Math.min(Math.max(minGapAtr, 0.02), 1.5));
+  const maxGap = atr * Math.min(Math.max(maxGapAtr, 0.2), 5);
   const sig = profile.macdDivergenceSignal || {};
   const sr = profile.supportResistance || {};
+  const setup = sig.setup || {};
+  const closes = closed.map(c => Number(c.close)).filter(n => Number.isFinite(n) && n > 0);
+  const ema5 = Number(setup.fast || sig.knFast || sig.entry || 0) || latestEma(closes, Number(settings.knFastEmaLength || 5));
+  const ema12 = Number(setup.slow || sig.knSlow || 0) || latestEma(closes, Number(settings.knSlowEmaLength || 12));
+  const lastHigh = Number(last.high || 0);
+  const lastLow = Number(last.low || 0);
+  const lastClose = Number(last.close || current);
+  const candleMid = lastHigh && lastLow ? (lastHigh + lastLow) / 2 : 0;
+  const fib382 = direction === 'LONG' && lastHigh && lastLow ? lastHigh - (lastHigh - lastLow) * 0.382
+    : direction === 'SHORT' && lastHigh && lastLow ? lastLow + (lastHigh - lastLow) * 0.382 : 0;
+  const fib50 = candleMid;
+
   const mm = direction === 'LONG'
     ? (sig.institutionalEma?.marketMemory?.long || sig.institutionalEma?.long?.marketMemory || {})
     : (sig.institutionalEma?.marketMemory?.short || sig.institutionalEma?.short?.marketMemory || {});
   const memoryLine = Number(sig.institutionalEma?.marketMemory?.line || 0);
   const memoryCloudLow = Number(mm.entryZoneLow || sig.institutionalEma?.marketMemory?.cloudLow || 0);
   const memoryCloudHigh = Number(mm.entryZoneHigh || sig.institutionalEma?.marketMemory?.cloudHigh || 0);
-  const values = [Number(sig.ema15), Number(sig.ema1h), memoryLine];
-  if (direction === 'LONG') values.push(Number(sr.support), memoryCloudHigh, memoryCloudLow);
-  else values.push(Number(sr.resistance), memoryCloudLow, memoryCloudHigh);
-  const filtered = values.filter(v => Number.isFinite(v) && v > 0);
-  let chosen = null;
-  let source = 'ATR pullback';
-  if (direction === 'LONG') {
-    const below = filtered.filter(v => v < current - tick && current - v <= maxGap).sort((a, b) => b - a);
-    if (below.length) { chosen = below[0]; source = chosen === Number(sr.support) ? 'support pullback' : chosen === memoryCloudHigh || chosen === memoryCloudLow || chosen === memoryLine ? 'Market Memory cloud pullback' : chosen === Number(sig.ema15) ? 'EMA50 15m pullback' : 'EMA50 1h pullback'; }
-    if (!chosen) chosen = current - minGap;
-    chosen = Math.min(chosen, current - tick);
-  } else if (direction === 'SHORT') {
-    const above = filtered.filter(v => v > current + tick && v - current <= maxGap).sort((a, b) => a - b);
-    if (above.length) { chosen = above[0]; source = chosen === Number(sr.resistance) ? 'resistance pullback' : chosen === memoryCloudLow || chosen === memoryCloudHigh || chosen === memoryLine ? 'Market Memory cloud pullback' : chosen === Number(sig.ema15) ? 'EMA50 15m pullback' : 'EMA50 1h pullback'; }
-    if (!chosen) chosen = current + minGap;
-    chosen = Math.max(chosen, current + tick);
+
+  const candidates = [];
+  function add(value, source, weight = 1) {
+    const v = Number(value || 0);
+    if (!Number.isFinite(v) || v <= 0 || !current) return;
+    const gap = Math.abs(current - v);
+    const correctSide = direction === 'LONG' ? v < current - tick : v > current + tick;
+    if (!correctSide || gap < minGap || gap > maxGap) return;
+    candidates.push({ value: v, source, gap, gapAtr: atr ? gap / atr : 0, weight });
   }
+
+  if (settings.smartEntryUseEma5 !== false) add(ema5, 'KN EMA5 pullback', 1.30);
+  if (settings.smartEntryUseEma12 !== false) add(ema12, 'KN EMA12 deeper pullback', 1.20);
+  if (settings.smartEntryUseCandleMidpoint !== false) add(candleMid, 'last closed candle 50% midpoint', 1.10);
+  if (settings.smartEntryUseFib382 !== false) add(fib382, 'last closed candle 0.382 fib pullback', 1.05);
+  if (settings.smartEntryUseFib50 !== false) add(fib50, 'last closed candle 0.500 fib pullback', 1.00);
+  if (direction === 'LONG') {
+    add(sr.support, 'support pullback', 1.15);
+    add(memoryCloudHigh, 'Market Memory cloud pullback', 1.05);
+    add(memoryCloudLow, 'Market Memory cloud deep pullback', 1.00);
+    add(memoryLine, 'Market Memory line pullback', 1.00);
+  } else {
+    add(sr.resistance, 'resistance pullback', 1.15);
+    add(memoryCloudLow, 'Market Memory cloud pullback', 1.05);
+    add(memoryCloudHigh, 'Market Memory cloud deep pullback', 1.00);
+    add(memoryLine, 'Market Memory line pullback', 1.00);
+  }
+
+  // Prefer value-area entries: not too close to chase, not so deep that the signal is likely stale.
+  candidates.sort((a, b) => {
+    const ideal = 0.45;
+    const aScore = Math.abs(a.gapAtr - ideal) / Math.max(a.weight, 0.1);
+    const bScore = Math.abs(b.gapAtr - ideal) / Math.max(b.weight, 0.1);
+    return aScore - bScore;
+  });
+
+  let chosen = candidates[0];
+  if (!chosen) {
+    const fallback = direction === 'LONG' ? current - minGap : current + minGap;
+    chosen = { value: fallback, source: 'ATR safety pullback fallback', gap: Math.abs(current - fallback), gapAtr: atr ? Math.abs(current - fallback) / atr : 0, weight: 0.5 };
+  }
+
   return {
-    entry: roundCoin(symbol, chosen),
-    source,
+    entry: roundCoin(symbol, chosen.value),
+    source: chosen.source,
     current: roundCoin(symbol, current),
-    gap: roundCoin(symbol, Math.abs(current - chosen)),
-    gapAtr: atr ? pct(Math.abs(current - chosen) / atr) : 0,
+    gap: roundCoin(symbol, Math.abs(current - chosen.value)),
+    gapAtr: atr ? pct(Math.abs(current - chosen.value) / atr) : 0,
     limitSide: direction === 'LONG' ? 'buy-limit below current price' : 'sell-limit above current price',
     support: sr.support || null,
-    resistance: sr.resistance || null
+    resistance: sr.resistance || null,
+    smartEntry: true,
+    candidates: candidates.slice(0, 6).map(c => ({ source: c.source, entry: roundCoin(symbol, c.value), gapAtr: pct(c.gapAtr) })),
+    waitCandles: Math.max(1, Math.floor(Number(settings.smartEntryWaitCandles || settings.entrySignalWindowCandles || 8)))
   };
 }
 
@@ -5466,10 +5529,23 @@ function refreshOpenTradePrices(trades) {
         log('ORDER', `${trade.coin} ${trade.side} pending pullback limit expired at ${trade.entry}; market=${trade.price}.`);
         continue;
       }
-      const latest5m = getCachedCandles(trade.coin, '5m').at(-1);
+      const closed5m = getCachedCandles(trade.coin, '5m');
+      const latest5m = closed5m.at(-1);
       const latestTime = Number(latest5m?.time || 0);
       const placedCandleTime = Number(trade.pendingCreatedCandleTime || trade.signalClosedCandleTime || 0);
       const closedAfterPlacement = latest5m && latestTime && (!placedCandleTime || latestTime > placedCandleTime);
+      const waitCandles = Math.max(1, Math.floor(Number(trade.pullbackPlan?.waitCandles || settings.smartEntryWaitCandles || settings.entrySignalWindowCandles || 8)));
+      const candlesAfterPlacement = Array.isArray(closed5m) && placedCandleTime
+        ? closed5m.filter(c => Number(c?.time || 0) > placedCandleTime).length
+        : 0;
+      if (candlesAfterPlacement > waitCandles) {
+        trade.status = 'EXPIRED_LIMIT';
+        const idx = trades.openTrades.findIndex(t => t.id === trade.id);
+        if (idx >= 0) trades.openTrades.splice(idx, 1);
+        appendTradeJournalEvent('CANCEL', trade, { cancelReason: `Smart entry limit expired after ${waitCandles} closed 5m candles without fill`, entry: trade.entry, marketPrice: trade.price });
+        log('ORDER', `${trade.coin} ${trade.side} smart entry limit expired after ${waitCandles} closed 5m candles at ${trade.entry}; market=${trade.price}.`);
+        continue;
+      }
       const limitTouched = closedAfterPlacement && trade.side === 'LONG'
         ? Number(latest5m.low) <= Number(trade.entry)
         : closedAfterPlacement && trade.side === 'SHORT'
@@ -7446,8 +7522,17 @@ function validateSettingsPatch(patch) {
   out.tier3MinConfluenceScore = 3;
   out.minRR = Math.max(1.5, Math.min(Number(out.minRR || DEFAULT_SETTINGS.minRR), 3));
   out.rewardTargetR = Math.max(out.minRR, Math.min(Number(out.rewardTargetR || DEFAULT_SETTINGS.rewardTargetR), 6));
-  out.requirePullbackForExecution = false;
+  out.requirePullbackForExecution = true;
   out.allowMarketWhenNoPullback = false;
+  out.smartEntryEnabled = true;
+  out.smartEntryWaitCandles = Math.min(Math.max(Math.floor(Number(out.smartEntryWaitCandles || 8)), 1), 30);
+  out.smartEntryMinGapAtr = Math.min(Math.max(Number(out.smartEntryMinGapAtr || 0.12), 0.02), 1.5);
+  out.smartEntryMaxGapAtr = Math.min(Math.max(Number(out.smartEntryMaxGapAtr || 1.2), 0.2), 5);
+  out.smartEntryUseEma5 = out.smartEntryUseEma5 !== false;
+  out.smartEntryUseEma12 = out.smartEntryUseEma12 !== false;
+  out.smartEntryUseCandleMidpoint = out.smartEntryUseCandleMidpoint !== false;
+  out.smartEntryUseFib382 = out.smartEntryUseFib382 !== false;
+  out.smartEntryUseFib50 = out.smartEntryUseFib50 !== false;
   out.entryOrderType = 'limit';
   out.signalSource = 'v77_smi_kn_smart_tpsl_chart_marks';
   out.strategyMode = 'V77_SMI_KN_PULLBACK_TPSL_CHART_MARKS';
