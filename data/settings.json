@@ -3,8 +3,8 @@
   "paperTrade": true,
   "exchange": "delta_exchange_india",
   "executionApi": "delta_exchange_india",
-  "signalSource": "bot11_strategy_spec_v3",
-  "strategyMode": "BOT11_STRATEGY_SPEC_V3",
+  "signalSource": "combined_pro_bot_strategy_v4",
+  "strategyMode": "COMBINED_PRO_BOT_STRATEGY_V4",
   "deltaBaseUrl": "https://api.india.delta.exchange",
   "assets": [
     "BTCUSD",
@@ -264,5 +264,13 @@
   "smartEntryUseEma12": true,
   "smartEntryUseCandleMidpoint": true,
   "smartEntryUseFib382": true,
-  "smartEntryUseFib50": true
+  "smartEntryUseFib50": true,
+  "combinedProStrategyV4": true,
+  "minTradeQualityScore12": 8,
+  "requireMacdConfirmation": true,
+  "requireVolumeConfirmation": true,
+  "volumeConfirmationMultiplier": 1.05,
+  "sidewaysMarketBlockEnabled": true,
+  "requireCoinQualityScore": true,
+  "coinQualityMinScore": 55
 }

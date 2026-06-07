@@ -1,7 +1,7 @@
 {
-  "name": "bot11-strategy-spec-v3",
-  "version": "1.0.0",
-  "description": "BOT11 portfolio futures bot: live data, paper-mode execution, Strategy Spec V3 weekly macro bias + MACD + SMI + KN TPSL runner rules.",
+  "name": "combined-pro-bot-strategy-v4",
+  "version": "1.1.0",
+  "description": "Combined Pro Bot Strategy V4: weekly bias, market structure, SMI, MACD, KN Smart TPSL, pullback limit entries, trade quality engine, and runner logic.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {

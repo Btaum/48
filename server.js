@@ -11,7 +11,7 @@ const ROOT = __dirname;
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 8080);
-const USER_AGENT = 'TradingNorth-BOT11-Strategy-Spec-V3/1.0-PAPER-LIVE-DATA';
+const USER_AGENT = 'TradingNorth-BOT11-Combined-Pro-V4/1.0-PAPER-LIVE-DATA';
 
 const DASHBOARD_PASSWORD = String(process.env.DASHBOARD_PASSWORD || '').trim();
 const DASHBOARD_SESSION_SECRET = String(process.env.DASHBOARD_SESSION_SECRET || process.env.DASHBOARD_PASSWORD || crypto.randomBytes(32).toString('hex'));
@@ -49,8 +49,8 @@ const DEFAULT_SETTINGS = {
   paperTrade: true,
   exchange: 'delta_exchange_india',
   executionApi: 'delta_exchange_india',
-  signalSource: 'bot11_strategy_spec_v3',
-  strategyMode: 'BOT11_STRATEGY_SPEC_V3',
+  signalSource: 'combined_pro_bot_strategy_v4',
+  strategyMode: 'COMBINED_PRO_BOT_STRATEGY_V4',
   deltaBaseUrl: 'https://api.india.delta.exchange',
   assets: ['BTCUSD','ETHUSD','SOLUSD','XRPUSD','BNBUSD','DOGEUSD','ADAUSD','AVAXUSD','LINKUSD','LTCUSD','BCHUSD','TRXUSD','DOTUSD','MATICUSD','UNIUSD','APTUSD','INJUSD','NEARUSD','FILUSD','ARBUSD'],
   primaryTimeframe: '5m',
@@ -259,6 +259,14 @@ const DEFAULT_SETTINGS = {
   paperExecutionMode: 'auto',
   liveDataPaperTradingOnly: true,
   paperUseDeltaWalletReference: true,
+  combinedProStrategyV4: true,
+  minTradeQualityScore12: 8,
+  requireMacdConfirmation: true,
+  requireVolumeConfirmation: true,
+  volumeConfirmationMultiplier: 1.05,
+  sidewaysMarketBlockEnabled: true,
+  requireCoinQualityScore: true,
+  coinQualityMinScore: 55,
   macdConfirmationEnabled: true,
   smiPercentKLength: 10,
   smiPercentDLength: 3,
@@ -483,8 +491,8 @@ function enforceTimeframePolicy(settings = {}) {
     preferredScore: 80,
     exceptionalScore: 90,
     maxOneTradePerCorrelationCluster: settings.maxOneTradePerCorrelationCluster !== false,
-    signalSource: 'bot11_strategy_spec_v3',
-    strategyMode: 'BOT11_STRATEGY_SPEC_V3',
+    signalSource: 'combined_pro_bot_strategy_v4',
+    strategyMode: 'COMBINED_PRO_BOT_STRATEGY_V4',
     emaPeriod,
     mtfEmaPeriod: emaPeriod,
     macdFastLength: 12,
@@ -4818,7 +4826,28 @@ function generateSignalProfile(symbol, settings) {
     technicalStop = { ...technicalStop, sl: macdDivergenceSignal.invalidationLevel, reason: `KN Smart ATR TP/SL: ${macdDivergenceSignal.reason}` };
   }
 
-  state.market[symbol] = { price, prevPrice: previous, atr, relVolume: 1 + Math.abs(volumeSeed), fundingRate, source, macd, structure, supportResistance, weeklyBias, macdDivergenceSignal, sarMacdSignal, twoPoleSignal, breakoutSignal, vwapSignal };
+  const volumeConfirmation = combinedProVolumeConfirmation(symbol, decision, settings);
+  const provisionalProfileForQuality = { symbol, decision, macdDivergenceSignal, macd, marketStructure: structure, supportResistance, weeklyBias, volumeConfirmation };
+  const tradeQuality = combinedProTradeQualityScore(provisionalProfileForQuality, settings);
+  if (macdDivergenceSignal) macdDivergenceSignal.tradeQuality = tradeQuality;
+  if (macdDivergenceSignal?.pass && decision !== 'WAIT') {
+    const coinQualityOk = settings.requireCoinQualityScore === false || kdeScore >= Number(settings.coinQualityMinScore || 55);
+    const macdRequiredOk = settings.requireMacdConfirmation === false || Boolean(macd.pass || macdDivergenceSignal.conditions?.macdTranscript || macdDivergenceSignal.conditions?.macdColorFlip || macdDivergenceSignal.conditions?.macdSignalCross);
+    const sidewaysOk = settings.sidewaysMarketBlockEnabled === false || structure.trend !== 'SIDEWAYS';
+    if (!tradeQuality.pass || !volumeConfirmation.pass || !coinQualityOk || !macdRequiredOk || !sidewaysOk) {
+      const blocks = [];
+      if (!tradeQuality.pass) blocks.push(tradeQuality.reason);
+      if (!volumeConfirmation.pass) blocks.push(volumeConfirmation.reason);
+      if (!coinQualityOk) blocks.push(`Coin quality score ${kdeScore} below ${settings.coinQualityMinScore || 55}.`);
+      if (!macdRequiredOk) blocks.push('MACD confirmation required by Combined Pro V4.');
+      if (!sidewaysOk) blocks.push(`Sideways market blocked: ${structure.reason}`);
+      macdDivergenceSignal.pass = false;
+      macdDivergenceSignal.reason = `${macdDivergenceSignal.reason} COMBINED_PRO_BLOCK: ${blocks.join(' | ')}`;
+      decision = 'WAIT';
+    }
+  }
+
+  state.market[symbol] = { price, prevPrice: previous, atr, relVolume: 1 + Math.abs(volumeSeed), fundingRate, source, macd, structure, supportResistance, weeklyBias, macdDivergenceSignal, sarMacdSignal, twoPoleSignal, breakoutSignal, vwapSignal, volumeConfirmation, tradeQuality };
 
   return {
     symbol,
@@ -4854,6 +4883,8 @@ function generateSignalProfile(symbol, settings) {
     source,
     macd,
     technicalStop,
+    volumeConfirmation,
+    tradeQuality,
     tickerTimestamp: liveTicker?.timestamp || null
   };
 }
@@ -4880,6 +4911,55 @@ function closedOhlcQualityForExecution(symbol, settings = loadSettings()) {
     checks
   };
 }
+
+function combinedProTradeQualityScore(profile, settings = loadSettings()) {
+  const direction = profile?.decision;
+  const sig = profile?.macdDivergenceSignal || {};
+  const cond = sig.conditions || {};
+  const weekly = profile?.weeklyBias || {};
+  const structure = profile?.marketStructure || {};
+  const supportResistance = profile?.supportResistance || {};
+  const macd = profile?.macd || {};
+  const volume = profile?.volumeConfirmation || {};
+  const sameWeekly = Boolean(weekly.direction && weekly.direction === direction);
+  const structureAligned = direction === 'LONG' ? structure.trend === 'BULLISH' : direction === 'SHORT' ? structure.trend === 'BEARISH' : false;
+  const sweep = /sweep/i.test(String(supportResistance.reason || supportResistance.source || sig.reason || ''));
+  const sweepReclaim = sweep && Boolean(cond.cloudTouch && cond.smiRecoveryCross);
+  const smiOk = Boolean(cond.smiPullback && cond.cloudTouch && cond.smiRecoveryCross && (cond.candleColor || settings.requireSmiCandleColor === false));
+  const macdOk = Boolean(macd.pass || cond.macdTranscript || cond.macdColorFlip || cond.macdSignalCross || sig.macdPass);
+  const knOk = Boolean(sig.invalidationLevel && sig.tp1 && sig.tp2 && sig.tp3 && cond.candleSizeOk !== false);
+  const volumeOk = settings.requireVolumeConfirmation === false ? true : Boolean(volume.pass);
+  let score = 0;
+  const details = [];
+  function add(name, ok, pts, detail='') { const pass = Boolean(ok); if (pass) score += pts; details.push({ name, pass, points: pass ? pts : 0, max: pts, detail }); }
+  add('Weekly Alignment', sameWeekly, 2, weekly.reason || 'Weekly MACD/SMI/KN bias');
+  add('Market Structure', structureAligned, 2, structure.reason || 'HH/HL or LH/LL structure approximation');
+  add('Liquidity Sweep', sweepReclaim ? true : sweep, sweepReclaim ? 2 : 1, supportResistance.reason || 'Sweep/reclaim bonus');
+  add('SMI Pullback Continuation', smiOk, 2, sig.setup?.reason || sig.reason || 'SMI pullback + recovery cross');
+  add('MACD Momentum', macdOk, 2, macd.reason || sig.reason || 'Histogram/cross momentum');
+  add('KN Smart TPSL', knOk, 2, sig.reason || 'EMA5/EMA12 + ATR SL/TP');
+  add('Volume Confirmation', volumeOk, 1, volume.reason || 'Pullback/confirmation volume check');
+  const maxScore = 12;
+  const minScore = Math.min(Math.max(Number(settings.minTradeQualityScore12 || 8), 1), maxScore);
+  return { score: Math.min(score, maxScore), maxScore, minScore, pass: score >= minScore, details, reason: `Combined Pro Trade Quality ${Math.min(score, maxScore)}/${maxScore}; minimum ${minScore}.` };
+}
+
+function combinedProVolumeConfirmation(symbol, direction, settings = loadSettings()) {
+  const rows = getCachedCandles(symbol, normalizeResolution(settings.executionTimeframe || '5m')).filter(c => c && Number.isFinite(c.close));
+  const len = Math.min(Math.max(Math.floor(Number(settings.volumeFlowLookback || 24)), 10), 80);
+  if (settings.requireVolumeConfirmation === false) return { pass: true, ratio: 1, reason: 'Volume confirmation disabled.' };
+  if (rows.length < len + 2) return { pass: true, ratio: 1, reason: 'Volume warmup; not blocking until enough closed candles exist.' };
+  const last = rows[rows.length - 1];
+  const prevWindow = rows.slice(-(len + 1), -1).map(c => Number(c.volume || 0)).filter(n => Number.isFinite(n) && n > 0);
+  const avg = average(prevWindow) || 0;
+  const current = Number(last.volume || 0);
+  if (!avg || !current) return { pass: true, ratio: 1, reason: 'No reliable volume feed; not blocking.' };
+  const ratio = current / avg;
+  const mult = Math.min(Math.max(Number(settings.volumeConfirmationMultiplier || 1.05), 0.5), 3);
+  const candleConfirms = direction === 'LONG' ? Number(last.close) >= Number(last.open) : direction === 'SHORT' ? Number(last.close) <= Number(last.open) : false;
+  return { pass: Boolean(ratio >= mult && candleConfirms), ratio: pct(ratio), average: pct(avg), current: pct(current), reason: `Confirmation volume ${pct(ratio)}x average; need ${mult}x and side-confirming candle.` };
+}
+
 function passFail(profile, settings, wallet, trades) {
   const gates = [];
   const direction = profile.decision;
@@ -4887,6 +4967,8 @@ function passFail(profile, settings, wallet, trades) {
   const oneAssetOpen = activeTradeExists(trades, profile.symbol);
   const clusterOpen = settings.maxOneTradePerCorrelationCluster !== false && activeClusterExists(trades, profile.symbol);
   const scorePass = Number(profile.opportunityRanking?.finalScore || profile.kdeScore || 0) >= Number(settings.paperMinScore || 70);
+  const tradeQualityPass = settings.combinedProStrategyV4 === false || !hasDirection || Boolean(profile.tradeQuality?.pass);
+  const volumeConfirmationPass = settings.combinedProStrategyV4 === false || !hasDirection || settings.requireVolumeConfirmation === false || Boolean(profile.volumeConfirmation?.pass);
   const equityForRiskGuard = Number(wallet.equity || 0);
   const dailyPnlForRiskGuard = Number(wallet.dailyPnl || 0);
   const dailyLimitBreached = equityForRiskGuard > 0
@@ -5357,7 +5439,7 @@ function buildTradeCandidate(profile, settings, wallet, trades = loadTrades()) {
     tp1R,
     sizingMultiplier: pct((sizing.multiplier || 1) * (weeklyPolicy.riskMultiplier || 1)),
     sizingReason: [sizing.reason, weeklyPolicy.reason].filter(Boolean).join(' | '),
-    exitPlan: 'V3: SMI + KN Smart TP/SL with weekly macro bias. Same-weekly-side trades use full size; counter-weekly trades are pullback-only and reduced risk. TP1=25%, TP2=25%, TP3=25%, runner=25%; SL moves to breakeven after TP1 and trails while MACD/SMI/KN trend remains strong.',
+    exitPlan: 'V4 Combined Pro: Weekly Bias + Structure + Liquidity Sweep + SMI + MACD + KN Smart TP/SL + Trade Quality Engine. Same-weekly-side trades use full size; counter-weekly trades are pullback-only and reduced risk. TP1=25%, TP2=25%, TP3=25%, runner=25%; SL moves to breakeven after TP1 and trails while MACD/SMI/KN trend remains strong.',
     weeklyBias: profile.weeklyBias,
     weeklyPolicy,
     isCounterTrendPullback,
