@@ -26,18 +26,12 @@ function toast(msg) { const n = $('#toast'); if (!n) return; n.textContent = msg
 
 async function api(path, options = {}) {
   const controller = new AbortController();
-  const timeoutMs = Number(options.timeoutMs || 45000);
-  const timeout = setTimeout(() => controller.abort(new Error(`Request timed out after ${Math.round(timeoutMs/1000)}s`)), timeoutMs);
+  const timeout = setTimeout(() => controller.abort(), options.timeoutMs || 15000);
   try {
     const res = await fetch(path, { headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }, ...options, signal: controller.signal });
     const json = await res.json().catch(() => ({}));
     if (!res.ok || json.ok === false) throw new Error(json.error || json.message || `HTTP ${res.status}`);
     return json.data ?? json;
-  } catch (e) {
-    if (e?.name === 'AbortError' || String(e?.message || '').toLowerCase().includes('aborted')) {
-      throw new Error(`Bot request timed out after ${Math.round(timeoutMs/1000)}s. Reduce coin universe or press Reload once.`);
-    }
-    throw e;
   } finally { clearTimeout(timeout); }
 }
 

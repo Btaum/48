@@ -1,0 +1,7 @@
+git init
+git add .
+git commit -m "BOT V4 UPDATE"
+git branch -M main
+git remote remove origin
+git remote add origin https://github.com/Btaum/48.git
+git push -u origin main --force
