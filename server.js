@@ -4899,7 +4899,7 @@ function passFail(profile, settings, wallet, trades) {
 
   const dataQuality = closedOhlcQualityForExecution(profile.symbol, settings);
   hard('Delta Closed OHLC Data Quality', dataQuality.pass, dataQuality.detail);
-  hard('Opportunity Score >= 70', scorePass, `Score=${profile.opportunityRanking?.finalScore || profile.kdeScore || 0}; class=${profile.opportunityRanking?.classification || '-'}; need 70+.`);
+  hard(`Opportunity Score >= ${Number(settings.paperMinScore || 70)}`, scorePass, `Score=${profile.opportunityRanking?.finalScore || profile.kdeScore || 0}; class=${profile.opportunityRanking?.classification || '-'}; need ${Number(settings.paperMinScore || 70)}+.`);
 
   const sig = profile.macdDivergenceSignal || {};
   const sigModel = String(sig.entryModel || settings.entryModel || 'SMI_EMA_CLOUD_TPSL').toUpperCase();
@@ -5009,6 +5009,15 @@ function compactGateAudit(gates = []) {
 }
 
 
+
+
+
+function readableBlockReason(row) {
+  const gate = Array.isArray(row?.gates) ? row.gates.find(g => !g.pass && g.hard !== false) : null;
+  const gateText = gate ? `${gate.name}${gate.detail ? ': ' + gate.detail : ''}` : '';
+  const sigReason = row?.macdDivergenceSignal?.reason || row?.candidate?.marginPlan?.blockedReason || row?.blockedBy || row?.nextTrigger || row?.entryReason || row?.whyReason || '';
+  return String(gateText || sigReason || 'Waiting for a complete closed-candle setup; no valid entry signal yet.').slice(0, 500);
+}
 
 function nextTriggerText(profile, result, candidate, settings) {
   const direction = profile?.decision || 'WAIT';
@@ -5450,9 +5459,9 @@ function evaluateSymbol(symbol, settings, wallet, trades) {
     zoneDistancePct: pct(profile.zoneDistancePct),
     gates: result.gates,
     pass: result.allPass,
-    blockedBy: result.blockedBy,
-    entryReason: buildDecisionReason(profile, result, candidate, settings),
-    whyReason: buildDecisionReason(profile, result, candidate, settings),
+    blockedBy: result.blockedBy || (result.allPass ? null : (result.gates || []).find(g => !g.pass && g.hard !== false)?.name) || 'Waiting for valid setup',
+    entryReason: buildDecisionReason(profile, result, candidate, settings) || (result.gates || []).find(g => !g.pass && g.hard !== false)?.detail || profile.macdDivergenceSignal?.reason || 'Waiting for valid closed-candle setup',
+    whyReason: buildDecisionReason(profile, result, candidate, settings) || (result.gates || []).find(g => !g.pass && g.hard !== false)?.detail || profile.macdDivergenceSignal?.reason || 'Waiting for valid closed-candle setup',
     source: profile.source,
     macd: profile.macd,
     marketStructure: profile.marketStructure,
@@ -5771,13 +5780,18 @@ function runScan({ autoExecute = false } = {}) {
 function maybeLogBlockedRows(rows = [], settings = loadSettings()) {
   if (!settings.botEnabled) return;
   const now = Date.now();
-  for (const row of rows || []) {
-    if (!row || row.pass || (row.dec !== 'LONG' && row.dec !== 'SHORT')) continue;
-    const key = `${row.coin}:${row.dec}:${row.blockedBy || 'UNKNOWN'}`;
+  const sorted = (rows || []).slice().sort((a, b) => Number(b?.score || 0) - Number(a?.score || 0));
+  let written = 0;
+  for (const row of sorted) {
+    if (!row || row.pass) continue;
+    const reason = readableBlockReason(row);
+    const key = `${row.coin}:${row.dec || 'WAIT'}:${row.blockedBy || reason.slice(0, 80)}`;
     const last = state.lastBlockLog[key] || 0;
-    if (now - last < 5 * 60 * 1000) continue;
+    if (now - last < 60 * 1000) continue;
     state.lastBlockLog[key] = now;
-    log('BLOCK', `${row.coin} ${row.dec} not opened: ${row.blockedBy || 'unknown blocker'}. ${String(row.nextTrigger || row.whyReason || '').slice(0, 240)}`);
+    log('BLOCK', `${row.coin} ${row.dec || 'WAIT'} not opened: ${reason}`);
+    written += 1;
+    if (written >= 8) break;
   }
 }
 
@@ -5790,6 +5804,10 @@ async function runScanAsync({ autoExecute = false, forceDelta = false } = {}) {
   settings = loadSettings();
   const payload = runScan({ autoExecute: false });
   maybeLogBlockedRows(payload.rows || [], settings);
+  if (settings.botEnabled && !(payload.rows || []).some(r => r.pass && r.candidate)) {
+    const top = (payload.rows || []).slice().sort((a,b)=>Number(b.score||0)-Number(a.score||0))[0];
+    if (top) log('WAIT', `No trade opened this scan. Best setup: ${top.coin} ${top.dec || 'WAIT'} score=${top.score || 0}. ${readableBlockReason(top)}`);
+  }
   if (settings.botEnabled && autoExecute) {
     const localTrades = loadTrades();
     const paperWallet = loadWallet();
@@ -5815,8 +5833,12 @@ async function runScanAsync({ autoExecute = false, forceDelta = false } = {}) {
       } else if (liveModeRequested) {
         log('SAFE', `${row.coin} ${row.dec} signal passed, but LIVE order was not sent because live readiness failed: ${liveBlockReason(settings, loadKeys(), { ignorePaper: true }) || 'unknown live readiness failure'}`);
       } else {
-        const order = openPaperTrade(row, settings, trades, wallet);
-        if (order) log('PAPER', `${row.coin} ${row.dec} ${order.status === 'PENDING_LIMIT' ? 'pending pullback limit placed' : 'paper trade opened'} by the same scanner engine used for live.`, { tradeId: order.id, status: order.status, marginUsd: order.marginUsedUsd });
+        try {
+          const order = openPaperTrade(row, settings, trades, wallet);
+          if (order) log('PAPER', `${row.coin} ${row.dec} ${order.status === 'PENDING_LIMIT' ? 'pending pullback limit placed' : 'paper trade opened'} by the same scanner engine used for live.`, { tradeId: order.id, status: order.status, marginUsd: order.marginUsedUsd });
+        } catch (error) {
+          log('ERROR', `Paper order failed for ${row.coin}: ${error.message}`);
+        }
       }
     }
     if (!usingLiveAccount) saveTrades(trades);

@@ -1,0 +1,14 @@
+BOT11 V5 CLEAN OPERATION FIX
+
+Changes made:
+1. Removed unreliable/illiquid symbols from default scan list and kept only liquid Delta symbols.
+2. Removed MATICUSD completely.
+3. Added marketDataSource default = delta.
+4. Fixed silent/empty rejection reasons.
+5. Advanced Logs now show why no trade opened: score, data quality, SMI/KN, pullback, candle, SL, risk, or sizing reason.
+6. Paper order opening is wrapped in error handling so one bad symbol cannot stop the bot scan.
+7. Disabled correlation-cluster blocking in paper mode so paper testing can take more than one crypto-family signal.
+8. Kept Paper Mode default. Live mode is still blocked unless manually enabled and API checks pass.
+9. Kept limit-only pullback entries; bot should place pending limit trades when a valid setup appears.
+
+After running, check Advanced Logs. If no trade opens, the log will now show the exact reason instead of “signal aborted without reason”.
