@@ -263,5 +263,6 @@
   "smartEntryUseEma12": true,
   "smartEntryUseCandleMidpoint": true,
   "smartEntryUseFib382": true,
-  "smartEntryUseFib50": true
+  "smartEntryUseFib50": true,
+  "marketDataSource": "delta"
 }

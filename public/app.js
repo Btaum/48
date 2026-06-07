@@ -75,7 +75,7 @@ function renderHeader() {
   const s = app.state.settings;
   $('#lastUpdate').textContent = new Date(app.state.lastScanAt || app.state.serverTime).toLocaleString();
   $('#coinCount').textContent = app.state.coins || 0;
-  $('#sourceText').textContent = s.marketDataSource || 'Delta Exchange India';
+  $('#sourceText').textContent = s?.marketDataSource || 'Delta Exchange India';
   $('#modeBadge').textContent = s.paperTrade ? 'PAPER' : 'LIVE';
   $('#modeBadge').className = `pill ${s.paperTrade ? 'pill-paper' : 'pill-red'}`;
   $('#dataBadge').textContent = s.deltaStatus === 'LIVE_DELTA' ? 'LIVE DATA' : 'FALLBACK DATA';
