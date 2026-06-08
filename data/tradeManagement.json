@@ -1,0 +1,21 @@
+{
+  "T-BTCUSD-MQ4VM99B": {
+    "breakEvenMoved": true,
+    "tp1Done": true,
+    "tp1Reason": "1.06R reached TP1 trigger 1R",
+    "tp1At": "2026-06-08T07:25:34.776Z"
+  },
+  "T-SOLUSD-MQ4XEPCN": {
+    "breakEvenMoved": true,
+    "tp1Done": true,
+    "tp1Reason": "1.21R reached TP1 trigger 1R",
+    "tp1At": "2026-06-08T09:45:37.995Z"
+  },
+  "T-BNBUSD-MQ4YNBJ7": {},
+  "T-LTCUSD-MQ502X5K": {
+    "breakEvenMoved": true,
+    "tp1Done": true,
+    "tp1Reason": "1.83R reached TP1 trigger 1R",
+    "tp1At": "2026-06-08T09:45:12.442Z"
+  }
+}

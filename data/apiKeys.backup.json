@@ -3,7 +3,7 @@
   "apiKey": "ZGRmtnkemjkZfcWQog6gVHk4g1KQBh",
   "secret": "rIoqV1qMjl97kA0SwZItMPRgoVqDr9rXJ7f5KfgKbmyQ30U0Gpm9W3Y2yPQT",
   "liveTradingConfirmed": true,
-  "lastTestAt": "2026-06-08T10:40:02.903Z",
+  "lastTestAt": "2026-06-08T10:39:48.110Z",
   "lastTestStatus": "pass",
   "lastTestMessage": "Delta India profile endpoint authenticated successfully.",
   "whitelistedIpNote": "106.192.132.204",

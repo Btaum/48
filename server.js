@@ -2,6 +2,9 @@
 
 const http = require('http');
 const https = require('https');
+const dns = require('dns');
+try { dns.setDefaultResultOrder('ipv4first'); } catch (_) {}
+const DELTA_HTTPS_AGENT = new https.Agent({ keepAlive: true, family: 4 });
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -145,7 +148,7 @@ const DEFAULT_SETTINGS = {
   maxTradesPerDay: 5,
   maxDailyLossUsd: 10,
   maxConsecutiveLosses: 2,
-  paperMinScore: 70,
+  paperMinScore: 50,
   preferredScore: 80,
   exceptionalScore: 90,
   adrUsedLimitPct: 80,
@@ -183,11 +186,11 @@ const DEFAULT_SETTINGS = {
   maxAddOnsPerCoin: 1,
   profitAddOnTriggerR: 2,
   profitAddOnSizePct: 50,
-  profitAddOnMinScore: 70,
+  profitAddOnMinScore: 50,
   profitAddOnRequireFreshSignal: true,
   protectedAddOnNoLossOnly: true,
   qualitySizingEnabled: true,
-  qualitySizeScore1: 70,
+  qualitySizeScore1: 50,
   qualitySizeMultiplier1: 1.5,
   qualitySizeScore2: 82,
   qualitySizeMultiplier2: 2,
@@ -479,7 +482,7 @@ function enforceTimeframePolicy(settings = {}) {
     htfMinimumAligned: 1,
     paperTrade: settings.liveDataPaperTradingOnly === false ? (typeof settings.paperTrade === 'boolean' ? settings.paperTrade : true) : true,
     liveDataPaperTradingOnly: settings.liveDataPaperTradingOnly !== false,
-    paperMinScore: Math.min(Math.max(Number(settings.paperMinScore || 70), 70), 95),
+    paperMinScore: Math.min(Math.max(Number(settings.paperMinScore || 50), 50), 95),
     preferredScore: 80,
     exceptionalScore: 90,
     maxOneTradePerCorrelationCluster: settings.maxOneTradePerCorrelationCluster !== false,
@@ -714,7 +717,7 @@ function activeClusterExists(trades, symbol) {
 
 function classifyOpportunityScore(score) {
   const n = Number(score || 0);
-  if (n < 70) return 'Ignore';
+  if (n < 50) return 'Ignore';
   if (n < 80) return 'Tradeable';
   if (n < 90) return 'Preferred';
   return 'Exceptional';
@@ -724,7 +727,7 @@ function riskUsdForScore(score) {
   const n = Number(score || 0);
   if (n >= 90) return 10;
   if (n >= 80) return 7;
-  if (n >= 70) return 5;
+  if (n >= 50) return 5;
   return 0;
 }
 
@@ -4301,7 +4304,7 @@ function profitTargetSettings(settings = loadSettings()) {
   };
 }
 
-function requestJson(url, { method = 'GET', headers = {}, body = null, timeoutMs = 10000 } = {}) {
+function requestJsonOnce(url, { method = 'GET', headers = {}, body = null, timeoutMs = 10000 } = {}) {
   return new Promise((resolve, reject) => {
     const target = new URL(url);
     const payload = body === null || body === undefined ? null : (typeof body === 'string' ? body : JSON.stringify(body));
@@ -4310,6 +4313,8 @@ function requestJson(url, { method = 'GET', headers = {}, body = null, timeoutMs
       hostname: target.hostname,
       port: target.port || 443,
       path: `${target.pathname}${target.search}`,
+      family: 4,
+      agent: DELTA_HTTPS_AGENT,
       headers: {
         Accept: 'application/json',
         'User-Agent': USER_AGENT,
@@ -4337,6 +4342,28 @@ function requestJson(url, { method = 'GET', headers = {}, body = null, timeoutMs
   });
 }
 
+async function requestJson(url, opts = {}) {
+  const retries = Number(opts.retries || 4);
+  let lastError = null;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await requestJsonOnce(url, opts);
+    } catch (error) {
+      lastError = error;
+      const msg = String(error?.message || error || '');
+      const retryable =
+        msg.includes('EAI_AGAIN') ||
+        msg.includes('ENOTFOUND') ||
+        msg.includes('ECONNRESET') ||
+        msg.includes('ETIMEDOUT') ||
+        msg.includes('timed out') ||
+        msg.includes('socket hang up');
+      if (!retryable || attempt >= retries) break;
+      await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+    }
+  }
+  throw lastError;
+}
 
 function resolutionToSeconds(resolution = '5m') {
   const r = String(resolution || '5m').toLowerCase().trim();
@@ -4448,7 +4475,7 @@ async function fetchDeltaCandles(symbol, resolution = '5m', settings = loadSetti
   const start = end - (count + 5) * sec;
   const base = String(settings.deltaBaseUrl || DEFAULT_SETTINGS.deltaBaseUrl).replace(/\/+$/, '');
   const url = `${base}/v2/history/candles?resolution=${encodeURIComponent(res)}&symbol=${encodeURIComponent(sym)}&start=${start}&end=${end}`;
-  const json = await requestJson(url, { timeoutMs: 15000 });
+  const json = await requestJson(url, { timeoutMs: 12000, retries: 3 });
   const candles = normalizeDeltaCandles(json, res).slice(-count);
   if (!candles.length) throw new Error(`Delta returned no ${res} candles for ${sym}`);
   const key = candleKey(sym, res);
@@ -4611,9 +4638,9 @@ async function detectServerOutboundIp() {
     try {
       let ip = '';
       if (service.raw) {
-        ip = await requestText(service.url, { timeoutMs: 8000 });
+        ip = await requestText(service.url, { timeoutMs: 10000, retries: 4 });
       } else {
-        const json = await requestJson(service.url, { timeoutMs: 8000 });
+        const json = await requestJson(service.url, { timeoutMs: 10000, retries: 4 });
         ip = service.pick(json);
       }
       ip = String(ip || '').trim();
@@ -4675,8 +4702,8 @@ async function refreshDeltaPublicData(settings = loadSettings(), force = false) 
   try {
     const base = settings.deltaBaseUrl.replace(/\/+$/, '');
     const [tickerJson, productJson] = await Promise.allSettled([
-      requestJson(`${base}/v2/tickers?contract_types=perpetual_futures`, { timeoutMs: 12000 }),
-      requestJson(`${base}/v2/products?contract_types=perpetual_futures`, { timeoutMs: 12000 })
+      requestJson(`${base}/v2/tickers?contract_types=perpetual_futures`, { timeoutMs: 12000, retries: 4 }),
+      requestJson(`${base}/v2/products?contract_types=perpetual_futures`, { timeoutMs: 12000, retries: 4 })
     ]);
 
     if (tickerJson.status !== 'fulfilled') throw tickerJson.reason;
@@ -4886,7 +4913,7 @@ function passFail(profile, settings, wallet, trades) {
   const hasDirection = direction === 'LONG' || direction === 'SHORT';
   const oneAssetOpen = activeTradeExists(trades, profile.symbol);
   const clusterOpen = settings.maxOneTradePerCorrelationCluster !== false && activeClusterExists(trades, profile.symbol);
-  const scorePass = Number(profile.opportunityRanking?.finalScore || profile.kdeScore || 0) >= Number(settings.paperMinScore || 70);
+  const scorePass = Number(profile.opportunityRanking?.finalScore || profile.kdeScore || 0) >= Number(settings.paperMinScore || 50);
   const equityForRiskGuard = Number(wallet.equity || 0);
   const dailyPnlForRiskGuard = Number(wallet.dailyPnl || 0);
   const dailyLimitBreached = equityForRiskGuard > 0
@@ -4899,7 +4926,7 @@ function passFail(profile, settings, wallet, trades) {
 
   const dataQuality = closedOhlcQualityForExecution(profile.symbol, settings);
   hard('Delta Closed OHLC Data Quality', dataQuality.pass, dataQuality.detail);
-  hard(`Opportunity Score >= ${Number(settings.paperMinScore || 70)}`, scorePass, `Score=${profile.opportunityRanking?.finalScore || profile.kdeScore || 0}; class=${profile.opportunityRanking?.classification || '-'}; need ${Number(settings.paperMinScore || 70)}+.`);
+  hard(`Opportunity Score >= ${Number(settings.paperMinScore || 50)}`, scorePass, `Score=${profile.opportunityRanking?.finalScore || profile.kdeScore || 0}; class=${profile.opportunityRanking?.classification || '-'}; need ${Number(settings.paperMinScore || 50)}+.`);
 
   const sig = profile.macdDivergenceSignal || {};
   const sigModel = String(sig.entryModel || settings.entryModel || 'SMI_EMA_CLOUD_TPSL').toUpperCase();
@@ -5127,7 +5154,7 @@ function highProbabilitySizing(profile, settings) {
   const trendOk = profile.htfBias === directionToTrend(profile.decision) || aligned > 0;
   const sourceOk = String(profile.strategySignalSource || 'NONE') !== 'NONE';
   let multiplier = 1;
-  const s1 = Number(settings.qualitySizeScore1 || 70);
+  const s1 = Number(settings.qualitySizeScore1 || 50);
   const s2 = Number(settings.qualitySizeScore2 || 82);
   if (sourceOk && trendOk && score >= s2) multiplier = Number(settings.qualitySizeMultiplier2 || 2);
   else if (sourceOk && score >= s1) multiplier = Number(settings.qualitySizeMultiplier1 || 1.5);
@@ -5854,7 +5881,7 @@ function shouldAddOnTrade(trade, row, settings, managementState = {}) {
   if (settings.profitAddOnEnabled === false || settings.autoAddOnEnabled === false) return { ok: false, reason: 'Profit add-on disabled' };
   if (!row || row.dec !== trade.side) return { ok: false, reason: 'No same-side chart signal active' };
   if (settings.profitAddOnRequireFreshSignal !== false && !row.pass) return { ok: false, reason: 'Same-side signal is not currently passing' };
-  if (Number(row.score || 0) < Number(settings.profitAddOnMinScore || 70)) return { ok: false, reason: `Score ${row.score || 0} below add-on minimum ${settings.profitAddOnMinScore || 70}` };
+  if (Number(row.score || 0) < Number(settings.profitAddOnMinScore || 50)) return { ok: false, reason: `Score ${row.score || 0} below add-on minimum ${settings.profitAddOnMinScore || 50}` };
   const usedAddOns = Math.max(Number(trade.addOnCount || 0), Number(managementState.addOnCount || 0));
   if (usedAddOns >= Number(settings.maxAddOnsPerCoin || 1)) return { ok: false, reason: 'Max protected add-ons already used' };
   const r = profitRForTrade(trade);
@@ -6447,7 +6474,7 @@ async function deltaSignedRequest(settings, keys, method, apiPath, body = null, 
     'User-Agent': USER_AGENT,
     'Content-Type': 'application/json'
   };
-  return requestJson(`${base}${apiPath}${queryString}`, { method, headers, body: payload || null, timeoutMs: 12000 });
+  return requestJson(`${base}${apiPath}${queryString}`, { method, headers, body: payload || null, timeoutMs: 12000, retries: 4 });
 }
 
 

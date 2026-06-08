@@ -1,222 +1,4008 @@
 [
   {
-    "time": "2026-06-07T16:52:49.134Z",
-    "level": "ERROR",
-    "message": "SOLUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:57.397Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:49.132Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1h candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:57.395Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:44.129Z",
-    "level": "ERROR",
-    "message": "BTCUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:37.723Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:44.127Z",
-    "level": "ERROR",
-    "message": "ETHUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:37.721Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:44.125Z",
-    "level": "ERROR",
-    "message": "SOLUSD 1w candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:37.550Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:44.114Z",
-    "level": "ERROR",
-    "message": "ETHUSD 5m candles unavailable: Delta API request timed out"
+    "time": "2026-06-08T07:03:37.548Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:39.125Z",
-    "level": "ERROR",
-    "message": "BTCUSD 15m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:37.545Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:39.123Z",
-    "level": "ERROR",
-    "message": "ETHUSD 1w candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:37.542Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:39.121Z",
-    "level": "ERROR",
-    "message": "BTCUSD 15m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:37.540Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:34.115Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1w candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:37.537Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:34.111Z",
-    "level": "ERROR",
-    "message": "SOLUSD 1d candles unavailable: Delta API request timed out"
+    "time": "2026-06-08T07:03:37.534Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:29.116Z",
-    "level": "ERROR",
-    "message": "BTCUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:37.532Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:29.114Z",
-    "level": "ERROR",
-    "message": "ETHUSD 1d candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:37.529Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:29.111Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1w candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:07.983Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:24.374Z",
-    "level": "ERROR",
-    "message": "BTCUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:07.837Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:24.110Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1d candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:03:07.681Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:19.108Z",
-    "level": "ERROR",
-    "message": "ETHUSD 1h candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:44.328Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:19.107Z",
-    "level": "ERROR",
-    "message": "SOLUSD 1h candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:44.009Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:19.104Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1d candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:44.006Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:14.371Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1h candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:17.027Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:14.105Z",
-    "level": "ERROR",
-    "message": "ETHUSD 15m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:17.024Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:14.103Z",
-    "level": "ERROR",
-    "message": "SOLUSD 15m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:13.545Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:52:09.099Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1h candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:13.543Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:09.096Z",
-    "level": "ERROR",
-    "message": "ETHUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:13.539Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:04.369Z",
-    "level": "ERROR",
-    "message": "SOLUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:13.537Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:04.097Z",
-    "level": "ERROR",
-    "message": "BTCUSD 15m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:13.534Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:04.095Z",
-    "level": "ERROR",
-    "message": "BTCUSD 15m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:13.531Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:52:04.092Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1w candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:13.529Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:51:59.093Z",
-    "level": "ERROR",
-    "message": "BTCUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:13.526Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:51:59.091Z",
-    "level": "ERROR",
-    "message": "BTCUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:02:13.524Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:51:59.088Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1d candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:57.410Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:51:54.086Z",
-    "level": "ERROR",
-    "message": "ETHUSD 1w candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:57.268Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:51:54.083Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1h candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:35.278Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:51:54.081Z",
-    "level": "ERROR",
-    "message": "ETHUSD 1d candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:32.665Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:51:49.079Z",
-    "level": "ERROR",
-    "message": "BTCUSD 15m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:32.662Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:51:49.068Z",
-    "level": "ERROR",
-    "message": "ETHUSD 1h candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:13.314Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:51:44.365Z",
-    "level": "ERROR",
-    "message": "BTCUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:13.311Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:51:44.064Z",
-    "level": "ERROR",
-    "message": "ETHUSD 15m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:11.725Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
   },
   {
-    "time": "2026-06-07T16:51:44.060Z",
-    "level": "ERROR",
-    "message": "ETHUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:11.722Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:51:44.056Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1w candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:11.719Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:51:39.050Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1d candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:11.717Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:51:39.045Z",
-    "level": "ERROR",
-    "message": "BTCUSD 1h candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:11.714Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:51:39.040Z",
-    "level": "ERROR",
-    "message": "BTCUSD 15m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:11.711Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
   },
   {
-    "time": "2026-06-07T16:51:34.036Z",
-    "level": "ERROR",
-    "message": "BTCUSD 5m candles unavailable: getaddrinfo EAI_AGAIN api.india.delta.exchange"
+    "time": "2026-06-08T07:01:11.708Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T07:01:11.706Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T07:01:11.703Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T07:00:52.722Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
+  },
+  {
+    "time": "2026-06-08T07:00:51.727Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
+  },
+  {
+    "time": "2026-06-08T07:00:34.560Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-17.33 signal=-7.59; required cross above -40 after oversold. WAIT LONG: trend=false pu"
+  },
+  {
+    "time": "2026-06-08T07:00:28.406Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-17.33 signal=-7.59; required cross above -40 after oversold. WAIT LONG: trend=false pu"
+  },
+  {
+    "time": "2026-06-08T07:00:15.753Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=56. SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
+  },
+  {
+    "time": "2026-06-08T07:00:15.750Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: SMI Pullback + KN Smart TP/SL Signal: WAIT MULTI-HORIZON SMI_KN_PULLBACK_TPSL. Checked 5m / 15m / 1h. SCALP 5m: WAIT | INTRA 15m: WAIT | SWING 1h: WAIT. WAIT SWING 1h SMI_KN_PULLBACK_TPSL. Long: WAIT LONG: KN=false; SMI_PULLBACK_CONTINUATION=false; MACD_TRANSCRIPT=false. WAIT LONG: no KN EMA5/12 crossover inside last 8 closed candles. LONG SMI exact recovery WAIT: pullback=true cross=true 6 candle(s) ago; SMI=-18.34 signal=-7.77; required cross above -40 after oversold. WAIT LONG: trend=false pu"
+  },
+  {
+    "time": "2026-06-08T07:00:07.811Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=44. Opportunity Score >= 50: Score=44; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:56.311Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:56.309Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:56.306Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:54.050Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:54.047Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:54.044Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=15; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:54.041Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:54.039Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:54.036Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:54.033Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:54.030Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:54.028Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:39.789Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:23.421Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:21.373Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:21.182Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:20.995Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:15.037Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:14.822Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:59:14.656Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:40.758Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:40.023Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:40.020Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:40.017Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:39.849Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:39.846Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:39.843Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=15; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:39.840Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:39.837Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:39.834Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:39.832Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:39.829Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:58:39.826Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:51.137Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.835Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.683Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.680Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.677Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.532Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.529Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.527Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=15; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.524Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.521Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.519Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.516Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.514Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:30.512Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:07.278Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:57:07.132Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:39.812Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:31.403Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:30.737Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:29.518Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.939Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.937Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.934Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.763Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.760Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.758Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=15; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.755Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.753Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.750Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.748Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.746Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:56:14.743Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:55:44.688Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:55:36.631Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:55:36.494Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:55:36.275Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:55:10.712Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:55:10.537Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:55:10.392Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:55:10.390Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:55:10.387Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:46.124Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:45.598Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:45.595Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:45.592Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:45.589Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:45.587Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:45.584Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:45.582Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:45.578Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:45.575Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:13.211Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:10.496Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:10.347Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:10.199Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:10.196Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:54:10.193Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:41.169Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:36.799Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:36.640Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:36.637Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:36.634Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:36.631Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:36.627Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:36.624Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:36.620Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:36.617Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:36.614Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:09.785Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:53:09.615Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:42.108Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:41.962Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:41.814Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:41.811Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:41.809Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:10.539Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:10.400Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:10.398Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:10.396Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:10.393Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:10.391Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:10.388Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:10.386Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:10.384Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:52:10.381Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:51:51.618Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:51:51.199Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:51:31.526Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:51:31.335Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:51:31.333Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:51:31.330Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:51:11.871Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:51:11.729Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:52.336Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:52.159Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:52.157Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:52.154Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:52.152Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:52.150Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:52.147Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:52.145Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:52.143Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:52.140Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:27.034Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:22.166Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:21.944Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:21.756Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:21.594Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:21.363Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BTCUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:21.360Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:50:21.357Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:51.679Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:48.511Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:47.578Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:47.575Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:47.573Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:47.570Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:47.566Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:47.563Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=28; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:47.560Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:47.557Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:47.555Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:15.185Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:14.960Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:14.958Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:49:14.956Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:42.280Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:42.135Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:41.992Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:19.127Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:18.954Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:18.952Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:18.950Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:18.947Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:18.943Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:18.941Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=28; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:18.939Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:18.936Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:48:18.932Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:52.152Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:49.131Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:48.976Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:48.820Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:48.661Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:48.445Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:48.443Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:48.441Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:13.004Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:12.795Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:12.366Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:12.363Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:12.360Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:12.358Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:12.355Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:12.353Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=28; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:12.351Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:12.348Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:47:12.346Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:46:27.188Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:46:26.998Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:46:17.129Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:46:17.127Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:46:17.124Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:46:04.080Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:46:03.808Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:58.862Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:58.860Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=9; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:58.857Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:58.855Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:58.853Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:58.851Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=28; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:58.848Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:58.846Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:58.843Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:19.752Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:19.590Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=40. Opportunity Score >= 50: Score=40; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:06.471Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:06.469Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:45:06.466Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:56.733Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:46.633Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:46.479Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:46.476Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:46.474Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:46.472Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:46.469Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:46.467Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:46.464Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:46.462Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:46.459Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:23.501Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:23.353Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:03.599Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:03.436Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:03.434Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:44:03.432Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:42.306Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:42.139Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:42.137Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:42.135Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:42.133Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:42.130Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:42.128Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:42.126Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:42.124Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:42.121Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:24.782Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:12.284Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:43:05.436Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:52.330Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:52.327Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:52.325Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:45.314Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:32.973Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:32.971Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:32.968Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:32.966Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:32.964Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:32.962Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:32.960Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:32.958Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:32.955Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:26.428Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:12.255Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:42:07.109Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:52.381Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:46.709Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:46.706Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:46.704Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:33.735Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:27.456Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:27.305Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:27.302Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:27.300Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:27.298Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:27.296Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:27.293Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:27.291Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:27.289Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:27.286Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:06.998Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:41:06.832Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:46.289Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:46.079Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:45.931Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:45.929Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:45.926Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:12.792Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:10.607Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:10.430Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ADAUSD WAIT score=41. Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:10.428Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:10.426Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:10.424Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:10.422Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:10.420Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:10.417Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:10.415Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:40:10.413Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:39:47.291Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:39:28.991Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:39:28.989Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:39:28.987Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:39:26.572Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:39:08.851Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:39:06.599Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:49.278Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:49.276Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:49.274Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:49.272Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:49.270Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:49.268Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:49.265Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:49.263Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:49.261Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:47.418Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:28.755Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:26.730Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:26.728Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:26.725Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:09.095Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:38:06.917Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:48.884Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:48.882Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:48.880Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:48.878Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:48.875Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:48.873Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:48.871Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:48.869Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:48.867Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:46.546Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:29.154Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:26.442Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:09.179Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:09.177Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:09.175Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:37:07.275Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:48.768Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:48.765Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:48.762Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:48.759Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:48.757Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:48.755Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:48.753Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:48.751Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:48.749Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:46.333Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:28.884Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:26.735Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:09.384Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:07.601Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:07.596Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:36:07.594Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:49.327Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:46.808Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:46.806Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:46.803Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:46.801Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:46.798Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:46.796Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:46.794Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:46.791Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:46.789Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:29.184Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:27.890Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: XRPUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:09.222Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ETHUSD WAIT score=29. Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:35:07.153Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: ETHUSD WAIT score=29. Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:49.618Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:49.615Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:49.612Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:46.662Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:46.660Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:46.658Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:46.655Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:46.653Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:46.651Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:46.649Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:46.647Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:46.645Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:28.809Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:26.733Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:08.910Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:34:07.053Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:48.595Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:48.593Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:48.591Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:45.536Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:45.534Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:45.532Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:45.530Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:45.528Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:45.526Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:45.524Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:45.521Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:45.519Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:28.004Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:24.813Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:06.604Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:33:02.315Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:50.509Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:44.803Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.432Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.429Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.426Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.280Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.277Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.275Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.273Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.271Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.268Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.266Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.264Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:33.262Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:09.916Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:32:09.729Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:48.450Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:48.254Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:27.337Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.310Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.308Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.306Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.166Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.164Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.161Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.159Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.157Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.155Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.153Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.151Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:31:25.148Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:58.944Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:58.792Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:38.304Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:38.091Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.466Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.463Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.461Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.301Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=33. Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.299Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.297Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.295Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.293Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.290Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.288Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.286Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:20.284Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=33; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:00.737Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:30:00.590Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:42.001Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:41.766Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.294Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.292Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.289Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.128Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.125Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.123Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.121Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.119Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.117Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.115Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.113Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:29:19.111Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:55.746Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:55.578Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:35.663Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:32.229Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:19.614Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:17.585Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:15.706Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:15.704Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:15.702Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:09.973Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BNBUSD WAIT score=36. Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:09.971Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:09.969Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:09.967Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:09.965Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:09.963Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:09.961Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:09.959Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:09.956Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=36; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-08T06:28:08.122Z",
+    "level": "BOT",
+    "message": "Bot master switch set to ON.",
+    "paperTrade": true
+  },
+  {
+    "time": "2026-06-08T06:28:03.288Z",
+    "level": "BOT",
+    "message": "Bot master switch set to ON.",
+    "paperTrade": true
+  },
+  {
+    "time": "2026-06-07T18:05:39.846Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:39.606Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:39.604Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:39.602Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=25; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:19.356Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:19.194Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:19.192Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:19.190Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:19.188Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:19.186Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:19.184Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:19.181Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:19.179Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:05:19.177Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:59.545Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:59.297Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:39.445Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:39.213Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:39.210Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:39.208Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:18.439Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:09.852Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:09.850Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:09.848Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:09.846Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:09.844Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:09.842Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:09.840Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:09.838Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:04:09.836Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:57.201Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:48.994Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:37.595Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:33.368Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:33.183Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:30.605Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:29.377Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:26.965Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:25.225Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:25.223Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:25.221Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:19.184Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:18.431Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:15.882Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:15.223Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:14.591Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:14.139Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:13.624Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:03:05.205Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:59.896Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:59.692Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:59.690Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:59.688Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:59.685Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:59.683Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:59.680Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:59.678Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:59.674Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:59.671Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:53.809Z",
+    "level": "BOT",
+    "message": "Bot master switch set to ON.",
+    "paperTrade": true
+  },
+  {
+    "time": "2026-06-07T18:02:39.498Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:39.274Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:22.374Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:22.195Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:22.193Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:02:22.191Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:55.700Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:55.496Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:55.494Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:55.490Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:55.486Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:55.483Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:55.481Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:55.479Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:55.477Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:55.474Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:39.429Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:39.196Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:18.218Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:10.946Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:02.127Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:02.125Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:01:02.123Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:51.527Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:51.525Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:51.523Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:51.521Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:51.519Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:51.517Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:51.514Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:51.512Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:51.509Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:36.165Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:27.680Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:27.269Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:09.802Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T18:00:09.634Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.446Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.444Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.442Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.273Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.271Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.269Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.267Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.265Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=24; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.263Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.261Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.259Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:47.257Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:27.107Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:21.032Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:59:11.265Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:56.790Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:51.079Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:38.137Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:38.135Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:38.133Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:36.028Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:36.026Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:36.024Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:36.022Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:36.020Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=24; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:36.018Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:36.016Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:36.014Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:36.012Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:18.130Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:17.955Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:58:11.601Z",
+    "level": "CONFIG",
+    "message": "Strategy/mode settings updated from dashboard."
+  },
+  {
+    "time": "2026-06-07T17:58:01.559Z",
+    "level": "CONFIG",
+    "message": "Strategy/mode settings updated from dashboard."
+  },
+  {
+    "time": "2026-06-07T17:57:58.960Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:58.183Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:57.434Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:55.022Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:54.051Z",
+    "level": "CONFIG",
+    "message": "Strategy/mode settings updated from dashboard."
+  },
+  {
+    "time": "2026-06-07T17:57:45.049Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:37.739Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:37.737Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:37.735Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:28.767Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:28.572Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:28.570Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:28.569Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:28.567Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:28.565Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=24; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:28.563Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:28.561Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:28.558Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:28.556Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:57:07.269Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:57.682Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:56.312Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:55.280Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:53.545Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:50.211Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:40.696Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:32.936Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:32.933Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:32.931Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:21.051Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:21.049Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:21.048Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:21.046Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:21.043Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=24; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:21.041Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:21.039Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:21.037Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:21.035Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:56:16.087Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:58.845Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:56.769Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:38.224Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:38.033Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.731Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.729Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.727Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.558Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: AVAXUSD WAIT score=37. Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.556Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.555Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.553Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.551Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=24; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.548Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=27; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.546Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.544Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=29; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:55:18.542Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=37; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:59.580Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:54.868Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:52.535Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:49.010Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:47.197Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:44.867Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:44.502Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:44.118Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:21.755Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:21.588Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.318Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.316Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.314Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.168Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.166Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.164Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=25; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.162Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=30; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.160Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.158Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=38; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.156Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.154Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:54:00.152Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:42.852Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:42.698Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:23.111Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:22.964Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:00.216Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:00.214Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:00.212Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:00.010Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:00.009Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:00.007Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=25; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:00.005Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=30; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:00.003Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:53:00.001Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=38; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:52:59.999Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:52:59.997Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:52:59.995Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:52:43.237Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:52:43.019Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:52:18.145Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:52:17.920Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:57.636Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:57.634Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:57.630Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:47.402Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:47.226Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:46.976Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:46.974Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:46.971Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=25; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:46.968Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=30; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:46.966Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:46.964Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=38; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:46.962Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:46.960Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:46.958Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:28.727Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:27.115Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:26.881Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:26.552Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:23.615Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:23.112Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:21.776Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:16.860Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:14.722Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:12.652Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:10.338Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:08.757Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:07.425Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:07.235Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:51:00.523Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:51.653Z",
+    "level": "BOT",
+    "message": "Bot master switch set to ON.",
+    "paperTrade": true
+  },
+  {
+    "time": "2026-06-07T17:50:49.604Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:49.602Z",
+    "level": "BLOCK",
+    "message": "BNBUSD WAIT not opened: Opportunity Score >= 50: Score=17; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:49.600Z",
+    "level": "BLOCK",
+    "message": "LINKUSD WAIT not opened: Opportunity Score >= 50: Score=21; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:48.840Z",
+    "level": "BOT",
+    "message": "Bot master switch set to ON.",
+    "paperTrade": true
+  },
+  {
+    "time": "2026-06-07T17:50:46.533Z",
+    "level": "SAFE",
+    "message": "Bot master switch set to OFF.",
+    "paperTrade": true
+  },
+  {
+    "time": "2026-06-07T17:50:42.915Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:42.913Z",
+    "level": "BLOCK",
+    "message": "XRPUSD WAIT not opened: Opportunity Score >= 50: Score=23; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:42.911Z",
+    "level": "BLOCK",
+    "message": "SOLUSD WAIT not opened: Opportunity Score >= 50: Score=25; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:42.908Z",
+    "level": "BLOCK",
+    "message": "ETHUSD WAIT not opened: Opportunity Score >= 50: Score=30; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:42.906Z",
+    "level": "BLOCK",
+    "message": "ADAUSD WAIT not opened: Opportunity Score >= 50: Score=35; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:42.903Z",
+    "level": "BLOCK",
+    "message": "BTCUSD WAIT not opened: Opportunity Score >= 50: Score=38; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:42.901Z",
+    "level": "BLOCK",
+    "message": "LTCUSD WAIT not opened: Opportunity Score >= 50: Score=41; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:42.899Z",
+    "level": "BLOCK",
+    "message": "AVAXUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:42.897Z",
+    "level": "BLOCK",
+    "message": "BCHUSD WAIT not opened: Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
+  },
+  {
+    "time": "2026-06-07T17:50:25.635Z",
+    "level": "WAIT",
+    "message": "No trade opened this scan. Best setup: BCHUSD WAIT score=49. Opportunity Score >= 50: Score=49; class=Ignore; need 50+."
   }
 ]

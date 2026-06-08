@@ -1,8 +1,12 @@
 {
-  "equity": 0,
-  "available": 0,
-  "dailyPnl": 0,
-  "weeklyPnl": 0,
-  "monthlyPnl": 0,
-  "currency": "USDT"
+  "equity": 502.68,
+  "available": 455.38,
+  "dailyPnl": 2.68,
+  "weeklyPnl": 2.68,
+  "monthlyPnl": 2.68,
+  "currency": "USDT",
+  "source": "WALLET_NOT_SYNCED_MANUAL_PAPER_FALLBACK",
+  "message": "Delta wallet not synced. Showing manual paper fallback only; no real wallet funds are assumed.",
+  "botUsableAmount": 100,
+  "walletSynced": false
 }
