@@ -1,5 +1,19 @@
 [
   {
+    "time": "2026-06-08T11:05:13.272Z",
+    "type": "CLOSE",
+    "tradeId": "C-LTCUSD-MQ502X5K-MQ53TUM0",
+    "coin": "LTCUSD",
+    "side": "LONG",
+    "mode": "paper",
+    "entry": 42.84,
+    "exit": 42.84,
+    "pnl": 0,
+    "result": "BREAKEVEN",
+    "closeReason": "Management SL hit",
+    "closePct": 100
+  },
+  {
     "time": "2026-06-08T09:45:37.993Z",
     "type": "PARTIAL_CLOSE",
     "tradeId": "C-SOLUSD-MQ4XEPCN-MQ50ZHZC",

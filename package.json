@@ -1,21 +1,13 @@
 {
-  "name": "bot11-strategy-spec-v3",
+  "name": "bot12-light-delta-paper",
   "version": "1.0.0",
-  "description": "BOT11 portfolio futures bot: live data, paper-mode execution, Strategy Spec V3 weekly macro bias + MACD + SMI + KN TPSL runner rules.",
+  "description": "Lightweight BOT12 paper trading bot",
   "main": "server.js",
-  "type": "commonjs",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node server.js"
   },
-  "keywords": [
-    "crypto",
-    "futures",
-    "scanner",
-    "trading",
-    "dashboard",
-    "delta-exchange-india"
-  ],
-  "author": "Trading North",
-  "license": "UNLICENSED"
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.4.5"
+  }
 }

@@ -1,0 +1,1 @@
+BOT12 strict filters: cloud touch, SMI recovery, MACD momentum, KN candle, min score 8, paper only.
