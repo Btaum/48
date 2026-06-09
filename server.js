@@ -73,10 +73,10 @@ const DEFAULT_SETTINGS = {
   vwapConfluenceEnabled: false,
   volumeSpikeConfluenceEnabled: false,
   volumeSpikeMultiplier: 1.25,
-  minConfluenceScore: 1,
-  aPlusConfluenceScore: 3,
-  tier3MinConfluenceScore: 3,
-  minMomentumConfirmations: 2,
+  minConfluenceScore: 8,
+  aPlusConfluenceScore: 8,
+  tier3MinConfluenceScore: 8,
+  minMomentumConfirmations: 4,
   structureProximityAtr: 1.35,
   emaPeriod: 100,
   mtfEmaPeriod: 100,
@@ -148,7 +148,7 @@ const DEFAULT_SETTINGS = {
   maxTradesPerDay: 5,
   maxDailyLossUsd: 10,
   maxConsecutiveLosses: 2,
-  paperMinScore: 50,
+  paperMinScore: 70,
   preferredScore: 80,
   exceptionalScore: 90,
   adrUsedLimitPct: 80,
@@ -186,11 +186,11 @@ const DEFAULT_SETTINGS = {
   maxAddOnsPerCoin: 1,
   profitAddOnTriggerR: 2,
   profitAddOnSizePct: 50,
-  profitAddOnMinScore: 50,
+  profitAddOnMinScore: 70,
   profitAddOnRequireFreshSignal: true,
   protectedAddOnNoLossOnly: true,
   qualitySizingEnabled: true,
-  qualitySizeScore1: 50,
+  qualitySizeScore1: 70,
   qualitySizeMultiplier1: 1.5,
   qualitySizeScore2: 82,
   qualitySizeMultiplier2: 2,
@@ -248,7 +248,7 @@ const DEFAULT_SETTINGS = {
   weeklyMacroTimeframe: '1w',
   weeklyMacroMinScore: 2,
   weeklyCounterTrendPullbackOnly: true,
-  counterTrendRiskMultiplier: 0.5,
+  counterTrendRiskMultiplier: 0.25,
   counterTrendQualityDowngrade: true,
   smartRunnerEnabled: true,
   runnerRequireTrendStrength: true,
@@ -270,19 +270,19 @@ const DEFAULT_SETTINGS = {
   smiOverbought: 40,
   smiOversold: -40,
   smiPullbackWindowCandles: 80,
-  smiRecoveryLookbackCandles: 8,
-  smiAllowRecentRecoveryCross: true,
+  smiRecoveryLookbackCandles: 3,
+  smiAllowRecentRecoveryCross: false,
   requireMacdTranscriptConfirmation: true,
   macdRequireZeroLine: true,
   macdTranscriptLookbackCandles: 8,
-  practicalCloudTouchFallback: true,
-  practicalCandleColorSoft: true,
+  practicalCloudTouchFallback: false,
+  practicalCandleColorSoft: false,
   emaCloudFastLength: 50,
   emaCloudSlowLength: 200,
-  cloudTouchToleranceAtrMult: 0.60,
+  cloudTouchToleranceAtrMult: 0.00,
   cloudBreakToleranceAtrMult: 0.12,
   requireCloudTouch: true,
-  requireSmiCandleColor: false,
+  requireSmiCandleColor: true,
   tp2TriggerR: 2.0,
   tp3TriggerR: 3.0,
   emaCloudBullColor: '#dcfce7',
@@ -482,7 +482,7 @@ function enforceTimeframePolicy(settings = {}) {
     htfMinimumAligned: 1,
     paperTrade: settings.liveDataPaperTradingOnly === false ? (typeof settings.paperTrade === 'boolean' ? settings.paperTrade : true) : true,
     liveDataPaperTradingOnly: settings.liveDataPaperTradingOnly !== false,
-    paperMinScore: Math.min(Math.max(Number(settings.paperMinScore || 50), 50), 95),
+    paperMinScore: Math.min(Math.max(Number(settings.paperMinScore || 70), 70), 95),
     preferredScore: 80,
     exceptionalScore: 90,
     maxOneTradePerCorrelationCluster: settings.maxOneTradePerCorrelationCluster !== false,
@@ -501,10 +501,10 @@ function enforceTimeframePolicy(settings = {}) {
     cciPeriod: Math.min(Math.max(Math.floor(Number(settings.cciPeriod || 20)), 5), 60),
     vwapConfluenceEnabled: settings.vwapConfluenceEnabled === true,
     volumeSpikeConfluenceEnabled: settings.volumeSpikeConfluenceEnabled === true,
-    minConfluenceScore: Math.min(Math.max(Number(settings.minConfluenceScore || 6), 5), 12),
+    minConfluenceScore: Math.min(Math.max(Number(settings.minConfluenceScore || 8), 8), 12),
     aPlusConfluenceScore: Math.min(Math.max(Number(settings.aPlusConfluenceScore || 9), 8), 12),
     tier3MinConfluenceScore: Math.min(Math.max(Number(settings.tier3MinConfluenceScore || 9), 8), 12),
-    minMomentumConfirmations: Math.min(Math.max(Math.floor(Number(settings.minMomentumConfirmations || 2)), 2), 5),
+    minMomentumConfirmations: Math.min(Math.max(Math.floor(Number(settings.minMomentumConfirmations || 4)), 4), 5),
     minRR: 2.0,
     rewardTargetR: 2.5,
     requireClosedCandle: true,
@@ -717,7 +717,7 @@ function activeClusterExists(trades, symbol) {
 
 function classifyOpportunityScore(score) {
   const n = Number(score || 0);
-  if (n < 50) return 'Ignore';
+  if (n < 70) return 'Ignore';
   if (n < 80) return 'Tradeable';
   if (n < 90) return 'Preferred';
   return 'Exceptional';
@@ -727,7 +727,7 @@ function riskUsdForScore(score) {
   const n = Number(score || 0);
   if (n >= 90) return 10;
   if (n >= 80) return 7;
-  if (n >= 50) return 5;
+  if (n >= 70) return 5;
   return 0;
 }
 
@@ -1643,7 +1643,7 @@ function weeklyPolicyForDirection(weekly, direction, signal = null, settings = l
   return {
     pass,
     mode: 'COUNTER_TREND_PULLBACK',
-    riskMultiplier: Math.min(Math.max(Number(settings.counterTrendRiskMultiplier || 0.5), 0.1), 1),
+    riskMultiplier: Math.min(Math.max(Number(settings.counterTrendRiskMultiplier || 0.25), 0.1), 1),
     reason: pass
       ? `${direction} is counter to ${weekly.bias}; allowed only because SMI/KN pullback entry is valid. Use reduced risk.`
       : `${direction} blocked: weekly bias is ${weekly.bias}; counter-trend trades require a confirmed SMI/KN pullback.`
@@ -2828,10 +2828,10 @@ function findSmiPullbackContinuation(symbol, rows = [], direction = 'LONG', smiO
   const start = Math.max(1, lastIndex - window + 1);
   const price = Number(rows.at(-1)?.close || 0);
   const a = Math.max(Number(atr || atrFromCandles(rows, Number(settings.atrPeriod || 14)) || 0), price * 0.001, 0.00000001);
-  const touchTol = a * Math.min(Math.max(Number(settings.cloudTouchToleranceAtrMult ?? 0.60), 0), 2.5);
+  const touchTol = a * Math.min(Math.max(Number(settings.cloudTouchToleranceAtrMult ?? 0.00), 0), 2.5);
   const breakTol = a * Math.min(Math.max(Number(settings.cloudBreakToleranceAtrMult ?? 0.12), 0), 1.5);
   const recoveryLookback = Math.min(Math.max(Math.floor(Number(settings.smiRecoveryLookbackCandles || 8)), 1), 30);
-  const allowRecentCross = settings.smiAllowRecentRecoveryCross !== false;
+  const allowRecentCross = settings.smiAllowRecentRecoveryCross !== false; // BOT12 patched: settings default false = latest recovery cross only
   let pullbackIndex = null;
   let cloudTouch = false;
   let cloudBroken = false;
@@ -2895,7 +2895,7 @@ function findSmiPullbackContinuation(symbol, rows = [], direction = 'LONG', smiO
     : Number(cloud?.fast?.[lastIndex]) < Number(cloud?.slow?.[lastIndex]) && Number(cur.close) < Number(cloud?.lower?.[lastIndex]) + touchTol;
 
   // Practical fallback: if the wick missed the cloud by a tiny amount but price pulled back close to it, allow it.
-  const fallbackTouch = settings.practicalCloudTouchFallback !== false && pullbackIndex !== null && (() => {
+  const fallbackTouch = false && settings.practicalCloudTouchFallback !== false && pullbackIndex !== null && (() => {
     const from = Math.max(pullbackIndex, lastIndex - window + 1);
     for (let i = from; i <= lastIndex; i += 1) {
       const r = rows[i];
@@ -2907,7 +2907,7 @@ function findSmiPullbackContinuation(symbol, rows = [], direction = 'LONG', smiO
     }
     return false;
   })();
-  const touchPass = settings.requireCloudTouch === false || cloudTouch || fallbackTouch;
+  const touchPass = settings.requireCloudTouch === false || cloudTouch; // BOT12 patched: no near-cloud fallback
   const candlePass = strictCandle ? candleColorPass : true;
   const pass = Boolean(trendPass && pullbackIndex !== null && touchPass && !cloudBroken && cross && candlePass);
   const barsSinceCross = crossIndex === null ? null : lastIndex - crossIndex;
@@ -2915,7 +2915,7 @@ function findSmiPullbackContinuation(symbol, rows = [], direction = 'LONG', smiO
     pass,
     trendPass,
     pullbackIndex,
-    cloudTouch: Boolean(cloudTouch || fallbackTouch),
+    cloudTouch: Boolean(cloudTouch),
     strictCloudTouch: cloudTouch,
     fallbackCloudTouch: Boolean(fallbackTouch && !cloudTouch),
     lastCloudTouchIndex,
@@ -4913,7 +4913,7 @@ function passFail(profile, settings, wallet, trades) {
   const hasDirection = direction === 'LONG' || direction === 'SHORT';
   const oneAssetOpen = activeTradeExists(trades, profile.symbol);
   const clusterOpen = settings.maxOneTradePerCorrelationCluster !== false && activeClusterExists(trades, profile.symbol);
-  const scorePass = Number(profile.opportunityRanking?.finalScore || profile.kdeScore || 0) >= Number(settings.paperMinScore || 50);
+  const scorePass = Number(profile.opportunityRanking?.finalScore || profile.kdeScore || 0) >= Number(settings.paperMinScore || 70);
   const equityForRiskGuard = Number(wallet.equity || 0);
   const dailyPnlForRiskGuard = Number(wallet.dailyPnl || 0);
   const dailyLimitBreached = equityForRiskGuard > 0
@@ -4926,7 +4926,7 @@ function passFail(profile, settings, wallet, trades) {
 
   const dataQuality = closedOhlcQualityForExecution(profile.symbol, settings);
   hard('Delta Closed OHLC Data Quality', dataQuality.pass, dataQuality.detail);
-  hard(`Opportunity Score >= ${Number(settings.paperMinScore || 50)}`, scorePass, `Score=${profile.opportunityRanking?.finalScore || profile.kdeScore || 0}; class=${profile.opportunityRanking?.classification || '-'}; need ${Number(settings.paperMinScore || 50)}+.`);
+  hard(`Opportunity Score >= ${Number(settings.paperMinScore || 70)}`, scorePass, `Score=${profile.opportunityRanking?.finalScore || profile.kdeScore || 0}; class=${profile.opportunityRanking?.classification || '-'}; need ${Number(settings.paperMinScore || 70)}+.`);
 
   const sig = profile.macdDivergenceSignal || {};
   const sigModel = String(sig.entryModel || settings.entryModel || 'SMI_EMA_CLOUD_TPSL').toUpperCase();
@@ -5154,7 +5154,7 @@ function highProbabilitySizing(profile, settings) {
   const trendOk = profile.htfBias === directionToTrend(profile.decision) || aligned > 0;
   const sourceOk = String(profile.strategySignalSource || 'NONE') !== 'NONE';
   let multiplier = 1;
-  const s1 = Number(settings.qualitySizeScore1 || 50);
+  const s1 = Number(settings.qualitySizeScore1 || 70);
   const s2 = Number(settings.qualitySizeScore2 || 82);
   if (sourceOk && trendOk && score >= s2) multiplier = Number(settings.qualitySizeMultiplier2 || 2);
   else if (sourceOk && score >= s1) multiplier = Number(settings.qualitySizeMultiplier1 || 1.5);
@@ -5787,7 +5787,11 @@ function runScan({ autoExecute = false } = {}) {
   refreshOpenTradePrices(trades);
 
   if (settings.botEnabled && autoExecute) {
-    for (const row of rows) {
+    const tradableRows = rows
+      .filter(r => r && r.pass && r.candidate)
+      .sort((a, b) => Number(b.score || 0) - Number(a.score || 0))
+      .slice(0, Number(settings.maxTradeCandidates || 3));
+    for (const row of tradableRows) {
       if (!row.pass || !row.candidate) continue;
       if ((trades.openTrades || []).length >= settings.maxConcurrentPositions) break;
       const exists = trades.openTrades.some(t => t.coin === row.coin && isActiveTradeStatus(t.status));
@@ -5881,7 +5885,7 @@ function shouldAddOnTrade(trade, row, settings, managementState = {}) {
   if (settings.profitAddOnEnabled === false || settings.autoAddOnEnabled === false) return { ok: false, reason: 'Profit add-on disabled' };
   if (!row || row.dec !== trade.side) return { ok: false, reason: 'No same-side chart signal active' };
   if (settings.profitAddOnRequireFreshSignal !== false && !row.pass) return { ok: false, reason: 'Same-side signal is not currently passing' };
-  if (Number(row.score || 0) < Number(settings.profitAddOnMinScore || 50)) return { ok: false, reason: `Score ${row.score || 0} below add-on minimum ${settings.profitAddOnMinScore || 50}` };
+  if (Number(row.score || 0) < Number(settings.profitAddOnMinScore || 70)) return { ok: false, reason: `Score ${row.score || 0} below add-on minimum ${settings.profitAddOnMinScore || 70}` };
   const usedAddOns = Math.max(Number(trade.addOnCount || 0), Number(managementState.addOnCount || 0));
   if (usedAddOns >= Number(settings.maxAddOnsPerCoin || 1)) return { ok: false, reason: 'Max protected add-ons already used' };
   const r = profitRForTrade(trade);
