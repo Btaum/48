@@ -1,13 +1,13 @@
 {
   "exchange": "delta_exchange_india",
-  "apiKey": "ZGRmtnkemjkZfcWQog6gVHk4g1KQBh",
-  "secret": "rIoqV1qMjl97kA0SwZItMPRgoVqDr9rXJ7f5KfgKbmyQ30U0Gpm9W3Y2yPQT",
-  "liveTradingConfirmed": true,
-  "lastTestAt": "2026-06-08T10:40:02.903Z",
-  "lastTestStatus": "pass",
-  "lastTestMessage": "Delta India profile endpoint authenticated successfully.",
-  "whitelistedIpNote": "106.192.132.204",
-  "lastServerOutboundIp": "106.192.132.204",
-  "lastServerOutboundIpAt": "2026-06-08T10:40:02.649Z",
-  "lastServerOutboundIpMessage": "Detected server outbound IP. Copy this exact IP to Delta whitelist."
+  "apiKey": "",
+  "secret": "",
+  "liveTradingConfirmed": false,
+  "lastTestAt": null,
+  "lastTestStatus": "not_tested",
+  "lastTestMessage": "",
+  "whitelistedIpNote": "",
+  "lastServerOutboundIp": "",
+  "lastServerOutboundIpAt": null,
+  "lastServerOutboundIpMessage": ""
 }
