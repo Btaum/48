@@ -73,10 +73,10 @@ const DEFAULT_SETTINGS = {
   vwapConfluenceEnabled: false,
   volumeSpikeConfluenceEnabled: false,
   volumeSpikeMultiplier: 1.25,
-  minConfluenceScore: 8,
-  aPlusConfluenceScore: 10,
-  tier3MinConfluenceScore: 8,
-  minMomentumConfirmations: 4,
+  minConfluenceScore: 1,
+  aPlusConfluenceScore: 3,
+  tier3MinConfluenceScore: 3,
+  minMomentumConfirmations: 2,
   structureProximityAtr: 1.35,
   emaPeriod: 100,
   mtfEmaPeriod: 100,
@@ -148,9 +148,9 @@ const DEFAULT_SETTINGS = {
   maxTradesPerDay: 5,
   maxDailyLossUsd: 10,
   maxConsecutiveLosses: 2,
-  paperMinScore: 75,
-  preferredScore: 85,
-  exceptionalScore: 92,
+  paperMinScore: 50,
+  preferredScore: 80,
+  exceptionalScore: 90,
   adrUsedLimitPct: 80,
   timeFailureCandles: 8,
   pendingExpiryMinutes: 45,
@@ -160,7 +160,7 @@ const DEFAULT_SETTINGS = {
   moveSlAfterTp1MinAge: 30,
   defaultLeverage: 25,
   maxLeverage: 25,
-  maxConcurrentPositions: 2,
+  maxConcurrentPositions: 5,
   maxOneTradePerCorrelationCluster: true,
   maxOnePositionPerAsset: true,
   maxBotAllocationUsd: 500,
@@ -186,11 +186,11 @@ const DEFAULT_SETTINGS = {
   maxAddOnsPerCoin: 1,
   profitAddOnTriggerR: 2,
   profitAddOnSizePct: 50,
-  profitAddOnMinScore: 70,
+  profitAddOnMinScore: 50,
   profitAddOnRequireFreshSignal: true,
   protectedAddOnNoLossOnly: true,
   qualitySizingEnabled: true,
-  qualitySizeScore1: 70,
+  qualitySizeScore1: 50,
   qualitySizeMultiplier1: 1.5,
   qualitySizeScore2: 82,
   qualitySizeMultiplier2: 2,
@@ -248,7 +248,7 @@ const DEFAULT_SETTINGS = {
   weeklyMacroTimeframe: '1w',
   weeklyMacroMinScore: 2,
   weeklyCounterTrendPullbackOnly: true,
-  counterTrendRiskMultiplier: 0.25,
+  counterTrendRiskMultiplier: 0.5,
   counterTrendQualityDowngrade: true,
   smartRunnerEnabled: true,
   runnerRequireTrendStrength: true,
@@ -275,11 +275,11 @@ const DEFAULT_SETTINGS = {
   requireMacdTranscriptConfirmation: true,
   macdRequireZeroLine: true,
   macdTranscriptLookbackCandles: 8,
-  practicalCloudTouchFallback: false,
-  practicalCandleColorSoft: false,
+  practicalCloudTouchFallback: true,
+  practicalCandleColorSoft: true,
   emaCloudFastLength: 50,
   emaCloudSlowLength: 200,
-  cloudTouchToleranceAtrMult: 0.05,
+  cloudTouchToleranceAtrMult: 0.60,
   cloudBreakToleranceAtrMult: 0.12,
   requireCloudTouch: true,
   requireSmiCandleColor: false,
@@ -482,9 +482,9 @@ function enforceTimeframePolicy(settings = {}) {
     htfMinimumAligned: 1,
     paperTrade: settings.liveDataPaperTradingOnly === false ? (typeof settings.paperTrade === 'boolean' ? settings.paperTrade : true) : true,
     liveDataPaperTradingOnly: settings.liveDataPaperTradingOnly !== false,
-    paperMinScore: Math.min(Math.max(Number(settings.paperMinScore || 75), 75), 95),
-    preferredScore: 85,
-    exceptionalScore: 92,
+    paperMinScore: Math.min(Math.max(Number(settings.paperMinScore || 50), 50), 95),
+    preferredScore: 80,
+    exceptionalScore: 90,
     maxOneTradePerCorrelationCluster: settings.maxOneTradePerCorrelationCluster !== false,
     signalSource: 'bot11_strategy_spec_v3',
     strategyMode: 'BOT11_STRATEGY_SPEC_V3',
@@ -501,10 +501,10 @@ function enforceTimeframePolicy(settings = {}) {
     cciPeriod: Math.min(Math.max(Math.floor(Number(settings.cciPeriod || 20)), 5), 60),
     vwapConfluenceEnabled: settings.vwapConfluenceEnabled === true,
     volumeSpikeConfluenceEnabled: settings.volumeSpikeConfluenceEnabled === true,
-    minConfluenceScore: Math.min(Math.max(Number(settings.minConfluenceScore || 8), 8), 12),
-    aPlusConfluenceScore: Math.min(Math.max(Number(settings.aPlusConfluenceScore || 10), 10), 12),
-    tier3MinConfluenceScore: Math.min(Math.max(Number(settings.tier3MinConfluenceScore || 8), 8), 12),
-    minMomentumConfirmations: Math.min(Math.max(Math.floor(Number(settings.minMomentumConfirmations || 4)), 4), 5),
+    minConfluenceScore: Math.min(Math.max(Number(settings.minConfluenceScore || 6), 5), 12),
+    aPlusConfluenceScore: Math.min(Math.max(Number(settings.aPlusConfluenceScore || 9), 8), 12),
+    tier3MinConfluenceScore: Math.min(Math.max(Number(settings.tier3MinConfluenceScore || 9), 8), 12),
+    minMomentumConfirmations: Math.min(Math.max(Math.floor(Number(settings.minMomentumConfirmations || 2)), 2), 5),
     minRR: 2.0,
     rewardTargetR: 2.5,
     requireClosedCandle: true,
@@ -717,7 +717,7 @@ function activeClusterExists(trades, symbol) {
 
 function classifyOpportunityScore(score) {
   const n = Number(score || 0);
-  if (n < 70) return 'Ignore';
+  if (n < 50) return 'Ignore';
   if (n < 80) return 'Tradeable';
   if (n < 90) return 'Preferred';
   return 'Exceptional';
@@ -727,7 +727,7 @@ function riskUsdForScore(score) {
   const n = Number(score || 0);
   if (n >= 90) return 10;
   if (n >= 80) return 7;
-  if (n >= 70) return 5;
+  if (n >= 50) return 5;
   return 0;
 }
 
@@ -1334,12 +1334,12 @@ function confluenceForSide(symbol, direction, candles = [], context = {}, settin
   const confirmations = details.filter(d => d.pass && !['validLocation'].includes(d.name)).length;
   const maxScore = 10;
   return {
-    pass: score >= Number(settings.minConfluenceScore || 8) && confirmations >= Number(settings.minMomentumConfirmations || 4) && structure.pass,
+    pass: score >= Number(settings.minConfluenceScore || 6) && confirmations >= Number(settings.minMomentumConfirmations || 2) && structure.pass,
     score,
     maxScore,
     confirmations,
-    requiredScore: Number(settings.minConfluenceScore || 8),
-    requiredConfirmations: Number(settings.minMomentumConfirmations || 4),
+    requiredScore: Number(settings.minConfluenceScore || 6),
+    requiredConfirmations: Number(settings.minMomentumConfirmations || 2),
     structure,
     indicators: {
       ema50: roundCoin(symbol, emaMid),
@@ -1643,7 +1643,7 @@ function weeklyPolicyForDirection(weekly, direction, signal = null, settings = l
   return {
     pass,
     mode: 'COUNTER_TREND_PULLBACK',
-    riskMultiplier: Math.min(Math.max(Number(settings.counterTrendRiskMultiplier || 0.25), 0.1), 0.5),
+    riskMultiplier: Math.min(Math.max(Number(settings.counterTrendRiskMultiplier || 0.5), 0.1), 1),
     reason: pass
       ? `${direction} is counter to ${weekly.bias}; allowed only because SMI/KN pullback entry is valid. Use reduced risk.`
       : `${direction} blocked: weekly bias is ${weekly.bias}; counter-trend trades require a confirmed SMI/KN pullback.`
@@ -2895,7 +2895,7 @@ function findSmiPullbackContinuation(symbol, rows = [], direction = 'LONG', smiO
     : Number(cloud?.fast?.[lastIndex]) < Number(cloud?.slow?.[lastIndex]) && Number(cur.close) < Number(cloud?.lower?.[lastIndex]) + touchTol;
 
   // Practical fallback: if the wick missed the cloud by a tiny amount but price pulled back close to it, allow it.
-  const fallbackTouch = settings.practicalCloudTouchFallback === true && pullbackIndex !== null && (() => {
+  const fallbackTouch = settings.practicalCloudTouchFallback !== false && pullbackIndex !== null && (() => {
     const from = Math.max(pullbackIndex, lastIndex - window + 1);
     for (let i = from; i <= lastIndex; i += 1) {
       const r = rows[i];
@@ -2915,7 +2915,7 @@ function findSmiPullbackContinuation(symbol, rows = [], direction = 'LONG', smiO
     pass,
     trendPass,
     pullbackIndex,
-    cloudTouch: Boolean(cloudTouch),
+    cloudTouch: Boolean(cloudTouch || fallbackTouch),
     strictCloudTouch: cloudTouch,
     fallbackCloudTouch: Boolean(fallbackTouch && !cloudTouch),
     lastCloudTouchIndex,
@@ -2932,7 +2932,7 @@ function findSmiPullbackContinuation(symbol, rows = [], direction = 'LONG', smiO
     barsSincePullback: pullbackIndex === null ? null : lastIndex - pullbackIndex,
     reason: pass
       ? `${direction} SMI pullback continuation confirmed: recovery cross ${barsSinceCross === 0 ? 'on latest candle' : `${barsSinceCross} candle(s) ago`} after cloud-touch pullback. SMI=${pct(nowSmi)} signal=${pct(nowSig)}.`
-      : `WAIT ${direction}: trend=${trendPass} pullback=${pullbackIndex !== null} strictCloudTouch=${cloudTouch} cloudBroken=${cloudBroken} cross=${cross}${barsSinceCross !== null ? `(${barsSinceCross} ago)` : ''} candleColor=${!strictCandle || candleColorPass}; SMI=${pct(nowSmi)} signal=${pct(nowSig)}.`
+      : `WAIT ${direction}: trend=${trendPass} pullback=${pullbackIndex !== null} cloudTouch=${touchPass} cloudBroken=${cloudBroken} cross=${cross}${barsSinceCross !== null ? `(${barsSinceCross} ago)` : ''} candleColor=${!strictCandle || candleColorPass}; SMI=${pct(nowSmi)} signal=${pct(nowSig)}.`
   };
 }
 
@@ -4913,7 +4913,7 @@ function passFail(profile, settings, wallet, trades) {
   const hasDirection = direction === 'LONG' || direction === 'SHORT';
   const oneAssetOpen = activeTradeExists(trades, profile.symbol);
   const clusterOpen = settings.maxOneTradePerCorrelationCluster !== false && activeClusterExists(trades, profile.symbol);
-  const scorePass = Number(profile.opportunityRanking?.finalScore || profile.kdeScore || 0) >= Number(settings.paperMinScore || 70);
+  const scorePass = Number(profile.opportunityRanking?.finalScore || profile.kdeScore || 0) >= Number(settings.paperMinScore || 50);
   const equityForRiskGuard = Number(wallet.equity || 0);
   const dailyPnlForRiskGuard = Number(wallet.dailyPnl || 0);
   const dailyLimitBreached = equityForRiskGuard > 0
@@ -4926,7 +4926,7 @@ function passFail(profile, settings, wallet, trades) {
 
   const dataQuality = closedOhlcQualityForExecution(profile.symbol, settings);
   hard('Delta Closed OHLC Data Quality', dataQuality.pass, dataQuality.detail);
-  hard(`Opportunity Score >= ${Number(settings.paperMinScore || 70)}`, scorePass, `Score=${profile.opportunityRanking?.finalScore || profile.kdeScore || 0}; class=${profile.opportunityRanking?.classification || '-'}; need ${Number(settings.paperMinScore || 70)}+.`);
+  hard(`Opportunity Score >= ${Number(settings.paperMinScore || 50)}`, scorePass, `Score=${profile.opportunityRanking?.finalScore || profile.kdeScore || 0}; class=${profile.opportunityRanking?.classification || '-'}; need ${Number(settings.paperMinScore || 50)}+.`);
 
   const sig = profile.macdDivergenceSignal || {};
   const sigModel = String(sig.entryModel || settings.entryModel || 'SMI_EMA_CLOUD_TPSL').toUpperCase();
@@ -4936,8 +4936,7 @@ function passFail(profile, settings, wallet, trades) {
     hard('EMA50/200 Trend Cloud', hasDirection && Boolean(sig.conditions?.trendCloud), 'Need EMA50/200 trend cloud in trade direction with price on correct side.');
     hard('SMI Pullback Beyond Band', hasDirection && Boolean(sig.conditions?.smiPullback), 'Need SMI pullback below -40 for long or above +40 for short.');
     hard('Cloud Touch / Rejection', hasDirection && Boolean(sig.conditions?.cloudTouch) && Boolean(sig.conditions?.cloudNotBroken), 'Pullback must touch the EMA cloud and not close through it.');
-    hard('SMI Recovery Cross', hasDirection && Boolean(sig.conditions?.smiRecoveryCross), 'Need SMI to cross its signal EMA after the pullback and above -40 for LONG / below +40 for SHORT.');
-    hard('MACD Transcript Confirmation', hasDirection && (settings.requireMacdTranscriptConfirmation === false || String(sig.reason || '').includes('MACD_TRANSCRIPT=true') || !String(sig.reason || '').includes('MACD_TRANSCRIPT=false')), 'Need MACD momentum confirmation from the active strategy signal; reject weak counter-momentum entries.');
+    hard('SMI Recovery Cross', hasDirection && Boolean(sig.conditions?.smiRecoveryCross), 'Need SMI to cross its signal EMA after the pullback.');
     hard('KN EMA5/12 Crossover', hasDirection && Boolean(sig.conditions?.knSignal), direction === 'LONG' ? 'Need fast EMA above slow EMA after crossover.' : direction === 'SHORT' ? 'Need fast EMA below slow EMA after crossover.' : 'Waiting for KN EMA crossover.');
     hard('Entry Candle Confirmation', hasDirection && Boolean(sig.conditions?.entryCandle), direction === 'LONG' ? 'Need bullish candle close above KN entry line.' : 'Need bearish candle close below KN entry line.');
     hard('Golden Candle Size Filter', hasDirection && Boolean(sig.conditions?.candleSizeOk), 'Entry candle too large; wait for next valid candle so SL/TP are not distorted.');
@@ -4964,7 +4963,7 @@ function passFail(profile, settings, wallet, trades) {
   const instSide = direction === 'LONG' ? inst.long : direction === 'SHORT' ? inst.short : null;
   const conf = instSide?.confluence || {};
   soft('Structure Location Context', hasDirection && Boolean(conf.structure?.pass), conf.structure?.reason || 'Context only in V70; Market Memory cloud is the hard pullback/location gate.');
-  soft('Confluence Score Context', hasDirection && Number(conf.score || 0) >= Number(settings.minConfluenceScore || 8) && Number(conf.confirmations || 0) >= Number(settings.minMomentumConfirmations || 4), conf.reason || 'Advisory only in V70; not a hidden hard blocker.');
+  soft('Confluence Score Context', hasDirection && Number(conf.score || 0) >= Number(settings.minConfluenceScore || 6) && Number(conf.confirmations || 0) >= Number(settings.minMomentumConfirmations || 2), conf.reason || 'Advisory only in V70; not a hidden hard blocker.');
   soft('Local EMA50/200 Context', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.execStack || instSide?.htfStack)), instSide?.detail || inst.reason || 'Local EMA50/200 is visual/advisory only.');
   soft('EMA/VWAP/SR Pullback Context', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.pullback?.pass || conf.structure?.pass)), instSide?.pullback ? `touched=${instSide.pullback.touched} reclaimed=${instSide.pullback.reclaimed} extension=${instSide.pullback.extensionAtr}ATR` : 'Advisory only; Market Memory cloud pullback is the hard gate.');
   hard('5M Side-Correct Price-Action Trigger', settings.institutionalEmaEnabled === false || (hasDirection && Boolean(instSide?.priceAction?.pass)), instSide?.priceAction?.reason || (direction === 'SHORT' ? 'Need bearish engulfing, bearish pin bar, or double-top rejection on closed 5m candle' : direction === 'LONG' ? 'Need bullish engulfing, bullish pin bar, or double-bottom reclaim on closed 5m candle' : 'Need side-correct 5m trigger candle'));
@@ -5155,7 +5154,7 @@ function highProbabilitySizing(profile, settings) {
   const trendOk = profile.htfBias === directionToTrend(profile.decision) || aligned > 0;
   const sourceOk = String(profile.strategySignalSource || 'NONE') !== 'NONE';
   let multiplier = 1;
-  const s1 = Number(settings.qualitySizeScore1 || 70);
+  const s1 = Number(settings.qualitySizeScore1 || 50);
   const s2 = Number(settings.qualitySizeScore2 || 82);
   if (sourceOk && trendOk && score >= s2) multiplier = Number(settings.qualitySizeMultiplier2 || 2);
   else if (sourceOk && score >= s1) multiplier = Number(settings.qualitySizeMultiplier1 || 1.5);
@@ -5788,8 +5787,7 @@ function runScan({ autoExecute = false } = {}) {
   refreshOpenTradePrices(trades);
 
   if (settings.botEnabled && autoExecute) {
-    const executableRows = rows.filter(r => r && r.pass && r.candidate).sort((a,b)=>Number(b.score||0)-Number(a.score||0)).slice(0,3);
-    for (const row of executableRows) {
+    for (const row of rows) {
       if (!row.pass || !row.candidate) continue;
       if ((trades.openTrades || []).length >= settings.maxConcurrentPositions) break;
       const exists = trades.openTrades.some(t => t.coin === row.coin && isActiveTradeStatus(t.status));
@@ -5847,8 +5845,7 @@ async function runScanAsync({ autoExecute = false, forceDelta = false } = {}) {
     const trades = usingLiveAccount ? authoritativeTrades(settings, localTrades) : localTrades;
     refreshOpenTradePrices(trades);
     await processTradeManagement(payload.rows, settings, trades, wallet, { live: usingLiveAccount });
-    const executableRows = (payload.rows || []).filter(r => r && r.pass && r.candidate).sort((a,b)=>Number(b.score||0)-Number(a.score||0)).slice(0,3);
-    for (const row of executableRows) {
+    for (const row of payload.rows) {
       if (!row.pass || !row.candidate) continue;
       if ((trades.openTrades || []).length >= settings.maxConcurrentPositions) break;
       const exists = trades.openTrades.some(t => t.coin === row.coin && isActiveTradeStatus(t.status));
@@ -5884,7 +5881,7 @@ function shouldAddOnTrade(trade, row, settings, managementState = {}) {
   if (settings.profitAddOnEnabled === false || settings.autoAddOnEnabled === false) return { ok: false, reason: 'Profit add-on disabled' };
   if (!row || row.dec !== trade.side) return { ok: false, reason: 'No same-side chart signal active' };
   if (settings.profitAddOnRequireFreshSignal !== false && !row.pass) return { ok: false, reason: 'Same-side signal is not currently passing' };
-  if (Number(row.score || 0) < Number(settings.profitAddOnMinScore || 70)) return { ok: false, reason: `Score ${row.score || 0} below add-on minimum ${settings.profitAddOnMinScore || 70}` };
+  if (Number(row.score || 0) < Number(settings.profitAddOnMinScore || 50)) return { ok: false, reason: `Score ${row.score || 0} below add-on minimum ${settings.profitAddOnMinScore || 50}` };
   const usedAddOns = Math.max(Number(trade.addOnCount || 0), Number(managementState.addOnCount || 0));
   if (usedAddOns >= Number(settings.maxAddOnsPerCoin || 1)) return { ok: false, reason: 'Max protected add-ons already used' };
   const r = profitRForTrade(trade);
@@ -7437,10 +7434,10 @@ function validateSettingsPatch(patch) {
   out.cciPeriod = Math.min(Math.max(Math.floor(out.cciPeriod ?? DEFAULT_SETTINGS.cciPeriod), 5), 60);
   out.vwapLookback = Math.min(Math.max(Math.floor(out.vwapLookback ?? DEFAULT_SETTINGS.vwapLookback ?? 96), 20), 300);
   out.volumeSpikeMultiplier = Math.min(Math.max(Number(out.volumeSpikeMultiplier ?? DEFAULT_SETTINGS.volumeSpikeMultiplier), 1), 5);
-  out.minConfluenceScore = Math.min(Math.max(Number(out.minConfluenceScore ?? DEFAULT_SETTINGS.minConfluenceScore), 8), 12);
+  out.minConfluenceScore = Math.min(Math.max(Number(out.minConfluenceScore ?? DEFAULT_SETTINGS.minConfluenceScore), 5), 12);
   out.aPlusConfluenceScore = Math.min(Math.max(Number(out.aPlusConfluenceScore ?? DEFAULT_SETTINGS.aPlusConfluenceScore), out.minConfluenceScore), 13);
   out.tier3MinConfluenceScore = Math.min(Math.max(Number(out.tier3MinConfluenceScore ?? DEFAULT_SETTINGS.tier3MinConfluenceScore), out.minConfluenceScore), 13);
-  out.minMomentumConfirmations = Math.min(Math.max(Math.floor(out.minMomentumConfirmations ?? DEFAULT_SETTINGS.minMomentumConfirmations), 4), 5);
+  out.minMomentumConfirmations = Math.min(Math.max(Math.floor(out.minMomentumConfirmations ?? DEFAULT_SETTINGS.minMomentumConfirmations), 2), 5);
   out.structureProximityAtr = Math.min(Math.max(Number(out.structureProximityAtr ?? DEFAULT_SETTINGS.structureProximityAtr), 0.25), 4);
   out.vwapConfluenceEnabled = typeof out.vwapConfluenceEnabled === 'boolean' ? out.vwapConfluenceEnabled : DEFAULT_SETTINGS.vwapConfluenceEnabled;
   out.volumeSpikeConfluenceEnabled = typeof out.volumeSpikeConfluenceEnabled === 'boolean' ? out.volumeSpikeConfluenceEnabled : DEFAULT_SETTINGS.volumeSpikeConfluenceEnabled;
@@ -7569,9 +7566,9 @@ function validateSettingsPatch(patch) {
   out.mtfEmaPeriod = out.emaCloudFastLength;
   out.trendEmaPeriod = out.emaCloudFastLength;
   out.dominantEmaPeriod = out.emaCloudSlowLength;
-  out.minConfluenceScore = Math.max(8, Number(out.minConfluenceScore || 8));
-  out.aPlusConfluenceScore = Math.max(10, Number(out.aPlusConfluenceScore || 10));
-  out.tier3MinConfluenceScore = Math.max(8, Number(out.tier3MinConfluenceScore || 8));
+  out.minConfluenceScore = 1;
+  out.aPlusConfluenceScore = 3;
+  out.tier3MinConfluenceScore = 3;
   out.minRR = Math.max(1.5, Math.min(Number(out.minRR || DEFAULT_SETTINGS.minRR), 3));
   out.rewardTargetR = Math.max(out.minRR, Math.min(Number(out.rewardTargetR || DEFAULT_SETTINGS.rewardTargetR), 6));
   out.requirePullbackForExecution = true;
